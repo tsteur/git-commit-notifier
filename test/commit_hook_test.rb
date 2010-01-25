@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'mocha'
 require 'test/unit'
+require 'mocha'
 
 require File.dirname(__FILE__) + '/../lib/commit_hook'
 require File.dirname(__FILE__) + '/../lib/git'
