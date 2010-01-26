@@ -1,58 +1,52 @@
-require 'rake'
-require 'rake/testtask'
 require 'rubygems'
-require 'diff/lcs'
-require 'yaml'
+require 'rake'
 
-task :default => [:test]
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "git-commit-notifier"
+    gem.summary = %Q{TODO: one-line summary of your gem}
+    gem.description = %Q{TODO: longer description of your gem}
+    gem.email = "bodo@wannawork.de"
+    gem.homepage = "http://github.com/bodo/git-commit-notifier"
+    gem.authors = ["Bodo Tasche"]
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+end
 
-desc "Run tests"
-task :test do |test|
-  Rake::TestTask.new do |t|
-    t.libs << "test"
-    t.test_files = FileList['test/*.rb']
-    t.verbose = true
+require 'rake/testtask'
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
+end
+
+begin
+  require 'rcov/rcovtask'
+  Rcov::RcovTask.new do |test|
+    test.libs << 'test'
+    test.pattern = 'test/**/test_*.rb'
+    test.verbose = true
+  end
+rescue LoadError
+  task :rcov do
+    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
   end
 end
 
-desc "Install Git Commit Notifier for the first time"
-task :install do |install|
-  puts "Full path to yor project repository (eg. /home/git/repositories/myproject.git):"
-  project_path = STDIN.gets.strip
+task :test => :check_dependencies
 
-  hooks_dir = "#{project_path}/hooks"
-  raise 'hooks directory not found for the specified project - cannot continue' unless File.exist?(hooks_dir)
-  hooks_dir += '/' unless hooks_dir[-1,-1] == '/'
+task :default => :test
 
-  install_path = '/usr/local/share'
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
-  install_script_files(install_path)
-  execute_cmd "mv #{hooks_dir}post-receive #{hooks_dir}post-receive.old.#{Time.now.to_i}" if File.exist?("#{hooks_dir}post-receive")
-  execute_cmd "cp post-receive #{hooks_dir}"
-  execute_cmd "chmod a+x #{hooks_dir}post-receive"
-
-  Dir.chdir(project_path)
-
-  puts "Warning: no Git mailing list setting exists for your project. Please go to your project directory and set it with the git config hooks.mailinglist=you@yourdomain.com command or specify 'recipient_address' in the #{config_file} file else no emails can be sent out.\n\n"  if `git config hooks.mailinglist`.empty?
-  puts "Warning: no Git email prefix setting exists for your project. Please go to your project directory and set it with the git config hooks.emailprefix=your_project_name or specify 'application_name' in the #{config_file} file\n\n" if `git config hooks.emailprefix`.empty?
-
-  puts "Emails are sent by default via local sendmail. To change this, update #{config_file}"
-  puts "Installation successful. Update config.yml to setup notification for more projects."
-end
-
-desc "Update already installed Git Commit Notifier"
-task :update do |update|
-  install_script_files('/usr/local/share')
-  puts "Update successful."
-end
-
-def install_script_files(install_path)
-  execute_cmd "cp -r git_commit_notifier/ #{install_path}"
-  execute_cmd "cp README.rdoc #{install_path}/git_commit_notifier"
-  execute_cmd "cp LICENSE #{install_path}/git_commit_notifier"
-end
-
-def execute_cmd(cmd)
-  `#{cmd}`
-  raise 'error occurred - installation aborted' if $?.exitstatus != 0
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "git-commit-notifier #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end

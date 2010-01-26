@@ -1,17 +1,17 @@
 require 'rubygems'
 require 'mocha'
 require 'cgi'
-require 'test/unit'
 require 'hpricot'
-require File.dirname(__FILE__) + '/test_helper'
 
-require File.dirname(__FILE__) + '/../lib/diff_to_html'
-require File.dirname(__FILE__) + '/../lib/git'
+require File.dirname(__FILE__) + '/../test_helper'
+
+require File.dirname(__FILE__) + '/../../lib/diff_to_html'
+require File.dirname(__FILE__) + '/../../lib/git'
 
 class DiffToHtmlTest < Test::Unit::TestCase
 
   def test_multiple_commits
-    path = File.dirname(__FILE__) + '/fixtures/'
+    path = File.dirname(__FILE__) + '/../fixtures/'
     Git.expects(:log).with(REVISIONS.first, REVISIONS.last).returns(read_file(path + 'git_log'))
     REVISIONS.each do |rev|
       Git.expects(:show).with(rev).returns(read_file(path + 'git_show_' + rev))
@@ -61,7 +61,7 @@ class DiffToHtmlTest < Test::Unit::TestCase
   end
 
   def test_single_commit
-    path = File.dirname(__FILE__) + '/fixtures/'
+    path = File.dirname(__FILE__) + '/../fixtures/'
     Git.expects(:log).never
     Git.expects(:show).with(REVISIONS.first).returns(read_file(path + 'git_show_' + REVISIONS.first))
 

@@ -2,13 +2,13 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha'
 
-require File.dirname(__FILE__) + '/../lib/commit_hook'
-require File.dirname(__FILE__) + '/../lib/git'
+require File.dirname(__FILE__) + '/../../lib/commit_hook'
+require File.dirname(__FILE__) + '/../../lib/git'
 
 class CommitHookTest < Test::Unit::TestCase
 
   def test_hook
-    path = File.dirname(__FILE__) + '/fixtures/'
+    path = File.dirname(__FILE__) + '/../fixtures/'
     Git.expects(:log).with(REVISIONS.first, REVISIONS.last).returns(read_file(path + 'git_log'))
     Git.expects(:mailing_list_address).returns('recipient@test.com')
     REVISIONS.each do |rev|

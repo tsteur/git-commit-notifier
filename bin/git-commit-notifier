@@ -10,4 +10,3 @@ if ARGV[0].nil?
 else
   CommitHook.run ARGV[0], ARGV[1], ARGV[2]
 end
-

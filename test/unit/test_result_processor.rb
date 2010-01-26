@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'jcode'
-require File.dirname(__FILE__) + '/../lib/result_processor'
-require File.dirname(__FILE__) + '/../lib/diff_to_html'
+require File.dirname(__FILE__) + '/../../lib/result_processor'
+require File.dirname(__FILE__) + '/../../lib/diff_to_html'
 
 class ResultProcessorTest < Test::Unit::TestCase
   # button_to_remote 'create_btn'
