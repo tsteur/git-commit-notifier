@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "git-commit-notifier"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Sends git commit messages with diffs}
+    gem.description = %Q{This git commit notifier sends html mails with nice diffs for every changed file.}
     gem.email = "bodo@wannawork.de"
     gem.homepage = "http://github.com/bodo/git-commit-notifier"
     gem.authors = ["Bodo Tasche"]
