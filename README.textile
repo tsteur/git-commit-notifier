@@ -1,20 +1,22 @@
-_h1. Git Commit Notifier
+h1. Git Commit Notifier
 
-<pre>by Bodo Tasche (bodo 'at' wannawork 'dot' de), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)</pre>
+__by Bodo Tasche (bodo 'at' wannawork 'dot' de), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)__
 
-Sends email commit messages splitting commits that were pushed in one
-step. Email is delivered as text or HTML with changes refined per
-word. Emails have a scanable subject containing the first sentence of
-the commit as well as the author, project and branch name.
+Sends email commit messages splitting commits that were pushed in one step. 
+Email is delivered as text or HTML with changes refined per word. Emails 
+have a scanable subject containing the first sentence of the commit as well 
+as the author, project and branch name.
 
 For example:
+
 <pre>[rails][master] Fix Brasilia timezone. [#1180 state:resolved] </pre>
 
-A reply-to header is added containing the author of the commit. This makes follow up really simple. If multiple commits are pushed at once, emails are numbered in chronological order:
-<pre>
- [rails][master][000] Added deprecated warning messages to Float#months and Float#years deprications.
- [rails][master][001] Enhance testing for fractional days and weeks. Update changelog.
-</pre>
+A reply-to header is added containing the author of the commit. This makes 
+follow up really simple. If multiple commits are pushed at once, emails are 
+numbered in chronological order:
+
+<pre> [rails][master][000] Added deprecated warning messages to Float#months and Float#years deprications.
+ [rails][master][001] Enhance testing for fractional days and weeks. Update changelog.</pre>
 
 Example email:
 
@@ -30,24 +32,27 @@ h1. Requirements
 
 h1. Installing and Configuring
 
-Before installing the Git Commit Notification script, make sure the following Git settings are correct:
+Before installing the Git Commit Notification script, make sure the following 
+Git settings are correct:
+
 * git config hooks.mailinglist (email address of the recipient, probably your mailing list address)
 * git config hooks.emailprefix (application name, used in email subject)
 
-See /usr/local/share/git_commit_notifier/config/config.yml for overriding these settings
+See <a href="http://github.com/bodo/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a> for overriding these settings.
 
 Run the automated installation script:
-  <pre>sudo gem install git-commit-notifier</pre>
 
-After you installed the gem, you need to configure your git repository. Add a File called "post-receive" to the __hooks__
-directory and add this content:
+<pre>sudo gem install git-commit-notifier</pre>
+
+After you installed the gem, you need to configure your git repository. Add a File called 
+"post-receive" to the "hooks" directory of your git repository and add this content:
 
 <pre>
-    #!/bin/sh
-    git-commit-notifier path_to_config.yml
+#!/bin/sh
+git-commit-notifier path_to_config.yml
 </pre>
 
-And don't forget to make that file executable. An example for the config-file can be found in __/usr/local/share/git_commit_notifier/config/config.yml__ .
+(Don't forget to make that file executable.)
 
 h1. License
 
