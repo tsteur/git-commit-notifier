@@ -33,12 +33,10 @@ h1. Requirements
 h1. Installing and Configuring
 
 Before installing the Git Commit Notification script, make sure the following 
-Git settings are correct:
+Git settings are configured correctly.
 
 * git config hooks.mailinglist (email address of the recipient, probably your mailing list address)
-* git config hooks.emailprefix (application name, used in email subject)
-
-See <a href="http://github.com/bodo/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a> for overriding these settings.
+* __Optional:__ git config hooks.emailprefix (application name, used in email subject)
 
 Run the automated installation script:
 
@@ -51,8 +49,9 @@ After you installed the gem, you need to configure your git repository. Add a Fi
 #!/bin/sh
 git-commit-notifier path_to_config.yml
 </pre>
-
 (Don't forget to make that file executable.)
+
+An example for the config file can be found in <a href="http://github.com/bodo/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
 
 h1. License
 
