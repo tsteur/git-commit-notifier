@@ -9,17 +9,36 @@ require 'git'
 
 class CommitHook
 
-  def self.run(rev1, rev2, ref_name)
+  def self.show_error(message)
+    puts "************** GIT NOTIFIER PROBLEM *******************"
+    puts "\n"
+    puts message
+    puts "\n"
+    puts "************** GIT NOTIFIER PROBLEM *******************"
+  end
+
+  def self.run(config, rev1, rev2, ref_name)
     project_path = Dir.getwd
     recipient = Git.mailing_list_address
+    
+    if (recipient.nil? || recipient.length == 0)
+      CommitHook.show_error(
+                "Please add a recipient for the emails. Eg : \n" + 
+                "      git config hooks.mailinglist  developer@example.com")
+      return
+    end
+    
     prefix = Git.repo_name
     branch_name = (ref_name =~ /master$/i) ? "" : "/#{ref_name.split("/").last}"
 
-    diff2html = DiffToHtml.new
+    @config = {}
+    @config = YAML::load_file(config) if File.exist?(config)
+
+    diff2html = DiffToHtml.new(Dir.pwd)
     diff2html.diff_between_revisions rev1, rev2, prefix, ref_name
     diff2html.result.reverse.each_with_index do |result, i|
       nr = number(diff2html.result.size, i)
-      emailer = Emailer.new project_path, recipient, result[:commit_info][:email], result[:commit_info][:author],
+      emailer = Emailer.new @config, project_path, recipient, result[:commit_info][:email], result[:commit_info][:author],
                      "[#{prefix}#{branch_name}]#{nr} #{result[:commit_info][:message]}", result[:text_content], result[:html_content], rev1, rev2, ref_name
       emailer.send
     end

@@ -3,9 +3,8 @@ require 'erb'
 
 class Emailer
 
-  def initialize(project_path, recipient, from_address, from_alias, subject, text_message, html_diff, old_rev, new_rev, ref_name)
-    config_file = File.join(File.dirname(THIS_FILE), '../config/email.yml')
-    @config = YAML::load_file(config_file) if File.exist?(config_file)
+  def initialize(config, project_path, recipient, from_address, from_alias, subject, text_message, html_diff, old_rev, new_rev, ref_name)
+    @config = config
     @config ||= {}
     @project_path = project_path
     @recipient = recipient
@@ -35,17 +34,21 @@ class Emailer
 
   def perform_delivery_smtp(content, smtp_settings)
     settings = { }
-    %w(address port domain user_name password authentication).each do |key|
+    %w(address port domain user_name password authentication enable_tls).each do |key|
       val = smtp_settings[key].to_s.empty? ? nil : smtp_settings[key]
       settings.merge!({ key => val})
     end
+      
     Net::SMTP.start(settings['address'], settings['port'], settings['domain'],
                     settings['user_name'], settings['password'], settings['authentication']) do |smtp|
+
+      smtp.enable_tls if settings['enable_tls']
+      
       smtp.open_message_stream(@from_address, [@recipient]) do |f|
         content.each do |line|
           f.puts line
-          end
         end
+      end
     end
   end
 

@@ -10,6 +10,10 @@ class DiffToHtml
   attr_accessor :file_prefix
   attr_reader :result
 
+  def initialize(config_dir = nil)
+    @previous_dir = config_dir
+  end
+
   def range_info(range)
     range.match(/^@@ \-(\d+),\d+ \+(\d+),\d+ @@/)
     left_ln = Integer($1)
@@ -262,7 +266,7 @@ class DiffToHtml
     if defined?(Test::Unit)
       previous_list = []
     else
-      previous_file = (defined?(THIS_FILE) && THIS_FILE) ? File.join(File.dirname(THIS_FILE), "../config/previously.txt") : "/tmp/previously.txt"
+      previous_file = (!@previous_dir.nil? && File.exists?(@previous_dir)) ? File.join(@previous_dir, "previously.txt") : "/tmp/previously.txt"
       previous_list = (File.read(previous_file).to_a.map {|sha| sha.chomp!} if File.exist?(previous_file)) || []
     end
 
