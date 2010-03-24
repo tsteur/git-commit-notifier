@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{git-commit-notifier}
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
-  s.date = %q{2010-01-27}
+  s.date = %q{2010-03-24}
   s.default_executable = %q{git-commit-notifier}
   s.description = %q{This git commit notifier sends html mails with nice diffs for every changed file.}
   s.email = %q{bodo@wannawork.de}
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "bin/git-commit-notifier",
-     "config/email.yml.sample",
+     "config/git-notifier-configl.yml.sample",
      "git-commit-notifier.gemspec",
      "lib/commit_hook.rb",
      "lib/diff_to_html.rb",
@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/bodo/git-commit-notifier}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Sends git commit messages with diffs}
   s.test_files = [
     "test/test_helper.rb",

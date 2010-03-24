@@ -1,6 +1,6 @@
-h1. Git Commit Notifier
+_h1. Git Commit Notifier
 
-<pre>by Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)</pre>
+<pre>by Bodo Tasche (bodo 'at' wannawork 'dot' de), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)</pre>
 
 Sends email commit messages splitting commits that were pushed in one
 step. Email is delivered as text or HTML with changes refined per
@@ -37,12 +37,17 @@ Before installing the Git Commit Notification script, make sure the following Gi
 See /usr/local/share/git_commit_notifier/config/config.yml for overriding these settings
 
 Run the automated installation script:
-  <pre>sudo rake install</pre>
+  <pre>sudo gem install git-commit-notifier</pre>
 
-To update already installed script, use:
-  <pre>sudo rake update</pre>
+After you installed the gem, you need to configure your git repository. Add a File called "post-receive" to the __hooks__
+directory and add this content:
 
-See /usr/local/share/git_commit_notifier/config/config.yml for setting your SMTP server address and some other mail options.
+<pre>
+    #!/bin/sh
+    git-commit-notifier path_to_config.yml
+</pre>
+
+And don't forget to make that file executable. An example for the config-file can be found in __/usr/local/share/git_commit_notifier/config/config.yml__ .
 
 h1. License
 
