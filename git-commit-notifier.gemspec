@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{git-commit-notifier}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "bin/git-commit-notifier",
-     "config/git-notifier-configl.yml.sample",
+     "config/git-notifier-config.yml.sample",
      "git-commit-notifier.gemspec",
      "lib/commit_hook.rb",
      "lib/diff_to_html.rb",
