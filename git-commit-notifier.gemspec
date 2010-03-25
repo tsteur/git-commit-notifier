@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{git-commit-notifier}
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
@@ -35,7 +35,10 @@ Gem::Specification.new do |s|
      "lib/result_processor.rb",
      "template/email.html.erb",
      "template/styles.css",
+     "test/fixtures/git-notifier-ignore-merge.yml",
+     "test/fixtures/git-notifier-with-merge.yml",
      "test/fixtures/git_log",
+     "test/fixtures/git_show_055850e7d925110322b8db4e17c3b840d76e144c",
      "test/fixtures/git_show_51b986619d88f7ba98be7d271188785cbbb541a0",
      "test/fixtures/git_show_a4629e707d80a5769f7a71ca6ed9471015e14dc9",
      "test/fixtures/git_show_dce6ade4cdc2833b53bd600ef10f9bce83c7102d",
