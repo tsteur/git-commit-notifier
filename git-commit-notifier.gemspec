@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
-  s.date = %q{2010-03-24}
+  s.date = %q{2010-03-25}
   s.default_executable = %q{git-commit-notifier}
   s.description = %q{This git commit notifier sends html mails with nice diffs for every changed file.}
   s.email = %q{bodo@wannawork.de}
@@ -65,15 +65,18 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<diff-lcs>, [">= 0"])
       s.add_runtime_dependency(%q<mocha>, [">= 0"])
       s.add_runtime_dependency(%q<hpricot>, [">= 0"])
+      s.add_runtime_dependency(%q<tamtam>, [">= 0"])
     else
       s.add_dependency(%q<diff-lcs>, [">= 0"])
       s.add_dependency(%q<mocha>, [">= 0"])
       s.add_dependency(%q<hpricot>, [">= 0"])
+      s.add_dependency(%q<tamtam>, [">= 0"])
     end
   else
     s.add_dependency(%q<diff-lcs>, [">= 0"])
     s.add_dependency(%q<mocha>, [">= 0"])
     s.add_dependency(%q<hpricot>, [">= 0"])
+    s.add_dependency(%q<tamtam>, [">= 0"])
   end
 end
 

@@ -1,5 +1,6 @@
 require 'yaml'
 require 'erb'
+require 'tamtam'
 
 class Emailer
 
@@ -17,7 +18,7 @@ class Emailer
     @new_rev = new_rev
 
     template = File.join(File.dirname(__FILE__), '/../template/email.html.erb')
-    @html_message = ERB.new(File.read(template)).result(binding)
+    @html_message = TamTam.inline(:document => ERB.new(File.read(template)).result(binding))
   end
 
   def boundary
