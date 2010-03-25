@@ -39,8 +39,17 @@ class CommitHook
 
     diff2html = DiffToHtml.new(Dir.pwd)
     diff2html.diff_between_revisions rev1, rev2, prefix, ref_name
-    diff2html.result.reverse.each_with_index do |result, i|
-      nr = number(diff2html.result.size, i)
+    
+    result = diff2html.result
+
+    if (@config["ignore_merge"])
+      result = result.reject {|result|
+        !result[:commit_info][:merge].nil?
+      }
+    end
+    
+    result.reverse.each_with_index do |result, i|
+      nr = number(result.size, i)
       emailer = Emailer.new @config, project_path, recipient, result[:commit_info][:email], result[:commit_info][:author],
                      "[#{prefix}#{branch_name}]#{nr} #{result[:commit_info][:message]}", result[:text_content], result[:html_content], rev1, rev2, ref_name
       emailer.send

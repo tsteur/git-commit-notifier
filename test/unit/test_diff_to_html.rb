@@ -19,7 +19,7 @@ class DiffToHtmlTest < Test::Unit::TestCase
 
     diff = DiffToHtml.new
     diff.diff_between_revisions REVISIONS.first, REVISIONS.last, 'testproject', 'master'
-    assert_equal 4, diff.result.size # one result for each of the commits
+    assert_equal 5, diff.result.size # one result for each of the commits
 
     diff.result.each do |html|
       assert !html.include?('@@') # diff correctly processed

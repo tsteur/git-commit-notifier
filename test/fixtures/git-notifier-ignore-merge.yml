@@ -1,5 +1,5 @@
 delivery_method: sendmail # smtp or sendmail
-ignore_merge: false # set to true if you want to ignore empty merge messages
+ignore_merge: true # set to true if you want to ignore empty merge messages
 
 smtp_server:
   address: localhost

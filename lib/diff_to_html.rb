@@ -222,6 +222,8 @@ class DiffToHtml
         result[:author], result[:email] = author_name_and_email(line[8..-1])
       elsif line =~ /^Date/
         result[:date] = line[8..-1]
+      elsif line =~ /^Merge/
+        result[:merge] = line[8..-1]
       else
         clean_line = line.strip
         result[:message] << clean_line unless clean_line.empty?
@@ -263,6 +265,8 @@ class DiffToHtml
       commits = log.scan(/^commit\s([a-f0-9]+)/).map{|match| match[0]}
     end
 
+    File.open("test.txt", 'w') {|f| f.write(commits)}
+
     if defined?(Test::Unit)
       previous_list = []
     else
@@ -275,6 +279,7 @@ class DiffToHtml
     File.open(previous_file, "w"){|f| f << current_list.join("\n") } unless current_list.empty? || defined?(Test::Unit)
 
     commits.each_with_index do |commit, i|
+      
       raw_diff = Git.show(commit)
       raise "git show output is empty" if raw_diff.empty?
       @last_raw = raw_diff
