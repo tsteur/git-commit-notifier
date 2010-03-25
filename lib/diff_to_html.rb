@@ -265,8 +265,6 @@ class DiffToHtml
       commits = log.scan(/^commit\s([a-f0-9]+)/).map{|match| match[0]}
     end
 
-    File.open("test.txt", 'w') {|f| f.write(commits)}
-
     if defined?(Test::Unit)
       previous_list = []
     else
