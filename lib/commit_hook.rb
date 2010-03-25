@@ -28,6 +28,9 @@ class CommitHook
       return
     end
     
+    puts "Sending mail..."
+    STDOUT.flush
+    
     prefix = Git.repo_name
     branch_name = (ref_name =~ /master$/i) ? "" : "/#{ref_name.split("/").last}"
 
