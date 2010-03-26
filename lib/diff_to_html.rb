@@ -286,7 +286,7 @@ class DiffToHtml
 
       title = "<div class=\"title\">"
       title += "<strong>Message:</strong> #{message_array_as_html commit_info[:message]}<br />\n"
-      title += "<strong>Commit</strong> #{commit_info[:commit]}<br />\n"
+      title += "<strong>Commit:</strong> #{commit_info[:commit]}<br />\n"
       title += "<strong>Branch:</strong> #{branch}\n<br />" unless branch =~ /\/head/
       title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
       title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n</div>"
