@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{git-commit-notifier}
-  s.version = "0.5.0"
+  s.version = "0.6.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
-  s.date = %q{2010-03-26}
+  s.date = %q{2010-03-29}
   s.default_executable = %q{git-commit-notifier}
   s.description = %q{This git commit notifier sends html mails with nice diffs for every changed file.}
   s.email = %q{bodo@wannawork.de}
