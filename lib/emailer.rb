@@ -5,8 +5,7 @@ require 'tamtam'
 class Emailer
 
   def initialize(config, project_path, recipient, from_address, from_alias, subject, text_message, html_diff, old_rev, new_rev, ref_name)
-    @config = config
-    @config ||= {}
+    @config = config || {}
     @project_path = project_path
     @recipient = recipient
     @from_address = from_address

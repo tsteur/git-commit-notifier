@@ -37,7 +37,7 @@ class CommitHook
     prefix = @config["emailprefix"] || Git.repo_name
     branch_name = (ref_name =~ /master$/i) ? "" : "/#{ref_name.split("/").last}"
 
-    diff2html = DiffToHtml.new(Dir.pwd)
+    diff2html = DiffToHtml.new(Dir.pwd, @config)
     diff2html.diff_between_revisions rev1, rev2, prefix, ref_name
     
     diffresult = diff2html.result

@@ -4,6 +4,8 @@ mailinglist: developers@example.com # recipient for the commit mail
 # Optional parameter for the subject-line of the mail 
 # emailprefix: GIT
 
+link_files: none # Decorates files with link to a webview. Possible values: none or gitweb
+
 delivery_method: sendmail # smtp or sendmail
 
 smtp_server:
@@ -19,4 +21,6 @@ sendmail_options:
   location: /usr/sbin/sendmail
   arguments:
 
-
+gitweb:
+  path: http://developerserver/path_to_gitweb
+  project: test.git

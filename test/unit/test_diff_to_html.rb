@@ -94,4 +94,23 @@ class DiffToHtmlTest < Test::Unit::TestCase
               'key',',',' ','scope'], tokens
   end
 
+  def test_operation_description
+    diff = DiffToHtml.new
+    diff.current_file_name = "file/to/test.yml"
+    assert_equal "<h2>Changed file file/to/test.yml</h2>\n", diff.operation_description
+
+    config = {
+      "link_files" => "gitweb",
+      "gitweb" => {
+        "path" => "http://developerserver/path_to_gitweb", 
+        "project" => "test.git"
+      }
+    }
+
+    diff = DiffToHtml.new(nil, config)
+    diff.current_file_name = "file/to/test.yml"
+    assert_equal "<h2>Changed file <a href='http://developerserver/path_to_gitweb/gitweb?p=test.git;f=file/to/test.yml;hb=head'>file/to/test.yml</a></h2>\n", diff.operation_description
+
+  end
+
 end

@@ -7,11 +7,12 @@ def escape_content(s)
 end
 
 class DiffToHtml
-  attr_accessor :file_prefix
+  attr_accessor :file_prefix, :current_file_name
   attr_reader :result
 
-  def initialize(config_dir = nil)
-    @previous_dir = config_dir
+  def initialize(previous_dir = nil, config = nil)
+    @previous_dir = previous_dir
+    @config = config || {}
   end
 
   def range_info(range)
@@ -107,7 +108,14 @@ class DiffToHtml
     else
       op = "Changed"
     end
-    header = "#{op} #{binary}file #{@current_file_name}"
+    
+    file_name = @current_file_name
+    
+    if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
+      file_name = "<a href='#{@config['gitweb']['path']}/gitweb?p=#{@config['gitweb']['project']};f=#{file_name};hb=head'>#{file_name}</a>"
+    end
+    
+    header = "#{op} #{binary}file #{file_name}"
     "<h2>#{header}</h2>\n"
   end
 
