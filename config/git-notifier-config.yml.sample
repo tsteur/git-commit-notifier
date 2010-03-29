@@ -1,13 +1,19 @@
-ignore_merge: false # set to true if you want to ignore empty merge messages
-mailinglist: developers@example.com # recipient for the commit mail
+# The recipient for the commit:
+mailinglist: developers@example.com 
+
+# set to true if you want to ignore empty merge messages
+ignore_merge: false 
 
 # Optional parameter for the subject-line of the mail 
 # emailprefix: GIT
 
-link_files: none # Decorates files with link to a webview. Possible values: none or gitweb
+# Decorate files with link to a webview. Possible values: none or gitweb
+link_files: none 
 
-delivery_method: sendmail # smtp or sendmail
+# select the delivery method: smtp or sendmail 
+delivery_method: sendmail 
 
+# settings for the smtp server
 smtp_server:
   address: localhost
   port: 25
@@ -17,10 +23,13 @@ smtp_server:
   authentication: plain
   enable_tls: false
 
+# settings for sendmail
 sendmail_options:
   location: /usr/sbin/sendmail
   arguments:
 
+# If link_files is set to "gitweb", you need to configure the path to your gitweb
+# instance and the project name.
 gitweb:
   path: http://developerserver/path_to_gitweb
   project: test.git
