@@ -33,12 +33,6 @@ h1. Requirements
 
 h1. Installing and Configuring
 
-Before installing the Git Commit Notification script, make sure the following 
-Git settings are configured correctly.
-
-* git config hooks.mailinglist (email address of the recipient, probably your mailing list address)
-* __Optional:__ git config hooks.emailprefix (application name, used in email subject)
-
 Install the gem:
 
 <pre>sudo gem install git-commit-notifier</pre>
