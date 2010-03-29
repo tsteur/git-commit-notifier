@@ -1,5 +1,10 @@
-delivery_method: sendmail # smtp or sendmail
 ignore_merge: false # set to true if you want to ignore empty merge messages
+mailinglist: developers@example.com # recipient for the commit mail
+
+# Optional parameter for the subject-line of the mail 
+# emailprefix: GIT
+
+delivery_method: sendmail # smtp or sendmail
 
 smtp_server:
   address: localhost

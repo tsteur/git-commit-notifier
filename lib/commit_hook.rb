@@ -18,8 +18,11 @@ class CommitHook
   end
 
   def self.run(config, rev1, rev2, ref_name)
+    @config = {}
+    @config = YAML::load_file(config) if File.exist?(config)
+
     project_path = Dir.getwd
-    recipient = Git.mailing_list_address
+    recipient = @config["mailinglist"] || Git.mailing_list_address
     
     if (recipient.nil? || recipient.length == 0)
       CommitHook.show_error(
@@ -31,11 +34,8 @@ class CommitHook
     puts "Sending mail..."
     STDOUT.flush
     
-    prefix = Git.repo_name
+    prefix = @config["emailprefix"] || Git.repo_name
     branch_name = (ref_name =~ /master$/i) ? "" : "/#{ref_name.split("/").last}"
-
-    @config = {}
-    @config = YAML::load_file(config) if File.exist?(config)
 
     diff2html = DiffToHtml.new(Dir.pwd)
     diff2html.diff_between_revisions rev1, rev2, prefix, ref_name
