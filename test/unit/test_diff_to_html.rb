@@ -109,7 +109,7 @@ class DiffToHtmlTest < Test::Unit::TestCase
 
     diff = DiffToHtml.new(nil, config)
     diff.current_file_name = "file/to/test.yml"
-    assert_equal "<h2>Changed file <a href='http://developerserver/path_to_gitweb/gitweb?p=test.git;f=file/to/test.yml;hb=head'>file/to/test.yml</a></h2>\n", diff.operation_description
+    assert_equal "<h2>Changed file <a href='http://developerserver/path_to_gitweb?p=test.git;f=file/to/test.yml;hb=HEAD'>file/to/test.yml</a></h2>\n", diff.operation_description
 
   end
 

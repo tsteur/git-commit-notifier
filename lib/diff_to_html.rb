@@ -112,7 +112,7 @@ class DiffToHtml
     file_name = @current_file_name
     
     if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
-      file_name = "<a href='#{@config['gitweb']['path']}/gitweb?p=#{@config['gitweb']['project']};f=#{file_name};hb=head'>#{file_name}</a>"
+      file_name = "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};f=#{file_name};hb=HEAD'>#{file_name}</a>"
     end
     
     header = "#{op} #{binary}file #{file_name}"
