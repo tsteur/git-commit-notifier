@@ -26,7 +26,7 @@ smtp_server:
 # settings for sendmail
 sendmail_options:
   location: /usr/sbin/sendmail
-  arguments:
+  arguments: -i -t
 
 # If link_files is set to "gitweb", you need to configure the path to your gitweb
 # instance and the project name.
