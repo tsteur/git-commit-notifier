@@ -299,8 +299,10 @@ class DiffToHtml
       if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
         title += "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};a=commitdiff;h=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       else
-        title += " #{commit_info[:commit]}<br />\n"
+        title += " #{commit_info[:commit]}"
       end
+      
+      title += "<br />\n"
       
       title += "<strong>Branch:</strong> #{branch}\n<br />" unless branch =~ /\/head/
       title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
