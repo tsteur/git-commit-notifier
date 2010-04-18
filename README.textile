@@ -22,12 +22,12 @@ Example email:
 
 !http://img171.imageshack.us/img171/954/gitcommitnotifieremailpq3.png!
 
-h1. Requirements
+h2. Requirements
 
 * Ruby
 * RubyGems
 
-h1. Installing and Configuring
+h2. Installing and Configuring
 
 Install the gem:
 
@@ -44,6 +44,6 @@ git-commit-notifier path_to_config.yml
 
 An example for the config file can be found in <a href="http://github.com/bodo/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
 
-h1. License
+h2. License
 
 MIT License, see the file LICENSE.
