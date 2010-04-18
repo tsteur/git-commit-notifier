@@ -42,7 +42,7 @@ git-commit-notifier path_to_config.yml
 </pre>
 (Don't forget to make that file executable.)
 
-An example for the config file can be found in <a href="http://github.com/bodo/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
+An example for the config file can be found in <a href="http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
 
 h2. License
 
