@@ -26,10 +26,6 @@ h1. Requirements
 
 * Ruby
 * RubyGems
-* diff/lcs gem
-* SMTP server or sendmail compatible mailer
-* mocha, hpricot gems for testing
-* TamTam for stylesheet inlining. GMail needs this.
 
 h1. Installing and Configuring
 
