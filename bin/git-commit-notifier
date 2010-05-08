@@ -4,11 +4,17 @@ THIS_FILE = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
 $:.unshift File.join(File.dirname(THIS_FILE), "../lib")
 require "commit_hook"
 
-if ARGV.length == 0
+case ARGV.length
+when 0
   CommitHook.show_error("You have to add a path to the config file for git-commit-notifier")
-elsif ARGV.length == 1
-  param = STDIN.gets.strip.split
-  CommitHook.run ARGV[0], param[0], param[1], param[2]
+  puts "Usage:  git-commit-notifier config-script [oldrev newrev [ref]]"
+when 1
+  oldrev, newrev, ref = STDIN.gets.strip.split
+  CommitHook.run ARGV[0], oldrev, newrev, ref
+when 2
+  CommitHook.run ARGV[0], ARGV[1], ARGV[1], ""
+when 3
+  CommitHook.run ARGV[0], ARGV[1], ARGV[2], ""
 else
-  CommitHook.run ARGV[0], ARGV[1], ARGV[2]
+  CommitHook.run ARGV[0], ARGV[1], ARGV[2], ARGV[3]
 end
