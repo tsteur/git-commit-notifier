@@ -110,7 +110,20 @@ class DiffToHtmlTest < Test::Unit::TestCase
     diff = DiffToHtml.new(nil, config)
     diff.current_file_name = "file/to/test.yml"
     assert_equal "<h2>Changed file <a href='http://developerserver/path_to_gitweb?p=test.git;f=file/to/test.yml;hb=HEAD'>file/to/test.yml</a></h2>\n", diff.operation_description
-
   end
 
+  def test_should_correctly_set_line_numbers_on_single_line_add_to_new_file
+    diff = DiffToHtml.new
+    diff.expects(:add_line_to_result).with() { |line, escape| line[:added] == 1 }
+    content = IO.read('test/fixtures/new_file_one_line.txt')
+    result = diff.diff_for_revision(content)
+  end
+
+  def test_should_correctly_set_line_numbers_on_single_line_add_to_existing_file
+    diff = DiffToHtml.new
+    diff.expects(:add_line_to_result).at_least_once
+    diff.expects(:add_line_to_result).at_least_once.with() { |line, escape| line[:added] == 5 && line[:removed] == nil }
+    content = IO.read('test/fixtures/existing_file_one_line.txt')
+    result = diff.diff_for_revision(content)
+  end
 end

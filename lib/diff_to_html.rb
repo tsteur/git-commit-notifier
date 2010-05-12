@@ -16,10 +16,8 @@ class DiffToHtml
   end
 
   def range_info(range)
-    range.match(/^@@ \-(\d+),\d+ \+(\d+),\d+ @@/)
-    left_ln = Integer($1)
-    right_ln = Integer($2)
-    return left_ln, right_ln
+    matches = range.match(/^@@ \-(\S+) \+(\S+)/)
+    return matches[1..2].map { |m| m.split(',')[0].to_i }
   end
 
   def line_class(line)
