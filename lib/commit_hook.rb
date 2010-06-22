@@ -49,12 +49,12 @@ class CommitHook
     end
 
     if (@config["group_email_by_push"])
-      text, html = '', ''
-      diffresult.reverse.each_with_index do |result, i|
-        text << "\n---------------------------------\n\n#{result[:text_content]}"
-        html << "<br /><hr /><br />#{result[:html_content]}"
+      text, html = [], []
+      diffresult.each_with_index do |result, i|
+        text << result[:text_content]
+        html << result[:html_content]
       end
-      result = diffresult.last
+      result = diffresult.first
       emailer = Emailer.new(
         @config,
         project_path,
@@ -62,8 +62,8 @@ class CommitHook
         result[:commit_info][:email],
         result[:commit_info][:author],
         "[#{prefix}#{branch_name}] #{result[:commit_info][:message]}",
-        text,
-        html,
+        text.join("\n------------------------------------------\n\n"),
+        html.join("<hr /><br />"),
         rev1,
         rev2,
         ref_name
