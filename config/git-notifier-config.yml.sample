@@ -13,6 +13,9 @@ link_files: none
 # select the delivery method: smtp or sendmail 
 delivery_method: sendmail 
 
+# Optionally group email by push: don't send an email for each commit when true.
+# group_email_by_push: false
+
 # settings for the smtp server
 smtp_server:
   address: localhost

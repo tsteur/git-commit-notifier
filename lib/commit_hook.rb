@@ -47,12 +47,46 @@ class CommitHook
         !result[:commit_info][:merge].nil?
       }
     end
-    
-    diffresult.reverse.each_with_index do |result, i|
-      nr = number(diffresult.size, i)
-      emailer = Emailer.new @config, project_path, recipient, result[:commit_info][:email], result[:commit_info][:author],
-                     "[#{prefix}#{branch_name}]#{nr} #{result[:commit_info][:message]}", result[:text_content], result[:html_content], rev1, rev2, ref_name
+
+    if (@config["group_email_by_push"])
+      text, html = '', ''
+      diffresult.reverse.each_with_index do |result, i|
+        text << "\n---------------------------------\n\n#{result[:text_content]}"
+        html << "<br /><hr /><br />#{result[:html_content]}"
+      end
+      result = diffresult.last
+      emailer = Emailer.new(
+        @config,
+        project_path,
+        recipient,
+        result[:commit_info][:email],
+        result[:commit_info][:author],
+        "[#{prefix}#{branch_name}] #{result[:commit_info][:message]}",
+        text,
+        html,
+        rev1,
+        rev2,
+        ref_name
+      )
       emailer.send
+    else
+      diffresult.reverse.each_with_index do |result, i|
+        nr = number(diffresult.size, i)
+        emailer = Emailer.new(
+          @config,
+          project_path,
+          recipient,
+          result[:commit_info][:email],
+          result[:commit_info][:author],
+          "[#{prefix}#{branch_name}]#{nr} #{result[:commit_info][:message]}",
+          result[:text_content],
+          result[:html_content],
+          rev1,
+          rev2,
+          ref_name
+        )
+        emailer.send
+      end
     end
   end
 
