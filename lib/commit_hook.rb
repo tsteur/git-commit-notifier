@@ -61,7 +61,7 @@ class CommitHook
         recipient,
         result[:commit_info][:email],
         result[:commit_info][:author],
-        "[#{prefix}#{branch_name}] #{result[:commit_info][:message]}",
+        "[#{prefix}#{branch_name}] #{diffresult.size > 1 ? "#{diffresult.size} commits: " : ''}#{result[:commit_info][:message]}",
         text.join("\n------------------------------------------\n\n"),
         html.join("<hr /><br />"),
         rev1,
