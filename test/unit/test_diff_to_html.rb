@@ -94,7 +94,7 @@ class DiffToHtmlTest < Test::Unit::TestCase
               'key',',',' ','scope'], tokens
   end
 
-  def test_operation_description
+  def test_gitweb_operation_description
     diff = DiffToHtml.new
     diff.current_file_name = "file/to/test.yml"
     assert_equal "<h2>Changed file file/to/test.yml</h2>\n", diff.operation_description
@@ -110,6 +110,25 @@ class DiffToHtmlTest < Test::Unit::TestCase
     diff = DiffToHtml.new(nil, config)
     diff.current_file_name = "file/to/test.yml"
     assert_equal "<h2>Changed file <a href='http://developerserver/path_to_gitweb?p=test.git;f=file/to/test.yml;hb=HEAD'>file/to/test.yml</a></h2>\n", diff.operation_description
+  end
+
+  def test_gitorious_operation_description
+    diff = DiffToHtml.new
+    diff.current_file_name = "file/to/test.yml"
+    assert_equal "<h2>Changed file file/to/test.yml</h2>\n", diff.operation_description
+
+    config = {
+      "link_files" => "gitorious",
+      "gitorious" => {
+        "path" => "http://example.com/gitorious", 
+        "project" => "tests",
+        "repository" => "test",
+      }
+    }
+
+    diff = DiffToHtml.new(nil, config)
+    diff.current_file_name = "file/to/test.yml"
+    assert_equal "<h2>Changed file <a href='http://example.com/gitorious/tests/test/blobs/HEAD/file/to/test.yml'>file/to/test.yml</a></h2>\n", diff.operation_description
   end
 
   def test_should_correctly_set_line_numbers_on_single_line_add_to_new_file
