@@ -111,6 +111,8 @@ class DiffToHtml
     
     if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
       file_name = "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};f=#{file_name};hb=HEAD'>#{file_name}</a>"
+    elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
+      file_name = "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/blobs/HEAD/#{file_name}'>#{file_name}</a>"
     end
     
     header = "#{op} #{binary}file #{file_name}"
@@ -296,6 +298,8 @@ class DiffToHtml
       
       if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
         title += "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};a=commitdiff;h=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+      elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
+        title += "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/commit/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       else
         title += " #{commit_info[:commit]}"
       end
