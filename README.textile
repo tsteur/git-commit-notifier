@@ -44,6 +44,17 @@ git-commit-notifier path_to_config.yml
 
 An example for the config file can be found in <a href="http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
 
+h2. Integration of links to other software
+
+This product supports easy integration with Redmine, Bugzilla and
+MediaWiki as You can see in example of the config file.
+
+But if you need integration with any other software use message_map property.
+
+Every key of message_map is case sensitive Regexp pattern,
+and its value is replacement string.
+Backreferences supported through \1-\9 expressions.
+
 h2. Note on Patches/Pull Requests
  
 * Fork the project.
