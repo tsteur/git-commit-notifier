@@ -145,4 +145,11 @@ class DiffToHtmlTest < Test::Unit::TestCase
     content = IO.read('test/fixtures/existing_file_one_line.txt')
     result = diff.diff_for_revision(content)
   end
+
+  def test_message_map_should_correctly_rework_message
+    diff = DiffToHtml.new(nil, 'message_map' => {
+      '\brefs\s*\#(\d+)' => 'http://redmine.example.com/issues/show/\1'
+    })
+    assert_equal 'Draft design <a href="http://redmine.example.com/issues/show/5654">refs #5654</a>', diff.message_map('Draft design refs #5654')
+  end
 end
