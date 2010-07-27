@@ -9,7 +9,7 @@ end
 class DiffToHtml
   INTEGRATION_MAP = {
     :mediawiki => { :search_for => /\[\[([^\[\]]+)\]\]/, :replace_with => '#{url}/\1' },
-    :redmine => { :search_for => /\brefs\s*\#(\d+)/i, :replace_with => '#{url}/issues/show/\1' },
+    :redmine => { :search_for => /\b(?:refs|fixes)\s*\#(\d+)/i, :replace_with => '#{url}/issues/show/\1' },
     :bugzilla => { :search_for => /\bBUG\s*(\d+)/i, :replace_with => '#{url}/show_bug.cgi?id=\1' }
   }.freeze
   
