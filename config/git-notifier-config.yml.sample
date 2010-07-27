@@ -7,7 +7,7 @@ ignore_merge: false
 # Optional parameter for the subject-line of the mail 
 # emailprefix: GIT
 
-# Decorate files with link to a webview. Possible values: none or gitweb
+# Decorate files with link to a webview. Possible values: none, gitweb or gitorious
 link_files: none 
 
 # select the delivery method: smtp or sendmail 
@@ -31,8 +31,20 @@ sendmail_options:
   location: /usr/sbin/sendmail
   arguments: -i -t
 
+# commit message URL map
+message_map:
+  '\brefs\s*\#(\d+)': 'http://example.com/redmine/issues/show/\1'
+
 # If link_files is set to "gitweb", you need to configure the path to your gitweb
 # instance and the project name.
 gitweb:
   path: http://developerserver/path_to_gitweb
   project: test.git
+
+# If link_files is set to "gitorious", you need to configure the path to your gitorious
+# instance, the project name and the repository name.
+gitorious:
+  path: http://example.com/path_to_gitorious
+  project: backend
+  repository: sql-scripts
+
