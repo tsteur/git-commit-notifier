@@ -35,6 +35,11 @@ sendmail_options:
 message_map:
   '\brefs\s*\#(\d+)': 'http://example.com/redmine/issues/show/\1'
 
+message_integration:
+  mediawiki: http://example.com/wiki # will rework [[text]] to MediaWiki pages
+  redmine: http://redmine.example.com # will rework refs #123 to Redmine issues
+  bugzilla: http://bz.example.com # will rework BUG 123 to Bugzilla bugs
+
 # If link_files is set to "gitweb", you need to configure the path to your gitweb
 # instance and the project name.
 gitweb:
