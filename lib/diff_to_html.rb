@@ -241,7 +241,7 @@ class DiffToHtml
   end
 
   def message_array_as_html(message)
-    message.collect { |m| CGI.escapeHTML(m)}.join("<br />")
+    message_map(message.collect { |m| CGI.escapeHTML(m)}.join("<br />"))
   end
 
   def author_name_and_email(info)
@@ -318,6 +318,16 @@ class DiffToHtml
       commit_info[:message] = first_sentence(commit_info[:message])
       @result << {:commit_info => commit_info, :html_content => html, :text_content => text }
     end
+  end
+
+  def message_map(message)
+    if @config.include?('message_map')
+      @config['message_map'].each_pair do |search_for, replace_with|
+        full_replace_with = "<a href=\"#{replace_with}\">\\0</a>"
+        message.gsub!(Regexp.new(search_for), full_replace_with)
+      end
+    end
+    message
   end
 end
 
