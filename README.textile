@@ -51,9 +51,8 @@ MediaWiki as You can see in example of the config file.
 
 But if you need integration with any other software use message_map property.
 
-Every key of message_map is case sensitive Regexp pattern,
-and its value is replacement string.
-Backreferences supported through \1-\9 expressions.
+Every key of message_map is a case sensitive Regexp pattern, and its value is the replacement 
+string. Backreferences supported through \1-\9 expressions.
 
 h2. Note on Patches/Pull Requests
  
