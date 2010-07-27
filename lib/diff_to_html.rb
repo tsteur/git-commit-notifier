@@ -7,6 +7,12 @@ def escape_content(s)
 end
 
 class DiffToHtml
+  INTEGRATION_MAP = {
+    :mediawiki => { :search_for => /\[\[([^\[\]]+)\]\]/, :replace_with => '#{url}/\1' },
+    :redmine => { :search_for => /\brefs\s*\#(\d+)/i, :replace_with => '#{url}/issues/show/\1' },
+    :bugzilla => { :search_for => /\bBUG\s*(\d+)/i, :replace_with => '#{url}/show_bug.cgi?id=\1' }
+  }.freeze
+  
   attr_accessor :file_prefix, :current_file_name
   attr_reader :result
 
@@ -320,11 +326,22 @@ class DiffToHtml
     end
   end
 
+  def message_replace!(message, search_for, replace_with)
+    full_replace_with = "<a href=\"#{replace_with}\">\\0</a>"
+    message.gsub!(Regexp.new(search_for), full_replace_with)
+  end
+
   def message_map(message)
+    if @config.include?('message_integration')
+      @config['message_integration'].each_pair do |pm, url|
+        pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
+        replace_with = pm_def[:replace_with].gsub('#{url}', url)
+        message_replace!(message, pm_def[:search_for], replace_with)
+      end
+    end
     if @config.include?('message_map')
       @config['message_map'].each_pair do |search_for, replace_with|
-        full_replace_with = "<a href=\"#{replace_with}\">\\0</a>"
-        message.gsub!(Regexp.new(search_for), full_replace_with)
+        message_replace!(message, Regexp.new(search_for), replace_with)
       end
     end
     message

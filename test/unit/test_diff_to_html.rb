@@ -149,7 +149,12 @@ class DiffToHtmlTest < Test::Unit::TestCase
   def test_message_map_should_correctly_rework_message
     diff = DiffToHtml.new(nil, 'message_map' => {
       '\brefs\s*\#(\d+)' => 'http://redmine.example.com/issues/show/\1'
+    }, 'message_integration' => {
+      'bugzilla' => 'http://bugzilla.example.com'
     })
-    assert_equal 'Draft design <a href="http://redmine.example.com/issues/show/5654">refs #5654</a>', diff.message_map('Draft design refs #5654')
+    assert_equal(
+      '<a href="http://bugzilla.example.com/show_bug.cgi?id=15">BUG 15</a>. Draft design <a href="http://redmine.example.com/issues/show/5654">refs #5654</a>', 
+      diff.message_map('BUG 15. Draft design refs #5654')
+    )
   end
 end
