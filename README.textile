@@ -59,10 +59,9 @@ h2. Integration of links to other software
 
 If you need integration with any other software use message_map property.
 
-Each key of message_map is a case sensitive Regexp pattern, and its value is the replacement 
-string. Backreferences to match groups of given Regexp supported through \1-\9 expressions.
+Each key of message_map is a case sensitive Regexp pattern, and its value is the replacement string. Backreferences to match groups of given Regexp supported through \1-\9 expressions.
 
-See also http://ruby-doc.org/core/classes/String.html#M000817 and in example of the config file.
+See also <a href="http://ruby-doc.org/core/classes/String.html#M000817">Ruby String#gsub documentation</a> and example of the config file.
 
 h2. Note on Patches/Pull Requests
  
