@@ -35,7 +35,7 @@ sendmail_options:
 message_map:
 #  '\brefs\s*\#(\d+)': 'http://example.com/redmine/issues/show/\1'
 
-# Uncomment abd update links if you want to create links in your commit text
+# Uncomment and update links if you want to create links in your commit text
 message_integration:
 #  mediawiki: http://example.com/wiki # will rework [[text]] to MediaWiki pages
 #  redmine: http://redmine.example.com # will rework refs #123 to Redmine issues
