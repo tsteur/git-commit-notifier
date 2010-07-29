@@ -63,13 +63,13 @@ class Emailer
       f.flush
     end
   end
-
+  
   def send
-    from = @from_alias.empty? ? @from_address : "#{@from_alias} <#{@from_address}>"
+    from = quote_if_necessary(@from_alias.empty? ? @from_address : "#{@from_alias} <#{@from_address}>", 'utf-8')
     content = ["From: #{from}",
         "Reply-To: #{from}",
-        "To: #{@recipient}",
-        "Subject: #{@subject}",
+        "To: #{quote_if_necessary(@recipient, 'utf-8')}",
+        "Subject: #{quote_if_necessary(@subject, 'utf-8')}",
         "X-Git-Refname: #{@ref_name}",
         "X-Git-Oldrev: #{@old_rev}",
         "X-Git-Newrev: #{@new_rev}",
@@ -99,4 +99,33 @@ class Emailer
     end
   end
 
+  # Convert the given text into quoted printable format, with an instruction
+  # that the text be eventually interpreted in the given charset.
+  def quoted_printable(text, charset)
+    text = text.gsub( /[^a-z ]/i ) { quoted_printable_encode($&) }.
+                gsub( / /, "_" )
+    "=?#{charset}?Q?#{text}?="
+  end
+
+  # Convert the given character to quoted printable format, taking into
+  # account multi-byte characters (if executing with $KCODE="u", for instance)
+  def quoted_printable_encode(character)
+    result = ""
+    character.each_byte { |b| result << "=%02X" % b }
+    result
+  end
+
+  # A quick-and-dirty regexp for determining whether a string contains any
+  # characters that need escaping.
+  CHARS_NEEDING_QUOTING = /[\000-\011\013\014\016-\037\177-\377]/
+
+  # Quote the given text if it contains any "illegal" characters
+  def quote_if_necessary(text, charset)
+    text = text.dup.force_encoding(Encoding::ASCII_8BIT) if text.respond_to?(:force_encoding)
+
+    (text =~ CHARS_NEEDING_QUOTING) ?
+      quoted_printable(text, charset) :
+      text
+  end
 end
+
