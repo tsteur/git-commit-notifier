@@ -293,7 +293,7 @@ class DiffToHtml
     if defined?(Test::Unit)
       previous_list = []
     else
-      previous_file = (defined?(THIS_FILE) && THIS_FILE) ? File.join(File.dirname(THIS_FILE), "../config/previously.txt") : "/tmp/previously.txt"
+      previous_file = (!@previous_dir.nil? && File.exists?(@previous_dir)) ? File.join(@previous_dir, "previously.txt") : "/tmp/previously.txt"
       previous_list = (File.read(previous_file).to_a.map {|sha| sha.chomp!} if File.exist?(previous_file)) || []
     end
 
@@ -302,6 +302,7 @@ class DiffToHtml
     File.open(previous_file, "w"){|f| f << current_list.join("\n") } unless current_list.empty? || defined?(Test::Unit)
 
     commits.each_with_index do |commit, i|
+      
       raw_diff = Git.show(commit)
       raise "git show output is empty" if raw_diff.empty?
       @last_raw = raw_diff
