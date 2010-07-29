@@ -55,6 +55,7 @@ class CommitHook
         html << result[:html_content]
       end
       result = diffresult.first
+      return unless result[:commit_info]
       emailer = Emailer.new(
         @config,
         project_path,
@@ -71,6 +72,7 @@ class CommitHook
       emailer.send
     else
       diffresult.reverse.each_with_index do |result, i|
+        next unless result[:commit_info]
         nr = number(diffresult.size, i)
         emailer = Emailer.new(
           @config,
@@ -93,7 +95,7 @@ class CommitHook
   def self.number(total_entries, i)
     return '' if total_entries <= 1
     digits = total_entries < 10 ? 1 : 3
-    '[' + sprintf("%0#{digits}d", i) + ']'
+    '[' + sprintf("%0#{digits}d", i + 1) + ']'
   end
 
 end
