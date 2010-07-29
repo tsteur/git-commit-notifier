@@ -10,6 +10,9 @@ ignore_merge: false
 # Decorate files with link to a webview. Possible values: none, gitweb or gitorious
 link_files: none 
 
+# Limit lines per diff
+# lines_per_diff: 300
+
 # select the delivery method: smtp or sendmail 
 delivery_method: sendmail 
 

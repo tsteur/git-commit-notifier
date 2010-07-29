@@ -19,6 +19,7 @@ class DiffToHtml
   def initialize(previous_dir = nil, config = nil)
     @previous_dir = previous_dir
     @config = config || {}
+    @lines_added = 0
   end
 
   def range_info(range)
@@ -44,6 +45,16 @@ class DiffToHtml
   end
 
   def add_line_to_result(line, escape)
+    @lines_added += 1
+    lines_per_diff = @config['lines_per_diff']
+    if lines_per_diff
+      if @lines_added == lines_per_diff
+        @diff_result << '<tr><td colspan="3">Diff too large and stripped&hellip;</td></tr>'
+      end
+      if @lines_added >= lines_per_diff
+        return
+      end
+    end
     klass = line_class(line)
     content = escape ? escape_content(line[:content]) : line[:content]
     padding = '&nbsp;' if klass != ''
