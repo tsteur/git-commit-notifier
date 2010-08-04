@@ -64,6 +64,15 @@ h2. Note on Patches/Pull Requests
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
+h2. Troubleshooting
+
+h3 Permission denied - /var/git/repo/previously.txt (Errno::EACCES)
+
+The file __previously.txt__ is created at the first commit. If you moved the file to the server, you have to check the rights to that file and fix them if needed.
+
+    sudo touch /var/git/repo/previously.txt
+    sudo chmod a+x /var/git/repo/previously.txt
+
 h2. License
 
 MIT License, see the file LICENSE.
