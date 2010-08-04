@@ -70,8 +70,8 @@ h3 Permission denied - /var/git/repo/previously.txt (Errno::EACCES)
 
 The file __previously.txt__ is created at the first commit. If you moved the file to the server, you have to check the rights to that file and fix them if needed.
 
-    sudo touch /var/git/repo/previously.txt
-    sudo chmod a+x /var/git/repo/previously.txt
+<pre>sudo touch /var/git/repo/previously.txt
+sudo chmod a+x /var/git/repo/previously.txt</pre>
 
 h2. License
 
