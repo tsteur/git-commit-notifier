@@ -7,9 +7,6 @@ ignore_merge: false
 # Optional parameter for the subject-line of the mail 
 # emailprefix: GIT
 
-# Decorate files with link to a webview. Possible values: none, gitweb or gitorious
-link_files: none 
-
 # Limit lines per diff
 # lines_per_diff: 300
 
@@ -34,15 +31,8 @@ sendmail_options:
   location: /usr/sbin/sendmail
   arguments: -i -t
 
-# commit message URL map
-message_map:
-#  '\brefs\s*\#(\d+)': 'http://example.com/redmine/issues/show/\1'
-
-# Uncomment if you want to create links in your commit text
-message_integration:
-#  mediawiki: http://example.com/wiki # will rework [[text]] to MediaWiki pages
-#  redmine: http://redmine.example.com # will rework refs #123 to Redmine issues
-#  bugzilla: http://bz.example.com # will rework BUG 123 to Bugzilla bugs
+# Decorate files with link to a webview. Possible values: none, gitweb or gitorious
+link_files: none 
 
 # If link_files is set to "gitweb", you need to configure the path to your gitweb
 # instance and the project name.
@@ -57,3 +47,12 @@ gitorious:
   project: backend
   repository: sql-scripts
 
+# commit message URL map
+message_map:
+#  '\brefs\s*\#(\d+)': 'http://example.com/redmine/issues/show/\1'
+
+# Uncomment if you want to create links in your commit text
+message_integration:
+#  mediawiki: http://example.com/wiki # will rework [[text]] to MediaWiki pages
+#  redmine: http://redmine.example.com # will rework refs #123 to Redmine issues
+#  bugzilla: http://bz.example.com # will rework BUG 123 to Bugzilla bugs
