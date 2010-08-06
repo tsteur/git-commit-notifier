@@ -59,9 +59,18 @@ h2. Integration of links to other software
 
 If you need integration with any other software use message_map property.
 
-Each key of message_map is a case sensitive Regexp pattern, and its value is the replacement string. Backreferences to match groups of given Regexp supported through \1-\9 expressions.
+You need to know basics of regular expressions syntax.
 
-See also <a href="http://ruby-doc.org/core/classes/String.html#M000817">Ruby String#gsub documentation</a> and example of the config file.
+Each key of message_map is a case sensitive Regexp pattern, and its value is the replacement string. 
+Every matched group (that defined by round brackets in regular expression) will be automatically substituted instead of \1-\9 backreferences in replacement string where number after backslash informs which group should be substituted instead of backreference. First matched group known as \1.
+
+For example, when we need to expand "follow 23" to http://example.com/answer/23, simply type this:
+
+'\bfollow\s+(\d+)': 'http://example.com/answer/\1'
+
+As you see, key and value were enclosed into single quotes. \b means that "follow" must not be preceded by other word chars, so "befollow" will not match but "be follow" will match. After "follow" we expect onw or more spaces followed by group of one or more digits. Resulting url contains \1 that will be replaced with matched group of digits.
+
+See also example of the config file.
 
 h2. Note on Patches/Pull Requests
  
