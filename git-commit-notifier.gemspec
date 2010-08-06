@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
-  s.date = %q{2010-05-08}
+  s.date = %q{2010-08-06}
   s.default_executable = %q{git-commit-notifier}
   s.description = %q{This git commit notifier sends html mails with nice diffs for every changed file.}
   s.email = %q{bodo@wannawork.de}
@@ -35,6 +35,8 @@ Gem::Specification.new do |s|
      "lib/result_processor.rb",
      "template/email.html.erb",
      "template/styles.css",
+     "test/fixtures/existing_file_one_line.txt",
+     "test/fixtures/git-notifier-group-email-by-push.yml",
      "test/fixtures/git-notifier-ignore-merge.yml",
      "test/fixtures/git-notifier-with-merge.yml",
      "test/fixtures/git_log",
@@ -43,6 +45,7 @@ Gem::Specification.new do |s|
      "test/fixtures/git_show_a4629e707d80a5769f7a71ca6ed9471015e14dc9",
      "test/fixtures/git_show_dce6ade4cdc2833b53bd600ef10f9bce83c7102d",
      "test/fixtures/git_show_e28ad77bba0574241e6eb64dfd0c1291b221effe",
+     "test/fixtures/new_file_one_line.txt",
      "test/test_helper.rb",
      "test/unit/test_commit_hook.rb",
      "test/unit/test_diff_to_html.rb",
@@ -51,7 +54,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/bodo/git-commit-notifier}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Sends git commit messages with diffs}
   s.test_files = [
     "test/test_helper.rb",
@@ -64,7 +67,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<diff-lcs>, [">= 0"])
       s.add_runtime_dependency(%q<mocha>, [">= 0"])
       s.add_runtime_dependency(%q<hpricot>, [">= 0"])
