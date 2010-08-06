@@ -44,15 +44,28 @@ git-commit-notifier path_to_config.yml
 
 An example for the config file can be found in <a href="http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
 
-h2. Integration of links to other software
+h2. Integration with Redmine, Bugzilla, MediaWiki
 
-This product supports easy integration with Redmine, Bugzilla and
-MediaWiki as You can see in example of the config file.
+Git-commit-notifier supports easy integration with Redmine, Bugzilla and MediaWiki. All you need is to uncomment the according line in the configuration and change the links to your software installations instead of example ones (no trailing slash please).
 
-But if you need integration with any other software use message_map property.
+* "BUG 123" sentence in commit message will be replaced with link to bug in Bugzilla.
+* "refs #123" and "fixes #123" sentences in commit message will be replaced with link to issue in Redmine.
+* "[[SomePage]]" sentence in commit message will be replaced with link to page in MediaWiki.
 
-Every key of message_map is a case sensitive Regexp pattern, and its value is the replacement 
-string. Backreferences supported through \1-\9 expressions.
+h2. Integration of links to other websites
+
+If you need integration with other websites not supported by git-commit-notifier you can use the message_map property. For that you need to know basics of regular expressions syntax.
+
+Each key of message_map is a case sensitive Regexp pattern, and its value is the replacement string. 
+Every matched group (that defined by round brackets in regular expression) will be automatically substituted instead of \1-\9 backreferences in replacement string where number after backslash informs which group should be substituted instead of the backreference. The first matched group is known as \1.
+
+For example, when we need to expand "follow 23" to http://example.com/answer/23, simply type this:
+
+'\bfollow\s+(\d+)': 'http://example.com/answer/\1'
+
+Key and value are enclosed into single quotes. \b means that "follow" must not be preceded by other word chars, so "befollow" will not match but "be follow" will match. After "follow" we expect one or more spaces followed by group of one or more digits. The \1 in the result url will be replaced with the matched group.
+
+More examples can be found in the config file.
 
 h2. Note on Patches/Pull Requests
  
