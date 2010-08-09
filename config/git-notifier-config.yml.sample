@@ -31,7 +31,7 @@ sendmail_options:
   location: /usr/sbin/sendmail
   arguments: -i -t
 
-# Decorate files with link to a webview. Possible values: none, gitweb or gitorious
+# Decorate files and commit ids with link to a webview. Possible values: none, gitweb or gitorious
 link_files: none 
 
 # If link_files is set to "gitweb", you need to configure the path to your gitweb
