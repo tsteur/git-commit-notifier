@@ -31,7 +31,7 @@ sendmail_options:
   location: /usr/sbin/sendmail
   arguments: -i -t
 
-# Decorate files and commit ids with link to a webview. Possible values: none, gitweb or gitorious
+# Decorate files and commit ids with link to a webview. Possible values: none, gitweb, gitorious or trac
 link_files: none 
 
 # If link_files is set to "gitweb", you need to configure the path to your gitweb
@@ -46,6 +46,11 @@ gitorious:
   path: http://example.com/path_to_gitorious
   project: backend
   repository: sql-scripts
+
+# If link_files is set to "trac", you need to configure the path to your trac
+# instance
+trac:
+  path: http://example.com/changeset
 
 # commit message URL map
 message_map:
