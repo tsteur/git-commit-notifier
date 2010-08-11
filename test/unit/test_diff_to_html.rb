@@ -107,10 +107,18 @@ class DiffToHtmlTest < Test::Unit::TestCase
       }
     }
 
+    path = File.dirname(__FILE__) + '/../fixtures/'
+    Git.expects(:log).never
+    Git.expects(:show).with(REVISIONS.first).returns(read_file(path + 'git_show_' + REVISIONS.first))
+
     diff = DiffToHtml.new(nil, config)
     diff.current_file_name = "file/to/test.yml"
     assert_equal "<h2>Changed file <a href='http://developerserver/path_to_gitweb?p=test.git;f=file/to/test.yml;hb=HEAD'>file/to/test.yml</a></h2>\n", diff.operation_description
-  end
+
+    diff.diff_between_revisions REVISIONS.first, REVISIONS.first, 'testproject', 'master'
+    hp = diff.result.first[:html_content]
+    assert hp.include?("<a href='http://developerserver/path_to_gitweb?p=test.git;a=commitdiff;h=e28ad77bba0574241e6eb64dfd0c1291b221effe'>e28ad77bba0574241e6eb64dfd0c1291b221effe</a>")
+   end
 
   def test_gitorious_operation_description
     diff = DiffToHtml.new
@@ -125,10 +133,36 @@ class DiffToHtmlTest < Test::Unit::TestCase
         "repository" => "test",
       }
     }
+    
+    path = File.dirname(__FILE__) + '/../fixtures/'
+    Git.expects(:log).never
+    Git.expects(:show).with(REVISIONS.first).returns(read_file(path + 'git_show_' + REVISIONS.first))
 
     diff = DiffToHtml.new(nil, config)
     diff.current_file_name = "file/to/test.yml"
     assert_equal "<h2>Changed file <a href='http://example.com/gitorious/tests/test/blobs/HEAD/file/to/test.yml'>file/to/test.yml</a></h2>\n", diff.operation_description
+    
+    diff.diff_between_revisions REVISIONS.first, REVISIONS.first, 'testproject', 'master'
+    hp = diff.result.first[:html_content]
+    assert hp.include?("<a href='http://example.com/gitorious/tests/test/commit/e28ad77bba0574241e6eb64dfd0c1291b221effe'>e28ad77bba0574241e6eb64dfd0c1291b221effe</a>")
+  end
+
+  def test_trac_operation_description
+    config = {
+      "link_files" => "trac",
+      "trac" => {
+        "path" => "http://example.com/changeset" 
+      }
+    }
+
+    path = File.dirname(__FILE__) + '/../fixtures/'
+    Git.expects(:log).never
+    Git.expects(:show).with(REVISIONS.first).returns(read_file(path + 'git_show_' + REVISIONS.first))
+
+    diff = DiffToHtml.new(nil, config)
+    diff.diff_between_revisions REVISIONS.first, REVISIONS.first, 'testproject', 'master'
+    hp = diff.result.first[:html_content]
+    assert hp.include?("<a href='http://example.com/changeset/e28ad77bba0574241e6eb64dfd0c1291b221effe'>e28ad77bba0574241e6eb64dfd0c1291b221effe</a>")
   end
 
   def test_should_correctly_set_line_numbers_on_single_line_add_to_new_file
