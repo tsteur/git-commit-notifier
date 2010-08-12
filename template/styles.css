@@ -6,5 +6,5 @@ table {width:100%;border-collapse:collapse}
 .a {background-color: #dfd;}
 .aa {background-color: #afa;}
 .title {background-color: #ddd; padding: 10px;font-family:Verdana;font-size:12px;}
-tr {color:#000;font-family: "Bitstream Vera Sans Mono","Monaco","Courier",monospace}
+td {color:#000;font-family: "Bitstream Vera Sans Mono","Monaco","Courier",monospace}
 .ln {background-color: #ccc; width:23px; text-align:right}
