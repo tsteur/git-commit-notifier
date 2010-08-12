@@ -317,6 +317,8 @@ class DiffToHtml
         title += "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};a=commitdiff;h=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
         title += "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/commit/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+      elsif (@config["link_files"] && @config["link_files"] == "trac" && @config["trac"])
+        title += "<a href='#{@config['trac']['path']}/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       else
         title += " #{commit_info[:commit]}"
       end
