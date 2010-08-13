@@ -70,6 +70,7 @@ class Emailer
         "Reply-To: #{from}",
         "To: #{quote_if_necessary(@recipient, 'utf-8')}",
         "Subject: #{quote_if_necessary(@subject, 'utf-8')}",
+        "X-Mailer: git-commit-notifier",
         "X-Git-Refname: #{@ref_name}",
         "X-Git-Oldrev: #{@old_rev}",
         "X-Git-Newrev: #{@new_rev}",
