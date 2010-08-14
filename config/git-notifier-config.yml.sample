@@ -10,8 +10,14 @@ ignore_merge: false
 # Limit lines per diff
 # lines_per_diff: 300
 
+# Limit lines per diff
+# lines_per_diff: 300
+
 # select the delivery method: smtp or sendmail 
 delivery_method: sendmail 
+
+# stylesheet file (embedded template/styles.css by default)
+# stylesheet: /absolute/path/to/readable/stylesheet.css
 
 # Optionally group email by push: don't send an email for each commit when true.
 # group_email_by_push: false
