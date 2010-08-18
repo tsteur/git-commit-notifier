@@ -294,11 +294,11 @@ class DiffToHtml
       previous_list = []
     else
       previous_file = (!@previous_dir.nil? && File.exists?(@previous_dir)) ? File.join(@previous_dir, "previously.txt") : "/tmp/previously.txt"
-      previous_list = (File.read(previous_file).to_a.map {|sha| sha.chomp!} if File.exist?(previous_file)) || []
+      previous_list = (File.read(previous_file).to_a.map { |sha| sha.chomp }.compact.uniq if File.exist?(previous_file)) || []
     end
 
     commits.reject!{|c| c.find{|sha| previous_list.include?(sha)} }
-    current_list = (previous_list + commits.flatten).last(1000)
+    current_list = (previous_list + commits.flatten).last(10000)
     File.open(previous_file, "w"){|f| f << current_list.join("\n") } unless current_list.empty? || defined?(Test::Unit)
 
     commits.each_with_index do |commit, i|
