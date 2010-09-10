@@ -70,7 +70,7 @@ class DiffToHtml
   end
 
   def extract_block_content(block)
-    block.collect { |b| b[:content]}.join("\n")
+    block.collect { |b| b[:content] }.join("\n")
   end
 
   def lcs_diff(removals, additions)
@@ -144,6 +144,16 @@ class DiffToHtml
     "<h2>#{header}</h2>\n"
   end
 
+  def lines_are_sequential(first, second)
+    result = false
+    [:added, :removed].each do |side|
+      if !first[side].nil? && !second[side].nil?
+        result = true if first[side] == (second[side] - 1)
+      end
+    end
+    result
+  end
+
   def add_changes_to_result
     return if @current_file_name.nil?
     @diff_result << operation_description
@@ -151,24 +161,22 @@ class DiffToHtml
     unless @diff_lines.empty?
       removals = []
       additions = []
-      separator_added = true
-      @diff_lines.each do |line|
+      @diff_lines.each_with_index do |line, index|
         removals << line if line[:op] == :removal
         additions << line if line[:op] == :addition
-        if line[:op] == :unchanged || line == @diff_lines.last # unchanged line or end of block, add prev lines to result
+        if line[:op] == :unchanged || index == @diff_lines.size - 1 # unchanged line or end of block, add prev lines to result
           if removals.size > 0 && additions.size > 0 # block of removed and added lines - perform intelligent diff
             add_block_to_results(lcs_diff(removals, additions), escape = false)
           else # some lines removed or added - no need to perform intelligent diff
             add_block_to_results(removals + additions, escape = true)
           end
-          separator_added = (removals.empty? && additions.empty?)
           removals = []
           additions = []
-          add_line_to_result(line, escape = true) if line[:op] == :unchanged
-          unless separator_added
-            add_separator
-            separator_added = true
+          if index > 0 && index != @diff_lines.size - 1
+            prev_line = @diff_lines[index - 1]
+            add_separator unless lines_are_sequential(prev_line, line)
           end
+          add_line_to_result(line, escape = true) if line[:op] == :unchanged
         end
       end
       @diff_lines = []
