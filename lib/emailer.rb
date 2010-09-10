@@ -3,6 +3,8 @@ require 'erb'
 require 'tamtam'
 
 class Emailer
+  DEFAULT_STYLESHEET_PATH = File.join(File.dirname(__FILE__), '/../template/styles.css').freeze
+  TEMPLATE = File.join(File.dirname(__FILE__), '/../template/email.html.erb').freeze
 
   def initialize(config, project_path, recipient, from_address, from_alias, subject, text_message, html_diff, old_rev, new_rev, ref_name)
     @config = config || {}
@@ -16,7 +18,7 @@ class Emailer
     @old_rev = old_rev
     @new_rev = new_rev
 
-    template = File.join(File.dirname(__FILE__), '/../template/email.html.erb')
+    template = TEMPLATE
     @html_message = TamTam.inline(:document => ERB.new(File.read(template)).result(binding))
   end
 
@@ -28,7 +30,7 @@ class Emailer
   end
 
   def stylesheet_string
-    stylesheet = @config['stylesheet'] || File.join(File.dirname(__FILE__), '/../template/styles.css')
+    stylesheet = @config['stylesheet'] || DEFAULT_STYLESHEET_PATH
     File.read(stylesheet)
   end
 
