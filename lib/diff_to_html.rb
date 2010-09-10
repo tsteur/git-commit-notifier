@@ -44,9 +44,17 @@ class DiffToHtml
     end
   end
 
+  def lines_per_diff
+    @config['lines_per_diff']
+  end
+
+  def add_separator
+    return if lines_per_diff && @lines_added >= lines_per_diff
+    @diff_result << '<tr class="sep"><td class="sep" colspan="3" title="Unchanged content skipped between diff. blocks">&hellip;</td></tr>'
+  end
+
   def add_line_to_result(line, escape)
     @lines_added += 1
-    lines_per_diff = @config['lines_per_diff']
     if lines_per_diff
       if @lines_added == lines_per_diff
         @diff_result << '<tr><td colspan="3">Diff too large and stripped&hellip;</td></tr>'
@@ -143,6 +151,7 @@ class DiffToHtml
     unless @diff_lines.empty?
       removals = []
       additions = []
+      separator_added = true
       @diff_lines.each do |line|
         removals << line if line[:op] == :removal
         additions << line if line[:op] == :addition
@@ -152,9 +161,14 @@ class DiffToHtml
           else # some lines removed or added - no need to perform intelligent diff
             add_block_to_results(removals + additions, escape = true)
           end
+          separator_added = (removals.empty? && additions.empty?)
           removals = []
           additions = []
           add_line_to_result(line, escape = true) if line[:op] == :unchanged
+          unless separator_added
+            add_separator
+            separator_added = true
+          end
         end
       end
       @diff_lines = []
