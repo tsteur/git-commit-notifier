@@ -144,10 +144,8 @@ class DiffToHtml
       removals = []
       additions = []
       @diff_lines.each do |line|
-        if [:addition, :removal].include?(line[:op])
-          removals << line if line[:op] == :removal
-          additions << line if line[:op] == :addition
-        end
+        removals << line if line[:op] == :removal
+        additions << line if line[:op] == :addition
         if line[:op] == :unchanged || line == @diff_lines.last # unchanged line or end of block, add prev lines to result
           if removals.size > 0 && additions.size > 0 # block of removed and added lines - perform intelligent diff
             add_block_to_results(lcs_diff(removals, additions), escape = false)
