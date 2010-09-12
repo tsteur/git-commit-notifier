@@ -220,7 +220,7 @@ class DiffToHtml
     elsif op == '+'
       @diff_lines << { :added => @right_ln, :removed => nil, :op => :addition, :content => line[1..-1] }
       @right_ln += 1
-    else @right_ln
+    else
       @diff_lines << { :added => @right_ln, :removed => @left_ln, :op => :unchanged, :content => line }
       @right_ln += 1
       @left_ln += 1
