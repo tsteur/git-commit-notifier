@@ -144,7 +144,7 @@ class DiffToHtml
     "<h2>#{header}</h2>\n"
   end
 
-  def lines_are_sequential(first, second)
+  def lines_are_sequential?(first, second)
     result = false
     [:added, :removed].each do |side|
       if !first[side].nil? && !second[side].nil?
@@ -174,7 +174,7 @@ class DiffToHtml
           additions = []
           if index > 0 && index != @diff_lines.size - 1
             prev_line = @diff_lines[index - 1]
-            add_separator unless lines_are_sequential(prev_line, line)
+            add_separator unless lines_are_sequential?(prev_line, line)
           end
           add_line_to_result(line, escape = true) if line[:op] == :unchanged
         end
