@@ -27,22 +27,33 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-begin
-  require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/test_*.rb'
-    test.verbose = true
-  end
-rescue LoadError
-  task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
-  end
-end
-
 task :test => :check_dependencies
 
 task :default => :test
+
+begin
+  require 'spec/rake/spectask'
+  Spec::Rake::SpecTask.new do |t|
+    t.warning = true
+    t.rcov    = false
+  end
+  Spec::Rake::SpecTask.new do |t|
+    t.name    = :'spec:rcov'
+    t.warning = true
+    t.rcov    = true
+    t.rcov_opts = lambda do
+      IO.readlines("#{APP_ROOT}/spec/rcov.opts").map {|l| l.chomp.split " "}.flatten
+    end
+  end
+rescue LoadError
+  $stderr.puts "RSpec not available. Install it with: gem install rspec"
+end
+
+begin
+  require 'metric_fu'
+rescue LoadError
+  $stderr.puts "metric_fu not available. Install it with: gem install metric_fu"
+end
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
