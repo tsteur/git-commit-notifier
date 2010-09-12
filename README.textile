@@ -1,6 +1,6 @@
 h1. Git Commit Notifier
 
-__by Bodo Tasche (bodo 'at' wannawork 'dot' de), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)__
+__by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)__
 
 Sends email commit messages splitting commits that were pushed in one step. 
 Email is delivered as text or HTML with changes refined per word. Emails 
