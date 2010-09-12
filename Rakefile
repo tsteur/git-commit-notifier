@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'rake'
 
+APP_ROOT = File.dirname(__FILE__).freeze
+
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
