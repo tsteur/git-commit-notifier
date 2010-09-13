@@ -310,7 +310,7 @@ class DiffToHtml
       commits = log.scan(/^commit\s([a-f0-9]+)/).map{|match| match[0]}
     end
 
-    if defined?(Test::Unit)
+    if defined?(Spec)
       previous_list = []
     else
       previous_file = (!@previous_dir.nil? && File.exists?(@previous_dir)) ? File.join(@previous_dir, "previously.txt") : "/tmp/previously.txt"
@@ -319,7 +319,7 @@ class DiffToHtml
 
     commits.reject!{|c| c.find{|sha| previous_list.include?(sha)} }
     current_list = (previous_list + commits.flatten).last(10000)
-    File.open(previous_file, "w"){|f| f << current_list.join("\n") } unless current_list.empty? || defined?(Test::Unit)
+    File.open(previous_file, "w"){|f| f << current_list.join("\n") } unless current_list.empty? || defined?(Spec)
 
     commits.each_with_index do |commit, i|
       

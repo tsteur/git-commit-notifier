@@ -1,0 +1,17 @@
+delivery_method: sendmail # smtp or sendmail
+ignore_merge: true # set to true if you want to ignore empty merge messages
+
+smtp_server:
+  address: localhost
+  port: 25
+  domain: localhost
+  user_name: user@localhost
+  password: password
+  authentication: plain
+  enable_tls: false
+
+sendmail_options:
+  location: /usr/sbin/sendmail
+  arguments:
+
+
