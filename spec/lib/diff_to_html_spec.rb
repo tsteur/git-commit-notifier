@@ -1,3 +1,4 @@
+require File.expand_path('../spec_helper.rb', File.dirname(__FILE__))
 require 'diff_to_html'
 
 describe DiffToHtml do
