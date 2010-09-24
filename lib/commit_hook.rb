@@ -55,7 +55,7 @@ class CommitHook
         html << result[:html_content]
       end
       result = diffresult.first
-      return unless result[:commit_info]
+      return if result.nil? || !result[:commit_info]
       emailer = Emailer.new(
         @config,
         project_path,
