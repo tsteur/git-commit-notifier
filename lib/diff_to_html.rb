@@ -104,22 +104,22 @@ class DiffToHtml
   end
 
   def tokenize_string(str)
-    # tokenize by non-alphanumerical characters
+    # tokenize by non-word characters
     tokens = []
     token = ''
-    str = str.split('')
-    str.each_with_index do |char, i|
-      alphanumeric = !char.match(/[a-zA-Z0-9]/).nil?
-      if !alphanumeric || str.size == i+1
-        token += char if alphanumeric
-        tokens << token unless token.empty?
-        tokens << char unless alphanumeric
-        token = ''
+    str.scan(/./mu) do |ch|
+      if ch =~ /\w/u
+        token += ch
       else
-        token += char
+        unless token.empty?
+          tokens << token
+          token = ''
+        end
+        tokens << ch
       end
     end
-    return tokens
+    tokens << token unless token.empty?
+    tokens
   end
 
   def operation_description
