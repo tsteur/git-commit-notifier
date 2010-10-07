@@ -147,6 +147,32 @@ class DiffToHtmlTest < Test::Unit::TestCase
     assert hp.include?("<a href='http://example.com/gitorious/tests/test/commit/e28ad77bba0574241e6eb64dfd0c1291b221effe'>e28ad77bba0574241e6eb64dfd0c1291b221effe</a>")
   end
 
+  def test_cgit_operation_description
+    diff = DiffToHtml.new
+    diff.current_file_name = "file/to/test.yml"
+    assert_equal "<h2>Changed file file/to/test.yml</h2>\n", diff.operation_description
+
+    config = {
+      "link_files" => "cgit",
+      "cgit" => {
+        "path" => "http://example.com/cgit/cgit.cgi", 
+        "project" => "tests",
+      }
+    }
+    
+    path = File.dirname(__FILE__) + '/../fixtures/'
+    Git.expects(:log).never
+    Git.expects(:show).with(REVISIONS.first).returns(read_file(path + 'git_show_' + REVISIONS.first))
+
+    diff = DiffToHtml.new(nil, config)
+    diff.current_file_name = "file/to/test.yml"
+    assert_equal "<h2>Changed file <a href='http://example.com/cgit/cgit.cgi/tree/file/to/test.yml'>file/to/test.yml</a></h2>\n", diff.operation_description
+    
+    diff.diff_between_revisions REVISIONS.first, REVISIONS.first, 'testproject', 'master'
+    hp = diff.result.first[:html_content]
+    assert hp.include?("<a href='http://example.com/cgit/cgit.cgi/tests/commit/?id=e28ad77bba0574241e6eb64dfd0c1291b221effe'>e28ad77bba0574241e6eb64dfd0c1291b221effe</a>")
+  end
+
   def test_trac_operation_description
     config = {
       "link_files" => "trac",
