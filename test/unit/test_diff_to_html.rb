@@ -166,7 +166,7 @@ class DiffToHtmlTest < Test::Unit::TestCase
 
     diff = DiffToHtml.new(nil, config)
     diff.current_file_name = "file/to/test.yml"
-    assert_equal "<h2>Changed file <a href='http://example.com/cgit/cgit.cgi/tree/file/to/test.yml'>file/to/test.yml</a></h2>\n", diff.operation_description
+    assert_equal "<h2>Changed file <a href='http://example.com/cgit/cgit.cgi/tests/tree/file/to/test.yml'>file/to/test.yml</a></h2>\n", diff.operation_description
     
     diff.diff_between_revisions REVISIONS.first, REVISIONS.first, 'testproject', 'master'
     hp = diff.result.first[:html_content]

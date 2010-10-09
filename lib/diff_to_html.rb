@@ -108,7 +108,7 @@ class DiffToHtml
     tokens = []
     token = ''
     str.scan(/./mu) do |ch|
-      if ch =~ /\w/u
+      if ch =~ /\w/ && ch != '_'
         token += ch
       else
         unless token.empty?
@@ -342,7 +342,7 @@ class DiffToHtml
       elsif (@config["link_files"] && @config["link_files"] == "trac" && @config["trac"])
         title += "<a href='#{@config['trac']['path']}/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       elsif (@config["link_files"] && @config["link_files"] == "cgit" && @config["cgit"])
-        title += "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/commit/?id=#{commit_in    fo[:commit]}'>#{commit_info[:commit]}</a>"
+        title += "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/commit/?id=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       else
         title += " #{commit_info[:commit]}"
       end
