@@ -1,6 +1,3 @@
-# The recipient for the commit:
-mailinglist: developers@example.com 
-
 # set to true if you want to ignore empty merge messages
 ignore_merge: false 
 
@@ -9,6 +6,13 @@ ignore_merge: false
 
 # Limit lines per diff
 # lines_per_diff: 300
+
+# The recipient for the commit:
+mailinglist: developers@example.com 
+
+# The from addres. If not defined it will use 
+# the address that is configured in git
+# from: sender@example.com
 
 # select the delivery method: smtp or sendmail 
 delivery_method: sendmail 

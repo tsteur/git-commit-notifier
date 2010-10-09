@@ -31,6 +31,15 @@ class CommitHookTest < Test::Unit::TestCase
     CommitHook.run config, REVISIONS.first, REVISIONS.last, 'refs/heads/master'
   end
 
+  def test_commit_from
+    # 1 commit with a from: adress
+    expect_repository_access
+    emailer = mock('Emailer')
+    Emailer.expects(:new).with(anything, anything, anything, "max@example.com", any_parameters).returns(emailer)
+    emailer.expects(:send)
+    CommitHook.run 'test/fixtures/git-notifier-group-email-by-push.yml', REVISIONS.first, REVISIONS.last, 'refs/heads/master'
+   end
+
   def expect_repository_access
     path = File.dirname(__FILE__) + '/../fixtures/'
     Git.expects(:log).with(REVISIONS.first, REVISIONS.last).returns(read_file(path + 'git_log'))
