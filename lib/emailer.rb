@@ -6,20 +6,20 @@ class Emailer
   DEFAULT_STYLESHEET_PATH = File.join(File.dirname(__FILE__), '/../template/styles.css').freeze
   TEMPLATE = File.join(File.dirname(__FILE__), '/../template/email.html.erb').freeze
 
-  def initialize(config, project_path, recipient, from_address, from_alias, subject, text_message, html_diff, old_rev, new_rev, ref_name)
+  def initialize(config, data)
     @config = config || {}
-    @project_path = project_path
-    @recipient = recipient
-    @from_address = from_address
-    @from_alias = from_alias
-    @subject = subject
-    @text_message = text_message
-    @ref_name = ref_name
-    @old_rev = old_rev
-    @new_rev = new_rev
+    @project_path = data[:project_path]
+    @recipient = data[:recipient]
+    @from_address = data[:from_address]
+    @from_alias = data[:from_alias]
+    @subject = data[:subject]
+    @text_message = data[:text_message]
+    @ref_name = data[:ref_name]
+    @old_rev = data[:old_rev]
+    @new_rev = data[:new_rev]
 
     template = TEMPLATE
-    @html_message = TamTam.inline(:document => ERB.new(File.read(template)).result(binding))
+    @html_message = TamTam.inline(:document => ERB.new(IO.read(template)).result(binding))
   end
 
   def boundary

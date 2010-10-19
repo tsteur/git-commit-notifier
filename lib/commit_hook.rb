@@ -57,18 +57,17 @@ class CommitHook
       result = diffresult.first
       return if result.nil? || !result[:commit_info]
 
-      emailer = Emailer.new(
-        @config,
-        project_path,
-        recipient,
-        @config["from"] || result[:commit_info][:email],
-        result[:commit_info][:author],
-        "[#{prefix}#{branch_name}] #{diffresult.size > 1 ? "#{diffresult.size} commits: " : ''}#{result[:commit_info][:message]}",
-        text.join("------------------------------------------\n\n"),
-        html.join("<hr /><br />"),
-        rev1,
-        rev2,
-        ref_name
+      emailer = Emailer.new(@config,
+        :project_path => project_path,
+        :recipient => recipient,
+        :from_address => @config["from"] || result[:commit_info][:email],
+        :from_alias => result[:commit_info][:author],
+        :subject => "[#{prefix}#{branch_name}] #{diffresult.size > 1 ? "#{diffresult.size} commits: " : ''}#{result[:commit_info][:message]}",
+        :text_message => text.join("------------------------------------------\n\n"),
+        :html_message => html.join("<hr /><br />"),
+        :old_rev => rev1,
+        :new_rev => rev2,
+        :ref_name => ref_name
       )
       emailer.send
     else
@@ -76,18 +75,17 @@ class CommitHook
         next unless result[:commit_info]
         nr = number(diffresult.size, i)
 
-        emailer = Emailer.new(
-          @config,
-          project_path,
-          recipient,
-          @config["from"] || result[:commit_info][:email],
-          result[:commit_info][:author],
-          "[#{prefix}#{branch_name}]#{nr} #{result[:commit_info][:message]}",
-          result[:text_content],
-          result[:html_content],
-          rev1,
-          rev2,
-          ref_name
+        emailer = Emailer.new(@config,
+          :project_path => project_path,
+          :recipient => recipient,
+          :from_address => @config["from"] || result[:commit_info][:email],
+          :from_alias => result[:commit_info][:author],
+          :subject => "[#{prefix}#{branch_name}]#{nr} #{result[:commit_info][:message]}",
+          :text_message => result[:text_content],
+          :html_message => result[:html_content],
+          :old_rev => rev1,
+          :new_rev => rev2,
+          :ref_name => ref_name
         )
         emailer.send
       end
