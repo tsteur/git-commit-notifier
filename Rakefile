@@ -9,8 +9,8 @@ begin
     gem.name = "akzhan-git-commit-notifier"
     gem.summary = %Q{Sends git commit messages with diffs}
     gem.description = %Q{This git commit notifier sends html mails with nice diffs for every changed file.}
-    gem.email = "bodo@wannawork.de"
-    gem.homepage = "http://github.com/bodo/git-commit-notifier"
+    gem.email = "bodo@bitboxer.de"
+    gem.homepage = "http://github.com/bitboxer/git-commit-notifier"
     gem.authors = ["Bodo Tasche"]
     gem.add_dependency('diff-lcs')
     gem.add_dependency('mocha')

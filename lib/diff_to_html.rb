@@ -108,7 +108,7 @@ class DiffToHtml
     tokens = []
     token = ''
     str.scan(/./mu) do |ch|
-      if ch =~ /\w/u
+      if ch =~ /\w/ && ch != '_'
         token += ch
       else
         unless token.empty?
@@ -138,6 +138,8 @@ class DiffToHtml
       file_name = "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};f=#{file_name};hb=HEAD'>#{file_name}</a>"
     elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
       file_name = "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/blobs/HEAD/#{file_name}'>#{file_name}</a>"
+    elsif (@config["link_files"] && @config["link_files"] == "cgit" && @config["cgit"])
+      file_name = "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/tree/#{file_name}'>#{file_name}</a>"
     end
     
     header = "#{op} #{binary}file #{file_name}"
@@ -339,6 +341,8 @@ class DiffToHtml
         title += "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/commit/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       elsif (@config["link_files"] && @config["link_files"] == "trac" && @config["trac"])
         title += "<a href='#{@config['trac']['path']}/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+      elsif (@config["link_files"] && @config["link_files"] == "cgit" && @config["cgit"])
+        title += "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/commit/?id=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
       else
         title += " #{commit_info[:commit]}"
       end

@@ -56,11 +56,12 @@ class CommitHook
       end
       result = diffresult.first
       return if result.nil? || !result[:commit_info]
+
       emailer = Emailer.new(
         @config,
         project_path,
         recipient,
-        result[:commit_info][:email],
+        @config["from"] || result[:commit_info][:email],
         result[:commit_info][:author],
         "[#{prefix}#{branch_name}] #{diffresult.size > 1 ? "#{diffresult.size} commits: " : ''}#{result[:commit_info][:message]}",
         text.join("------------------------------------------\n\n"),
@@ -74,11 +75,12 @@ class CommitHook
       diffresult.reverse.each_with_index do |result, i|
         next unless result[:commit_info]
         nr = number(diffresult.size, i)
+
         emailer = Emailer.new(
           @config,
           project_path,
           recipient,
-          result[:commit_info][:email],
+          @config["from"] || result[:commit_info][:email],
           result[:commit_info][:author],
           "[#{prefix}#{branch_name}]#{nr} #{result[:commit_info][:message]}",
           result[:text_content],

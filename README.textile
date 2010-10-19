@@ -44,6 +44,13 @@ git-commit-notifier path_to_config.yml
 
 An example for the config file can be found in <a href="http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
 
+If you want to send mails on each commit instead on each pull, you should add a file called "post-commit" with this content:
+
+<pre>
+#!/bin/sh
+echo "HEAD^1 HEAD refs/heads/master" | git-commit-notifier path_to_config.yml
+</pre>
+
 h2. Integration with Redmine, Bugzilla, MediaWiki
 
 Git-commit-notifier supports easy integration with Redmine, Bugzilla and MediaWiki. All you need is to uncomment the according line in the configuration and change the links to your software installations instead of example ones (no trailing slash please).
