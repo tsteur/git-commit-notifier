@@ -8,15 +8,9 @@ class Emailer
 
   def initialize(config, data)
     @config = config || {}
-    @project_path = data[:project_path]
-    @recipient = data[:recipient]
-    @from_address = data[:from_address]
-    @from_alias = data[:from_alias]
-    @subject = data[:subject]
-    @text_message = data[:text_message]
-    @ref_name = data[:ref_name]
-    @old_rev = data[:old_rev]
-    @new_rev = data[:new_rev]
+    %w[project_path recipient from_address from_alias subject text_message html_message ref_name old_rev new_rev].each do |name|
+      instance_variable_set("@#{name}", data[name.to_sym])
+    end
 
     template = TEMPLATE
     @html_message = TamTam.inline(:document => ERB.new(IO.read(template)).result(binding))
