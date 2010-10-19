@@ -9,13 +9,15 @@ class Emailer
 
   attr_reader :config
 
-  def initialize(config, data)
+  def initialize(config, options = {})
     @config = config || {}
     PARAMETERS.each do |name|
-      instance_variable_set("@#{name}", data[name.to_sym])
+      instance_variable_set("@#{name}".to_sym, options[name.to_sym])
     end
-
     template = TEMPLATE
+  end
+
+  def generate_message
     @html_message = TamTam.inline(:document => ERB.new(IO.read(template)).result(binding))
   end
 
@@ -28,7 +30,7 @@ class Emailer
 
   def stylesheet_string
     stylesheet = config['stylesheet'] || DEFAULT_STYLESHEET_PATH
-    File.read(stylesheet)
+    IO.read(stylesheet)
   end
 
   def perform_delivery_smtp(content, smtp_settings)
@@ -64,6 +66,7 @@ class Emailer
   end
   
   def send
+    generate_message
     from = quote_if_necessary(@from_alias.empty? ? @from_address : "#{@from_alias} <#{@from_address}>", 'utf-8')
     content = ["From: #{from}",
         "Reply-To: #{from}",
