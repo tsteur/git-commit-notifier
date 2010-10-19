@@ -1,6 +1,8 @@
 delivery_method: sendmail # smtp or sendmail
 ignore_merge: false # set to true if you want to ignore empty merge messages
 
+from: max@example.com
+
 group_email_by_push: true
 
 smtp_server:
