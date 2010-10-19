@@ -20,6 +20,9 @@ class DiffToHtml
     @previous_dir = previous_dir
     @config = config || {}
     @lines_added = 0
+    @file_added = false
+    @file_removed = false
+    @binary = false
   end
 
   def range_info(range)
