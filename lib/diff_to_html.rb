@@ -108,7 +108,7 @@ class DiffToHtml
     tokens = []
     token = ''
     str.scan(/./mu) do |ch|
-      if ch =~ /\w/ && ch != '_'
+      if ch =~ /[^\W_]/u
         token += ch
       else
         unless token.empty?
