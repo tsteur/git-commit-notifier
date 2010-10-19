@@ -17,6 +17,11 @@ class CommitHook
     puts "************** GIT NOTIFIER PROBLEM *******************"
   end
 
+	def self.info(message)
+    $stdout.puts message 
+    $stdout.flush
+	end
+
   def self.run(config, rev1, rev2, ref_name)
     @config = {}
     @config = YAML::load_file(config) if File.exist?(config)
@@ -31,8 +36,7 @@ class CommitHook
       return
     end
     
-    puts "Sending mail..."
-    STDOUT.flush
+    info("Sending mail...")
     
     prefix = @config["emailprefix"] || Git.repo_name
     branch_name = "/#{ref_name.split("/").last}"

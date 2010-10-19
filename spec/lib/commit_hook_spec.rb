@@ -24,6 +24,8 @@ describe CommitHook do
     emailer = mock!.send.times(times).subject
     mock(Emailer).new(anything, anything) { emailer }.times(times)
 
+    mock(CommitHook).info(/Sending mail/)
+
     CommitHook.run config, REVISIONS.first, REVISIONS.last, 'refs/heads/master'
   end
 
