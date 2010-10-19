@@ -5,10 +5,13 @@ require 'tamtam'
 class Emailer
   DEFAULT_STYLESHEET_PATH = File.join(File.dirname(__FILE__), '/../template/styles.css').freeze
   TEMPLATE = File.join(File.dirname(__FILE__), '/../template/email.html.erb').freeze
+  PARAMETERS = %w[project_path recipient from_address from_alias subject text_message html_message ref_name old_rev new_rev].freeze
+
+  attr_reader :config
 
   def initialize(config, data)
     @config = config || {}
-    %w[project_path recipient from_address from_alias subject text_message html_message ref_name old_rev new_rev].each do |name|
+    PARAMETERS.each do |name|
       instance_variable_set("@#{name}", data[name.to_sym])
     end
 
@@ -24,7 +27,7 @@ class Emailer
   end
 
   def stylesheet_string
-    stylesheet = @config['stylesheet'] || DEFAULT_STYLESHEET_PATH
+    stylesheet = config['stylesheet'] || DEFAULT_STYLESHEET_PATH
     File.read(stylesheet)
   end
 
@@ -89,7 +92,7 @@ class Emailer
       return
     end
 
-    if @config['delivery_method'] == 'smtp'
+    if config['delivery_method'] == 'smtp'
       perform_delivery_smtp(content, @config['smtp_server'])
     else
       perform_delivery_sendmail(content, @config['sendmail_options'])
