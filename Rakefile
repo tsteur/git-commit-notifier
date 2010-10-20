@@ -16,6 +16,10 @@ begin
     gem.add_dependency('mocha')
     gem.add_dependency('hpricot')
     gem.add_dependency('tamtam')
+    gem.add_development_dependency('rspec')
+    gem.add_development_dependency('rcov')
+    gem.add_development_dependency('rr')
+    gem.add_development_dependency('metric_fu')
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
