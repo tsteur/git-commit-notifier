@@ -20,6 +20,17 @@ describe Emailer do
         Emailer.new({})
       end
     end
+
+    it "should assign parameters from options" do
+      options = {}
+      Emailer::PARAMETERS.each do |name|
+        options[name.to_sym] = Faker::Lorem.sentence
+      end
+      emailer = Emailer.new({}, options)
+      options.each_pair do |key, value|
+        emailer.instance_variable_get("@#{key}").should == value
+      end
+    end
   end
 
   describe :stylesheet_string do

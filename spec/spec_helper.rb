@@ -2,6 +2,7 @@ require 'rubygems'
 $:.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
 require 'spec'
+require 'faker'
 require 'spec/autorun'
 
 Spec::Runner.configure do |conf|
