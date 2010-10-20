@@ -14,6 +14,9 @@ mailinglist: developers@example.com
 # the address that is configured in git
 # from: sender@example.com
 
+# stylesheet file (embedded template/styles.css by default)
+# stylesheet: /absolute/path/to/readable/stylesheet.css
+
 # select the delivery method: smtp or sendmail 
 delivery_method: sendmail 
 
