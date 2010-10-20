@@ -17,8 +17,9 @@ begin
     gem.add_dependency('hpricot')
     gem.add_dependency('tamtam')
     gem.add_development_dependency('rspec')
-    gem.add_development_dependency('rcov')
     gem.add_development_dependency('rr')
+    gem.add_development_dependency('faker')
+    gem.add_development_dependency('rcov')
     gem.add_development_dependency('metric_fu')
   end
   Jeweler::GemcutterTasks.new
@@ -29,7 +30,7 @@ end
 begin
   require 'spec/rake/spectask'
   Spec::Rake::SpecTask.new do |t|
-    t.warning = true
+    t.warning = false
     t.rcov    = false
   end
   Spec::Rake::SpecTask.new do |t|
