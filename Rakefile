@@ -22,17 +22,6 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-end
-
-task :test => :check_dependencies
-
-task :default => :test
-
 begin
   require 'spec/rake/spectask'
   Spec::Rake::SpecTask.new do |t|
@@ -51,6 +40,8 @@ rescue LoadError
   $stderr.puts "RSpec not available. Install it with: gem install rspec"
 end
 
+task :default => :spec
+
 begin
   require 'metric_fu'
 rescue LoadError
@@ -66,3 +57,4 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+

@@ -5,17 +5,17 @@ describe CommitHook do
 
   it "should ignore merge" do
     # 4 commits, one email for each of them, without merge
-    run_with_config('test/fixtures/git-notifier-ignore-merge.yml', 4)
+    run_with_config('spec/fixtures/git-notifier-ignore-merge.yml', 4)
   end
 
   it "should hook with merge" do
     # 5 commits, one email for each of them, with merge mail
-    run_with_config('test/fixtures/git-notifier-with-merge.yml', 5)
+    run_with_config('spec/fixtures/git-notifier-with-merge.yml', 5)
   end
 
   it "should hook group email by push" do
     # 1 commit for the push, all commits in the one message
-    run_with_config('test/fixtures/git-notifier-group-email-by-push.yml', 1)
+    run_with_config('spec/fixtures/git-notifier-group-email-by-push.yml', 1)
   end
 
   def run_with_config(config, times)
@@ -35,7 +35,7 @@ describe CommitHook do
     emailer = mock!.send.subject
     mock(Emailer).new(anything, hash_including(:from_address => "max@example.com")) { emailer }
     
-    CommitHook.run 'test/fixtures/git-notifier-group-email-by-push.yml', REVISIONS.first, REVISIONS.last, 'refs/heads/master'
+    CommitHook.run 'spec/fixtures/git-notifier-group-email-by-push.yml', REVISIONS.first, REVISIONS.last, 'refs/heads/master'
    end
 
   def expect_repository_access
