@@ -22,6 +22,10 @@ class CommitHook
     $stdout.flush
 	end
 
+  def self.debug?
+    !!(@config['debug'] && @config['debug']['enabled'])
+  end
+
   def self.run(config, rev1, rev2, ref_name)
     @config = {}
     @config = YAML::load_file(config) if File.exist?(config)
