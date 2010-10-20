@@ -372,14 +372,14 @@ class DiffToHtml
   end
 
   def message_map(message)
-    if @config.include?('message_integration')
+    if @config.include?('message_integration') && @config['message_integration'].respond_to?(:each_pair)
       @config['message_integration'].each_pair do |pm, url|
         pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
         replace_with = pm_def[:replace_with].gsub('#{url}', url)
         message_replace!(message, pm_def[:search_for], replace_with)
       end
     end
-    if @config.include?('message_map')
+    if @config.include?('message_map') && @config['message_map'].respond_to?(:each_pair)
       @config['message_map'].each_pair do |search_for, replace_with|
         message_replace!(message, Regexp.new(search_for), replace_with)
       end
