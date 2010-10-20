@@ -14,11 +14,10 @@ class Emailer
     PARAMETERS.each do |name|
       instance_variable_set("@#{name}".to_sym, options[name.to_sym])
     end
-    template = TEMPLATE
   end
 
   def generate_message
-    @html_message = TamTam.inline(:document => ERB.new(IO.read(template)).result(binding))
+    @html_message = TamTam.inline(:document => ERB.new(IO.read(TEMPLATE)).result(binding))
   end
 
   def boundary
