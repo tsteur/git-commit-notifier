@@ -76,9 +76,9 @@ describe CommitHook do
 			CommitHook.log_directory.should == expected
 		end
 
-		it "should be system temp directory if debug and custom directory not specified" do
+		it "should be default log directory if debug and custom directory not specified" do
       mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
-			CommitHook.log_directory.should == Dir.tmpdir
+			CommitHook.log_directory.should == CommitHook::DEFAULT_LOG_DIRECTORY
 		end
 	end
 
