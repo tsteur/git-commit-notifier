@@ -10,6 +10,7 @@ require 'git'
 
 class CommitHook
   DEFAULT_LOG_DIRECTORY = Dir.tmpdir.freeze
+	LOG_NAME = 'git-commit-notifier.log'.freeze
 
   class << self
     attr_reader :config
@@ -34,6 +35,11 @@ class CommitHook
 		def log_directory
 			return nil unless debug?
 			config['debug']['log_directory'] || CommitHook::DEFAULT_LOG_DIRECTORY
+		end
+
+		def log_path
+			return nil unless debug?
+			File.join(log_directory, CommitHook::LOG_NAME)
 		end
 
     def run(config_name, rev1, rev2, ref_name)

@@ -82,5 +82,20 @@ describe CommitHook do
 		end
 	end
 
+  describe :log_path do
+    it "should be nil unless debug?" do
+			mock(CommitHook).debug? { false }
+			CommitHook.log_path.should be_nil
+		end
 
+		it "should be path in log_directory if debug?" do
+      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
+			File.dirname(CommitHook.log_path).should == CommitHook.log_directory
+		end
+
+		it "should be LOG_NAME if debug?" do
+      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
+			File.basename(CommitHook.log_path).should == CommitHook::LOG_NAME
+		end
+	end
 end
