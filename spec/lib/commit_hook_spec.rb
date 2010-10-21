@@ -46,5 +46,23 @@ describe CommitHook do
       mock(Git).show(rev) { IO.read(path + "git_show_#{rev}") }
     end
   end
-  
+
+  describe :debug? do
+    it "should be false unless debug section exists" do
+      mock(CommitHook).config { {} }.any_times
+      CommitHook.should_not be_debug
+    end
+
+		it "should be false unless debug/enabled" do
+      mock(CommitHook).config { { "debug" => { "enabled" => false } } }.any_times
+      CommitHook.should_not be_debug
+    end
+
+		it "should be true if debug/enabled" do
+      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
+      CommitHook.should be_debug
+    end
+  end	 
+
+
 end
