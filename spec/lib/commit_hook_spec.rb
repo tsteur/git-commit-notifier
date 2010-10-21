@@ -62,7 +62,25 @@ describe CommitHook do
       mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
       CommitHook.should be_debug
     end
-  end	 
+	end
+
+	describe :log_directory do
+		it "should be nil unless debug?" do
+			mock(CommitHook).debug? { false }
+			CommitHook.log_directory.should be_nil
+		end
+
+		it "should be custom if debug and custom directory specified" do
+			expected = Faker::Lorem.sentence
+      mock(CommitHook).config { { "debug" => { "enabled" => true, "log_directory" => expected } } }.any_times
+			CommitHook.log_directory.should == expected
+		end
+
+		it "should be system temp directory if debug and custom directory not specified" do
+      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
+			CommitHook.log_directory.should == Dir.tmpdir
+		end
+	end
 
 
 end
