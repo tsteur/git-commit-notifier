@@ -9,8 +9,9 @@ require 'emailer'
 require 'git'
 
 class CommitHook
+  DEFAULT_LOG_DIRECTORY = Dir.tmpdir.freeze
+
   class << self
-		DEFAULT_LOG_DIRECTORY = Dir.tmpdir.freeze
     attr_reader :config
 
     def show_error(message)
@@ -32,7 +33,7 @@ class CommitHook
 
 		def log_directory
 			return nil unless debug?
-			config['debug']['log_directory'] || DEFAULT_LOG_DIRECTORY
+			config['debug']['log_directory'] || CommitHook::DEFAULT_LOG_DIRECTORY
 		end
 
     def run(config_name, rev1, rev2, ref_name)
