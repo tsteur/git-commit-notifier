@@ -2,6 +2,7 @@ require 'rubygems'
 require 'cgi'
 require 'net/smtp'
 require 'sha1'
+require 'tmpdir'
 
 require 'diff_to_html'
 require 'emailer'
@@ -9,6 +10,7 @@ require 'git'
 
 class CommitHook
   class << self
+		DEFAULT_LOG_DIRECTORY = Dir.tmpdir.freeze
     attr_reader :config
 
     def show_error(message)
@@ -27,6 +29,11 @@ class CommitHook
     def debug?
       !!(config['debug'] && config['debug']['enabled'])
     end
+
+		def log_directory
+			return nil unless debug?
+			config['debug']['log_directory'] || DEFAULT_LOG_DIRECTORY
+		end
 
     def run(config_name, rev1, rev2, ref_name)
       @config = File.exist?(config_name) ? YAML::load_file(config_name) : {}
