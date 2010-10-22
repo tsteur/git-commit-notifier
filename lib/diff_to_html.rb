@@ -313,8 +313,9 @@ class DiffToHtml
     commits.reject! {|c| c.find { |sha| previous_list.include?(sha) } }
 
     # if commit list empty there is no need to override list of handled commits
-    unless commits.empty?
-      current_list = (previous_list + commits.flatten).last(MAX_COMMITS_PER_ACTION)
+		flatten_commits = commits.flatten
+    unless flatten_commits.empty?
+      current_list = (previous_list + flatten_commits).last(MAX_COMMITS_PER_ACTION)
 
       # use new file, unlink and rename to make it more atomic
       File.open(new_file, 'w') { |f| f << current_list.join("\n") }
