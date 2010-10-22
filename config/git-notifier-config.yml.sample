@@ -73,3 +73,9 @@ message_integration:
 #  mediawiki: http://example.com/wiki # will rework [[text]] to MediaWiki pages
 #  redmine: http://redmine.example.com # will rework refs #123 to Redmine issues
 #  bugzilla: http://bz.example.com # will rework BUG 123 to Bugzilla bugs
+
+# This is developer debugging options. Do not uncomment it if You aren't Jedi
+# debug:
+#   enable: true
+#   log_directory: /path/to/log/directory
+
