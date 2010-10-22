@@ -12,6 +12,9 @@ class DiffToHtml
     :redmine => { :search_for => /\b(?:refs|fixes)\s*\#(\d+)/i, :replace_with => '#{url}/issues/show/\1' },
     :bugzilla => { :search_for => /\bBUG\s*(\d+)/i, :replace_with => '#{url}/show_bug.cgi?id=\1' }
   }.freeze
+  MAX_COMMITS_PER_ACTION = 10000
+  HANDLED_COMMITS_FILE = 'previously.txt'.freeze
+  NEW_HANDLED_COMMITS_FILE = 'previously_new.txt'.freeze
   
   attr_accessor :file_prefix, :current_file_name
   attr_reader :result
@@ -300,6 +303,27 @@ class DiffToHtml
     msg
   end
 
+  def check_handled_commits(commits)
+    return commits if defined?(Spec)
+    previous_dir = (!@previous_dir.nil? && File.exists?(@previous_dir)) ? @previous_dir : '/tmp'
+    previous_file = File.join(previous_dir, HANDLED_COMMITS_FILE)
+    new_file = File.join(previous_dir, NEW_HANDLED_COMMITS_FILE)
+
+    previous_list = File.exists?(previous_file) ? File.read(previous_file).to_a.map(&:chomp).compact.uniq : []
+    commits.reject! {|c| c.find { |sha| previous_list.include?(sha) } }
+
+    # if commit list empty there is no need to override list of handled commits
+    unless commits.empty?
+      current_list = (previous_list + commits.flatten).last(MAX_COMMITS_PER_ACTION)
+
+      # use new file, unlink and rename to make it more atomic
+      File.open(new_file, 'w') { |f| f << current_list.join("\n") }
+      File.unlink(previous_file)
+      File.rename(new_file, previous_file)
+    end
+    commits
+  end
+
   def diff_between_revisions(rev1, rev2, repo, branch)
     @result = []
     if rev1 == rev2
@@ -315,16 +339,7 @@ class DiffToHtml
       commits = log.scan(/^commit\s([a-f0-9]+)/).map{|match| match[0]}
     end
 
-    if defined?(Spec)
-      previous_list = []
-    else
-      previous_file = (!@previous_dir.nil? && File.exists?(@previous_dir)) ? File.join(@previous_dir, "previously.txt") : "/tmp/previously.txt"
-      previous_list = (File.read(previous_file).to_a.map { |sha| sha.chomp }.compact.uniq if File.exist?(previous_file)) || []
-    end
-
-    commits.reject!{|c| c.find{|sha| previous_list.include?(sha)} }
-    current_list = (previous_list + commits.flatten).last(10000)
-    File.open(previous_file, "w"){|f| f << current_list.join("\n") } unless current_list.empty? || defined?(Spec)
+    commits = check_handled_commits(commits)
 
     commits.each_with_index do |commit, i|
       
@@ -408,3 +423,7 @@ class DiffCallback
   end
 
 end
+
+__END__
+
+ vim: tabstop=2:expandtab:shiftwidth=2

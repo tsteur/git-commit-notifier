@@ -3,6 +3,7 @@ require 'cgi'
 require 'net/smtp'
 require 'sha1'
 
+require 'logger'
 require 'diff_to_html'
 require 'emailer'
 require 'git'
@@ -42,11 +43,21 @@ class CommitHook
         )
         return
       end
+
+      logger.debug('----')
+      logger.debug("pwd: #{Dir.pwd}")
+      logger.debug("ref_name: #{ref_name}")
+      logger.debug("rev1: #{rev1}")
+      logger.debug("rev2: #{rev2}")
+
     
       info("Sending mail...")
     
       prefix = config["emailprefix"] || Git.repo_name
       branch_name = "/#{ref_name.split("/").last}"
+
+      logger.debug("prefix: #{prefix}")
+      logger.debug("branch: #{branch_name}")
 
       diff2html = DiffToHtml.new(Dir.pwd, config)
       diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name)
@@ -113,6 +124,5 @@ end
 
 __END__
 
- vim: tabstop=2 expandtab shiftwidth=2
-
+ vim: tabstop=2:expandtab:shiftwidth=2
 
