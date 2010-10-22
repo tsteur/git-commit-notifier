@@ -47,55 +47,15 @@ describe CommitHook do
     end
   end
 
-  describe :debug? do
-    it "should be false unless debug section exists" do
-      mock(CommitHook).config { {} }.any_times
-      CommitHook.should_not be_debug
-    end
-
-		it "should be false unless debug/enabled" do
-      mock(CommitHook).config { { "debug" => { "enabled" => false } } }.any_times
-      CommitHook.should_not be_debug
-    end
-
-		it "should be true if debug/enabled" do
-      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
-      CommitHook.should be_debug
-    end
-	end
-
-	describe :log_directory do
-		it "should be nil unless debug?" do
-			mock(CommitHook).debug? { false }
-			CommitHook.log_directory.should be_nil
-		end
-
-		it "should be custom if debug and custom directory specified" do
-			expected = Faker::Lorem.sentence
-      mock(CommitHook).config { { "debug" => { "enabled" => true, "log_directory" => expected } } }.any_times
-			CommitHook.log_directory.should == expected
-		end
-
-		it "should be default log directory if debug and custom directory not specified" do
-      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
-			CommitHook.log_directory.should == CommitHook::DEFAULT_LOG_DIRECTORY
-		end
-	end
-
-  describe :log_path do
-    it "should be nil unless debug?" do
-			mock(CommitHook).debug? { false }
-			CommitHook.log_path.should be_nil
-		end
-
-		it "should be path in log_directory if debug?" do
-      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
-			File.dirname(CommitHook.log_path).should == CommitHook.log_directory
-		end
-
-		it "should be LOG_NAME if debug?" do
-      mock(CommitHook).config { { "debug" => { "enabled" => true } } }.any_times
-			File.basename(CommitHook.log_path).should == CommitHook::LOG_NAME
+  describe :logger do
+    it "should be nstance of logger" do
+			mock(CommitHook).config { {} }
+			CommitHook.logger.should be_kind_of(Logger)
 		end
 	end
 end
+
+__END__
+
+ vim: tabstop=2 expandtab shiftwidth=2
+

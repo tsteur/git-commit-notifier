@@ -2,25 +2,22 @@ require 'rubygems'
 require 'cgi'
 require 'net/smtp'
 require 'sha1'
-require 'tmpdir'
 
 require 'diff_to_html'
 require 'emailer'
 require 'git'
 
 class CommitHook
-  DEFAULT_LOG_DIRECTORY = Dir.tmpdir.freeze
-	LOG_NAME = 'git-commit-notifier.log'.freeze
-
+	
   class << self
     attr_reader :config
 
     def show_error(message)
-      puts "************** GIT NOTIFIER PROBLEM *******************"
-      puts "\n"
-      puts message
-      puts "\n"
-      puts "************** GIT NOTIFIER PROBLEM *******************"
+      info "************** GIT NOTIFIER PROBLEM *******************"
+      info "\n"
+      info message
+      info "\n"
+      info "************** GIT NOTIFIER PROBLEM *******************"
     end
 
     def info(message)
@@ -28,18 +25,8 @@ class CommitHook
       $stdout.flush
     end
 
-    def debug?
-      !!(config['debug'] && config['debug']['enabled'])
-    end
-
-		def log_directory
-			return nil unless debug?
-			config['debug']['log_directory'] || CommitHook::DEFAULT_LOG_DIRECTORY
-		end
-
-		def log_path
-			return nil unless debug?
-			File.join(log_directory, CommitHook::LOG_NAME)
+		def logger
+      @logger ||= Logger.new(config)
 		end
 
     def run(config_name, rev1, rev2, ref_name)
@@ -123,3 +110,9 @@ class CommitHook
     end
   end
 end
+
+__END__
+
+ vim: tabstop=2 expandtab shiftwidth=2
+
+
