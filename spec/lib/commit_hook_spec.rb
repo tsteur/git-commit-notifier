@@ -40,11 +40,10 @@ describe CommitHook do
    end
 
   def expect_repository_access
-    path = File.dirname(__FILE__) + '/../fixtures/'
-    mock(Git).log(REVISIONS.first, REVISIONS.last) { IO.read(path + 'git_log') }
+    mock(Git).log(REVISIONS.first, REVISIONS.last) { IO.read(FIXTURES_PATH + 'git_log') }
     mock(Git).mailing_list_address { 'recipient@test.com' }
     REVISIONS.each do |rev|
-      mock(Git).show(rev) { IO.read(path + "git_show_#{rev}") }
+      mock(Git).show(rev) { IO.read(FIXTURES_PATH + "git_show_#{rev}") }
     end
   end
 

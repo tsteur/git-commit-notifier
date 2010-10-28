@@ -264,7 +264,13 @@ class DiffToHtml
       next unless diff_found
       diff << line
     end
-    diff.join("\n")
+    diff = diff.join("\n")
+		CommitHook.logger.debug('raw---')
+		CommitHook.logger.debug(content)
+		CommitHook.logger.debug('diff---')
+		CommitHook.logger.debug(diff)
+		CommitHook.logger.debug('---')
+		diff
   end
 
   def extract_commit_info_from_git_show_output(content)

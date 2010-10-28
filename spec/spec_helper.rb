@@ -19,5 +19,6 @@ unless defined? REVISIONS
              '51b986619d88f7ba98be7d271188785cbbb541a0', # 3 files updated
              '055850e7d925110322b8db4e17c3b840d76e144c'] # Empty merge message
 
+  FIXTURES_PATH = (File.dirname(__FILE__) + '/fixtures/').freeze
 end
 
