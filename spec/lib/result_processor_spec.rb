@@ -95,7 +95,7 @@ describe ResultProcessor do
   describe :length_in_chars do
     it "should be unicode friendly" do
       processor = ResultProcessor.new(@diff)
-     processor.length_in_chars([{ :token => 'японская мама' }]).should == 13
+      processor.length_in_chars([{ :token => 'японская мама' }]).should == 13
     end
   end
 end
