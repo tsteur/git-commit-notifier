@@ -265,12 +265,12 @@ class DiffToHtml
       diff << line
     end
     diff = diff.join("\n")
-		CommitHook.logger.debug('raw---')
-		CommitHook.logger.debug(content)
-		CommitHook.logger.debug('diff---')
-		CommitHook.logger.debug(diff)
-		CommitHook.logger.debug('---')
-		diff
+    CommitHook.logger.debug('raw---')
+    CommitHook.logger.debug(content)
+    CommitHook.logger.debug('diff---')
+    CommitHook.logger.debug(diff)
+    CommitHook.logger.debug('---')
+    diff
   end
 
   def extract_commit_info_from_git_show_output(content)

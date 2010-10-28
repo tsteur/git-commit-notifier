@@ -4,7 +4,7 @@ require 'git'
 require 'hpricot'
 
 describe DiffToHtml do
-	
+
 
   describe :lines_are_sequential? do
     before(:all) do
@@ -150,8 +150,8 @@ describe DiffToHtml do
     end
   end
 
-	it "should get good diff when new branch created" do
-		first_rev, last_rev = %w[ 0000000000000000000000000000000000000000 9b15cebcc5434e27c00a4a2acea43509f9faea21 ]
+  it "should get good diff when new branch created" do
+    first_rev, last_rev = %w[ 0000000000000000000000000000000000000000 9b15cebcc5434e27c00a4a2acea43509f9faea21 ]
     mock(Git).branch_commits('rvm') { IO.read(FIXTURES_PATH + 'git_branch_commits') }
     %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ].each do |rev|
       mock(Git).show("#{rev}\n") { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
@@ -159,11 +159,11 @@ describe DiffToHtml do
     diff = DiffToHtml.new
     mock(diff).check_handled_commits(anything, 'rvm') { |commits, branch| commits }
     diff.diff_between_revisions(first_rev, last_rev, 'tm-admin', 'rvm')
-		diff.result.should have(1).commit
-		hp = Hpricot diff.result.first[:html_content]
-		p diff.result.first[:html_content]
+    diff.result.should have(1).commit
+    hp = Hpricot diff.result.first[:html_content]
+    p diff.result.first[:html_content]
     (hp/"table").should have(1).table
-		(hp/"tr.r").should have(1).row
-	end
+    (hp/"tr.r").should have(1).row
+  end
 end
 
