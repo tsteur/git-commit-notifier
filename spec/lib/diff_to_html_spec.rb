@@ -152,9 +152,9 @@ describe DiffToHtml do
 
   it "should get good diff when new branch created" do
     first_rev, last_rev = %w[ 0000000000000000000000000000000000000000 9b15cebcc5434e27c00a4a2acea43509f9faea21 ]
-    mock(Git).branch_commits('rvm') { IO.read(FIXTURES_PATH + 'git_branch_commits') }
+    mock(Git).branch_commits('rvm') { %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ] }
     %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ].each do |rev|
-      mock(Git).show("#{rev}\n") { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
+      mock(Git).show(rev) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end
     diff = DiffToHtml.new
     mock(diff).check_handled_commits(anything, 'rvm') { |commits, branch| commits }
