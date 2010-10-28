@@ -17,7 +17,16 @@ class Emailer
   end
 
   def self.template
-    @template ||= ERB.new(IO.read(TEMPLATE))
+    unless @template
+      source = IO.read(TEMPLATE)
+      begin
+        require 'erubis'
+        @template = Erubis::Eruby.new(source)
+      rescue LoadError
+        @template = ERB.new(source)
+      end
+    end
+    @template
   end
 
   def generate_message
@@ -90,7 +99,7 @@ class Emailer
         "Content-Type: text/html; charset=utf-8",
         "Content-Transfer-Encoding: 8bit",
         "Content-Disposition: inline\n\n\n",
-        @html_message,
+        @html,
         "--#{boundary}--"]
 
     if @recipient.empty?
