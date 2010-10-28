@@ -12,6 +12,14 @@ class ResultProcessor
     [array_of_lines(@result[:removal]), array_of_lines(@result[:addition])]
   end
 
+  def length_in_chars(diff)
+    diff.inject(0) do |length, s|
+      token = s[:token]
+      token_length = token.respond_to?(:jlength) ? token.jlength : token.length
+      length + token_length
+    end
+  end
+
   private
 
   def initialize(diff)
@@ -46,15 +54,11 @@ class ResultProcessor
     @diff.insert(position, { :action => :discard_b, :token => token} )
   end
 
-  def length_in_chars(diff)
-    diff.inject(0) { |length, s| length + s[:token].size}
-  end
-
   def filter_replaced_lines
     # if a block is replaced by an other one, lcs-diff will find even the single common word between the old and the new content
     # no need for intelligent diff in this case, simply show the removed and the added block with no highlighting
     # rule: if less than 33% of a block is not a match, we don't need intelligent diff for that block
-    match_length = length_in_chars(@diff.select { |d| d[:action] == :match})
+    match_length = length_in_chars(@diff.select { |d| d[:action] == :match })
     total_length = length_in_chars(@diff)
 
     if total_length.to_f / match_length > 3.3

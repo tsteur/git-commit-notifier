@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require File.expand_path('../../spec_helper', __FILE__)
 require 'diff_to_html'
 
@@ -87,6 +89,13 @@ describe ResultProcessor do
 
     s1[@diff.size..-1].each_char do |c|
       @diff << { :action => :match, :token => c }
+    end
+  end
+
+  describe :length_in_chars do
+    it "should be unicode friendly" do
+      processor = ResultProcessor.new(@diff)
+     processor.length_in_chars([{ :token => 'японская мама' }]).should == 13
     end
   end
 end
