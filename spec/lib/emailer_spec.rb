@@ -47,5 +47,17 @@ describe Emailer do
       emailer.stylesheet_string.should == 'ok'
     end
   end
+
+  describe :generate_message do
+    it "should generate html" do
+      options = {}
+      Emailer::PARAMETERS.each do |name|
+        options[name.to_sym] = Faker::Lorem.sentence
+      end
+      emailer = Emailer.new({}, options)
+      emailer.generate_message
+      emailer.instance_variable_get(:@html).should match(/html/)
+    end
+  end
 end
 

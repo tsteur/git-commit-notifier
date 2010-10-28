@@ -29,6 +29,7 @@ class Emailer
   end
 
   def generate_message
+    # TODO: do not use @html, simply return value
     @html = TamTam.inline(:document => Emailer.template.result(binding))
   end
 
