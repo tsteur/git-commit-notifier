@@ -1,5 +1,3 @@
-require 'yaml'
-require 'erb'
 require 'tamtam'
 
 class Emailer
@@ -23,6 +21,7 @@ class Emailer
         require 'erubis'
         @template = Erubis::Eruby.new(source)
       rescue LoadError
+        require 'erb'
         @template = ERB.new(source)
       end
     end
