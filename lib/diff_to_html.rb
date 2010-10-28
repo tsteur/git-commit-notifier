@@ -20,7 +20,7 @@ class DiffToHtml
   NEW_HANDLED_COMMITS_FILE = 'previously_new.txt'.freeze
 
   attr_accessor :file_prefix, :current_file_name
-  attr_reader :result
+  attr_reader :result, :branch
 
   def initialize(previous_dir = nil, config = nil)
     @previous_dir = previous_dir
@@ -146,7 +146,7 @@ class DiffToHtml
     if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
       file_name = "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};f=#{file_name};hb=HEAD'>#{file_name}</a>"
     elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
-      file_name = "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/blobs/HEAD/#{file_name}'>#{file_name}</a>"
+      file_name = "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/blobs/#{branch}/#{file_name}'>#{file_name}</a>"
     elsif (@config["link_files"] && @config["link_files"] == "cgit" && @config["cgit"])
       file_name = "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/tree/#{file_name}'>#{file_name}</a>"
     end
@@ -345,6 +345,7 @@ class DiffToHtml
   end
 
   def diff_between_revisions(rev1, rev2, repo, branch)
+    @branch = branch
     @result = []
     if rev1 == rev2
       commits = [rev1]
