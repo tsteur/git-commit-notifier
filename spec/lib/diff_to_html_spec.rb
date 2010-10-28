@@ -161,7 +161,6 @@ describe DiffToHtml do
     diff.diff_between_revisions(first_rev, last_rev, 'tm-admin', 'rvm')
     diff.result.should have(1).commit
     hp = Hpricot diff.result.first[:html_content]
-    p diff.result.first[:html_content]
     (hp/"table").should have(1).table
     (hp/"tr.r").should have(1).row
   end
