@@ -366,7 +366,6 @@ class DiffToHtml
 
       raw_diff = Git.show(commit)
       raise "git show output is empty" if raw_diff.empty?
-      @last_raw = raw_diff
 
       commit_info = extract_commit_info_from_git_show_output(raw_diff)
 
