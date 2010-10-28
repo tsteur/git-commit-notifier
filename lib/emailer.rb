@@ -16,8 +16,12 @@ class Emailer
     end
   end
 
+  def self.template
+    @template ||= ERB.new(IO.read(TEMPLATE))
+  end
+
   def generate_message
-    @html_message = TamTam.inline(:document => ERB.new(IO.read(TEMPLATE)).result(binding))
+    @html = TamTam.inline(:document => Emailer.template.result(binding))
   end
 
   def boundary
