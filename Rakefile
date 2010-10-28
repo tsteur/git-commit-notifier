@@ -55,11 +55,21 @@ end
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+  version = File.exists?('VERSION') ? IO.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "git-commit-notifier #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+begin
+  gem 'code-cleaner'
+  desc 'Clean code for whitespaces and tabs'
+  task :'code:clean' do
+    system('code-cleaner lib spec Rakefile bin/git-commit-notifier')
+  end
+rescue LoadError
+  $stderr.puts "code-cleaner not available. Install it with: gem install code-cleaner"
 end
 
