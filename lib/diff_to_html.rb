@@ -210,8 +210,7 @@ class DiffToHtml
     @current_file_name = nil
 
     content.split("\n").each do |line|
-      if line =~ /^diff\s\-\-git/
-        line.match(/diff --git a\/(.*)\sb\//)
+      if line =~ /^diff\s\-\-git\sa\/(.*)\sb\//
         file_name = $1
         add_changes_to_result
         @current_file_name = file_name
@@ -260,17 +259,11 @@ class DiffToHtml
     diff = []
     diff_found = false
     content.split("\n").each do |line|
-      diff_found = true if line =~ /^diff \-\-git/
+      diff_found = true if line =~ /^diff\s\-\-git/
       next unless diff_found
       diff << line
     end
-    diff = diff.join("\n")
-    CommitHook.logger.debug('raw---')
-    CommitHook.logger.debug(content)
-    CommitHook.logger.debug('diff---')
-    CommitHook.logger.debug(diff)
-    CommitHook.logger.debug('---')
-    diff
+    diff.join("\n")
   end
 
   def extract_commit_info_from_git_show_output(content)
@@ -300,10 +293,9 @@ class DiffToHtml
 
   def author_name_and_email(info)
     # input string format: "autor name <author@email.net>"
-    result = info.scan(/(.*)\s<(.*)>/)[0]
-    return result if result.is_a?(Array) && result.size == 2 # normal operation
+    return [$1, $2] if info =~ /^([^\<]+)\s+\<\s*(.*)\s*\>\s*$/ # normal operation
     # incomplete author info - return it as author name
-    return [info, ''] if result.nil?
+    [info, '']
   end
 
   def first_sentence(message_array)
