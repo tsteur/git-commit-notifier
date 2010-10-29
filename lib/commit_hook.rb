@@ -15,11 +15,11 @@ class CommitHook
     attr_reader :config
 
     def show_error(message)
-      info "************** GIT NOTIFIER PROBLEM *******************"
-      info "\n"
-      info message
-      info "\n"
-      info "************** GIT NOTIFIER PROBLEM *******************"
+      $stderr.puts "************** GIT NOTIFIER PROBLEM *******************"
+      $stderr.puts "\n"
+      $stderr.puts message
+      $stderr.puts "\n"
+      $stderr.puts "************** GIT NOTIFIER PROBLEM *******************"
     end
 
     def info(message)
@@ -32,7 +32,7 @@ class CommitHook
     end
 
     def run(config_name, rev1, rev2, ref_name)
-      @config = File.exist?(config_name) ? YAML::load_file(config_name) : {}
+      @config = File.exists?(config_name) ? YAML::load_file(config_name) : {}
 
       project_path = Dir.getwd
       recipient = config["mailinglist"] || Git.mailing_list_address

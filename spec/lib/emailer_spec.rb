@@ -1,4 +1,6 @@
 require File.expand_path('../../spec_helper', __FILE__)
+
+require 'erb'
 require 'emailer'
 
 describe Emailer do
@@ -59,5 +61,42 @@ describe Emailer do
       emailer.instance_variable_get(:@html).should match(/html/)
     end
   end
+
+  describe :template do
+    before(:each) do
+      Emailer.reset_template
+      mock(IO).read(Emailer::TEMPLATE) { 'erb' }
+    end
+
+    it "should respond to result" do
+      Emailer.template.should respond_to(:result)
+    end
+
+    it "should return Erubis template if Erubis installed" do
+      mock(Emailer).require('erubis')
+      dont_allow(Emailer).require('erb')
+      unless defined?(Erubis)
+        module Erubis
+          class Eruby
+            def initialize(erb)
+            end
+          end
+        end
+      end
+      mock.proxy(Erubis::Eruby).new('erb')
+      Emailer.template.should be_kind_of(Erubis::Eruby)
+    end
+
+    it "should return ERB template unless Erubis installed" do
+      mock(Emailer).require('erubis') { raise LoadError.new('erubis') }
+      mock(Emailer).require('erb')
+      mock.proxy(ERB).new('erb')
+      Emailer.template.should be_kind_of(ERB)
+    end
+  end
 end
+
+__END__
+
+ vim: tabstop=2 expandtab shiftwidth=2
 

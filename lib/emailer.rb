@@ -14,18 +14,24 @@ class Emailer
     end
   end
 
-  def self.template
-    unless @template
-      source = IO.read(TEMPLATE)
-      begin
-        require 'erubis'
-        @template = Erubis::Eruby.new(source)
-      rescue LoadError
-        require 'erb'
-        @template = ERB.new(source)
-      end
+  class << self
+    def reset_template
+      @template = nil
     end
-    @template
+
+    def template
+      unless @template
+        source = IO.read(TEMPLATE)
+        begin
+          require 'erubis'
+           @template = Erubis::Eruby.new(source)
+        rescue LoadError
+          require 'erb'
+          @template = ERB.new(source)
+        end
+      end
+      @template
+    end
   end
 
   def generate_message

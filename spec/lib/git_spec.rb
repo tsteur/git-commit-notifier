@@ -3,6 +3,7 @@ require 'git'
 
 describe Git do
   SAMPLE_REV = '51b986619d88f7ba98be7d271188785cbbb541a0'.freeze
+  SAMPLE_REV_2 = '62b986619d88f7ba98be7d271188785cbbb541b1'.freeze
 
   describe :from_shell do
     it "should be backtick" do
@@ -61,6 +62,27 @@ describe Git do
       mock(Git).from_shell("git config hooks.emailprefix") { " " }
       mock(Dir).pwd { "/home/someuser/repositories/myrepo.git" }
       Git.repo_name.should == "myrepo"
+    end
+  end
+
+  describe :log do
+    it "should run git log with given args" do
+      mock(Git).from_shell("git log #{SAMPLE_REV}..#{SAMPLE_REV_2}") { " ok " }
+      Git.log(SAMPLE_REV, SAMPLE_REV_2).should == "ok"
+    end
+  end
+
+  describe :branch_head do
+    it "should run git rev-parse with given treeish" do
+      mock(Git).from_shell("git rev-parse #{SAMPLE_REV}") { " ok " }
+      Git.branch_head(SAMPLE_REV).should == "ok"
+    end
+  end
+
+  describe :mailing_list_address do
+    it "should run git config hooks.mailinglist" do
+      mock(Git).from_shell("git config hooks.mailinglist") { " ok " }
+      Git.mailing_list_address.should == "ok"
     end
   end
 

@@ -53,6 +53,33 @@ describe CommitHook do
       CommitHook.logger.should be_kind_of(Logger)
     end
   end
+
+  describe :show_error do
+    it "should write error to stderr" do
+      mock($stderr).puts("\n").times(2)
+      mock($stderr).puts(/GIT\sNOTIFIER\sPROBLEM/).times(2)
+      mock($stderr).puts('yes')
+      CommitHook.show_error('yes')
+    end
+  end
+
+  describe :info do
+    it "should write to and flush stdout" do
+      mock($stdout).puts('msg')
+      mock($stdout).flush
+      CommitHook.info('msg')
+    end
+  end
+
+  describe :run do
+    it "should report error when no recipients specified" do
+      mock(File).exists?(:noconfig) { false }
+      mock(Git).mailing_list_address { nil }
+      mock(CommitHook).show_error(/recipient/)
+      CommitHook.run(:noconfig, :rev1, :rev2, 'master')
+    end
+  end
+
 end
 
 __END__
