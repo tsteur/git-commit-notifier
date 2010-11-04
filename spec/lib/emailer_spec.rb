@@ -16,13 +16,6 @@ describe Emailer do
       cfg.should be_empty
     end
 
-    it "should not generate message from template" do
-      any_instance_of(Emailer) do |emailer|
-        dont_allow(emailer).generate_message
-      end
-      Emailer.new({})
-    end
-
     it "should assign parameters from options" do
       options = {}
       Emailer::PARAMETERS.each do |name|
@@ -50,15 +43,14 @@ describe Emailer do
     end
   end
 
-  describe :generate_message do
-    it "should generate html" do
+  describe :mail_html_message do
+    it "should form inline html" do
       options = {}
       Emailer::PARAMETERS.each do |name|
         options[name.to_sym] = Faker::Lorem.sentence
       end
       emailer = Emailer.new({}, options)
-      emailer.generate_message
-      emailer.instance_variable_get(:@html).should match(/html/)
+      emailer.mail_html_message.should match(/html/)
     end
   end
 
