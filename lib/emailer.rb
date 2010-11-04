@@ -1,4 +1,5 @@
-require 'tamtam'
+require 'stringio'
+require 'premailer'
 
 class Emailer
   DEFAULT_STYLESHEET_PATH = File.join(File.dirname(__FILE__), '/../template/styles.css').freeze
@@ -36,7 +37,9 @@ class Emailer
 
   def generate_message
     # TODO: do not use @html, simply return value
-    @html = TamTam.inline(:document => Emailer.template.result(binding))
+    io = StringIO.new(Emailer.template.result(binding))
+    premailer = Premailer.new(io)
+		@html = premailer.to_inline_css
   end
 
   def boundary
