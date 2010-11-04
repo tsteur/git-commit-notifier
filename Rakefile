@@ -15,7 +15,7 @@ begin
     gem.add_dependency('diff-lcs')
     gem.add_dependency('mocha')
     gem.add_dependency('hpricot')
-    gem.add_dependency('premailer')
+    gem.add_dependency('premailer', '>=1.5.6')
     gem.add_development_dependency('rspec-core')
     gem.add_development_dependency('rspec-expectations')
     gem.add_development_dependency('rr')
