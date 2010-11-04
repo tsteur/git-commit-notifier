@@ -1,4 +1,3 @@
-require 'stringio'
 require 'premailer'
 
 class Emailer
@@ -35,11 +34,10 @@ class Emailer
     end
   end
 
-  def generate_message
-    # TODO: do not use @html, simply return value
-    io = StringIO.new(Emailer.template.result(binding))
-    premailer = Premailer.new(io)
-		@html = premailer.to_inline_css
+  def mail_html_message
+    html = Emailer.template.result(binding)
+    premailer = Premailer.new(html, :with_html_string => true)
+    premailer.to_inline_css
   end
 
   def boundary
@@ -87,7 +85,6 @@ class Emailer
   end
 
   def send
-    generate_message
     from = quote_if_necessary(@from_alias.empty? ? @from_address : "#{@from_alias} <#{@from_address}>", 'utf-8')
     content = ["From: #{from}",
         "Reply-To: #{from}",
@@ -108,7 +105,7 @@ class Emailer
         "Content-Type: text/html; charset=utf-8",
         "Content-Transfer-Encoding: 8bit",
         "Content-Disposition: inline\n\n\n",
-        @html,
+        mail_html_message,
         "--#{boundary}--"]
 
     if @recipient.empty?
