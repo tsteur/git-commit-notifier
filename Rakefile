@@ -13,7 +13,6 @@ begin
     gem.homepage = "http://github.com/bitboxer/git-commit-notifier"
     gem.authors = ["Bodo Tasche"]
     gem.add_dependency('diff-lcs')
-    gem.add_dependency('mocha')
     gem.add_dependency('hpricot')
     gem.add_dependency('premailer', '>=1.5.6')
     gem.add_development_dependency('rspec-core')
