@@ -1,11 +1,9 @@
 require File.expand_path('../../spec_helper', __FILE__)
 require 'diff_to_html'
 require 'git'
-require 'hpricot'
+require 'nokogiri'
 
 describe DiffToHtml do
-
-
   describe :lines_are_sequential? do
     before(:all) do
       @diff_to_html = DiffToHtml.new
@@ -116,9 +114,9 @@ describe DiffToHtml do
     end
 
     # first commit
-    hp = Hpricot diff.result.first[:html_content]
+    hp = Nokogiri::HTML diff.result.first[:html_content]
     (hp/"table").should have(2).tables # 2 files updated - one table for each of the files
-    (hp/"table/tr/").each do |td|
+    (hp/"table"/"tr"/"td").each do |td|
       if td.inner_html == "require&nbsp;'iconv'"
         # first added line in changeset a4629e707d80a5769f7a71ca6ed9471015e14dc9
         td.parent.search('td')[0].inner_text.should == '' # left
@@ -128,11 +126,11 @@ describe DiffToHtml do
     end
 
     # second commit
-    hp = Hpricot diff.result[1][:html_content]
+    hp = Nokogiri::HTML diff.result[1][:html_content]
     (hp/"table").should have(1).table # 1 file updated
 
     # third commit - dce6ade4cdc2833b53bd600ef10f9bce83c7102d
-    hp = Hpricot diff.result[2][:html_content]
+    hp = Nokogiri::HTML diff.result[2][:html_content]
     (hp/"table").should have(6).tables # 6 files updated
     (hp/"h2")[1].inner_text.should == 'Added binary file railties/doc/guides/source/images/icons/callouts/11.png'
     (hp/"h2")[2].inner_text.should == 'Deleted binary file railties/doc/guides/source/icons/up.png'
@@ -140,9 +138,9 @@ describe DiffToHtml do
     (hp/"h2")[4].inner_text.should == 'Added file railties/doc/guides/source/images/icons/README'
 
     # fourth commit - 51b986619d88f7ba98be7d271188785cbbb541a0
-    hp = Hpricot diff.result[3][:html_content]
+    hp = Nokogiri::HTML diff.result[3][:html_content]
     (hp/"table").should have(3).tables # 3 files updated
-    (hp/"table/tr/").each do |td|
+    (hp/"table"/"tr"/"td").each do |td|
       if td.inner_html =~ /create_btn/
         cols = td.parent.search('td')
         ['405', '408', ''].should be_include(cols[0].inner_text) # line 405 changed
@@ -160,7 +158,7 @@ describe DiffToHtml do
     mock(diff).check_handled_commits(anything, 'rvm') { |commits, branch| commits }
     diff.diff_between_revisions(first_rev, last_rev, 'tm-admin', 'rvm')
     diff.result.should have(1).commit
-    hp = Hpricot diff.result.first[:html_content]
+    hp = Nokogiri::HTML diff.result.first[:html_content]
     (hp/"table").should have(1).table
     (hp/"tr.r").should have(1).row
   end

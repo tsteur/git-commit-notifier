@@ -14,7 +14,7 @@ begin
     gem.authors = ["Bodo Tasche"]
     gem.add_dependency('diff-lcs')
     gem.add_dependency('premailer', '>=1.5.6')
-    gem.add_development_dependency('hpricot') # FIXME: Move to Nokogiri
+    gem.add_development_dependency('nokogiri')
     gem.add_development_dependency('rspec-core')
     gem.add_development_dependency('rspec-expectations')
     gem.add_development_dependency('rr')
