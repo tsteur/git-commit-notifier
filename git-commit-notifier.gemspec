@@ -5,14 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{git-commit-notifier}
-  s.version = "0.8.0"
+  s.version = "0.8.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
-  s.date = %q{2010-08-06}
+  s.date = %q{2010-11-03}
   s.default_executable = %q{git-commit-notifier}
   s.description = %q{This git commit notifier sends html mails with nice diffs for every changed file.}
-  s.email = %q{bodo@wannawork.de}
+  s.email = %q{bodo@bitboxer.de}
   s.executables = ["git-commit-notifier"]
   s.extra_rdoc_files = [
     "LICENSE",
@@ -32,35 +32,43 @@ Gem::Specification.new do |s|
      "lib/diff_to_html.rb",
      "lib/emailer.rb",
      "lib/git.rb",
+     "lib/logger.rb",
      "lib/result_processor.rb",
+     "spec/fixtures/existing_file_one_line.txt",
+     "spec/fixtures/git-notifier-group-email-by-push.yml",
+     "spec/fixtures/git-notifier-ignore-merge.yml",
+     "spec/fixtures/git-notifier-with-merge.yml",
+     "spec/fixtures/git_log",
+     "spec/fixtures/git_show_055850e7d925110322b8db4e17c3b840d76e144c",
+     "spec/fixtures/git_show_51b986619d88f7ba98be7d271188785cbbb541a0",
+     "spec/fixtures/git_show_a4629e707d80a5769f7a71ca6ed9471015e14dc9",
+     "spec/fixtures/git_show_dce6ade4cdc2833b53bd600ef10f9bce83c7102d",
+     "spec/fixtures/git_show_e28ad77bba0574241e6eb64dfd0c1291b221effe",
+     "spec/fixtures/git_show_ff037a73fc1094455e7bbf506171a3f3cf873ae6",
+     "spec/fixtures/new_file_one_line.txt",
+     "spec/lib/commit_hook_spec.rb",
+     "spec/lib/diff_to_html_spec.rb",
+     "spec/lib/emailer_spec.rb",
+     "spec/lib/git_spec.rb",
+     "spec/lib/logger_spec.rb",
+     "spec/lib/result_processor_spec.rb",
+     "spec/spec_helper.rb",
      "template/email.html.erb",
-     "template/styles.css",
-     "test/fixtures/existing_file_one_line.txt",
-     "test/fixtures/git-notifier-group-email-by-push.yml",
-     "test/fixtures/git-notifier-ignore-merge.yml",
-     "test/fixtures/git-notifier-with-merge.yml",
-     "test/fixtures/git_log",
-     "test/fixtures/git_show_055850e7d925110322b8db4e17c3b840d76e144c",
-     "test/fixtures/git_show_51b986619d88f7ba98be7d271188785cbbb541a0",
-     "test/fixtures/git_show_a4629e707d80a5769f7a71ca6ed9471015e14dc9",
-     "test/fixtures/git_show_dce6ade4cdc2833b53bd600ef10f9bce83c7102d",
-     "test/fixtures/git_show_e28ad77bba0574241e6eb64dfd0c1291b221effe",
-     "test/fixtures/new_file_one_line.txt",
-     "test/test_helper.rb",
-     "test/unit/test_commit_hook.rb",
-     "test/unit/test_diff_to_html.rb",
-     "test/unit/test_result_processor.rb"
+     "template/styles.css"
   ]
-  s.homepage = %q{http://github.com/bodo/git-commit-notifier}
+  s.homepage = %q{http://github.com/bitboxer/git-commit-notifier}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Sends git commit messages with diffs}
   s.test_files = [
-    "test/test_helper.rb",
-     "test/unit/test_commit_hook.rb",
-     "test/unit/test_diff_to_html.rb",
-     "test/unit/test_result_processor.rb"
+    "spec/lib/commit_hook_spec.rb",
+     "spec/lib/diff_to_html_spec.rb",
+     "spec/lib/emailer_spec.rb",
+     "spec/lib/git_spec.rb",
+     "spec/lib/logger_spec.rb",
+     "spec/lib/result_processor_spec.rb",
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
@@ -72,17 +80,35 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<mocha>, [">= 0"])
       s.add_runtime_dependency(%q<hpricot>, [">= 0"])
       s.add_runtime_dependency(%q<tamtam>, [">= 0"])
+      s.add_development_dependency(%q<rspec-core>, [">= 0"])
+      s.add_development_dependency(%q<rspec-expectations>, [">= 0"])
+      s.add_development_dependency(%q<rr>, [">= 0"])
+      s.add_development_dependency(%q<faker>, [">= 0"])
+      s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_development_dependency(%q<metric_fu>, [">= 0"])
     else
       s.add_dependency(%q<diff-lcs>, [">= 0"])
       s.add_dependency(%q<mocha>, [">= 0"])
       s.add_dependency(%q<hpricot>, [">= 0"])
       s.add_dependency(%q<tamtam>, [">= 0"])
+      s.add_dependency(%q<rspec-core>, [">= 0"])
+      s.add_dependency(%q<rspec-expectations>, [">= 0"])
+      s.add_dependency(%q<rr>, [">= 0"])
+      s.add_dependency(%q<faker>, [">= 0"])
+      s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<metric_fu>, [">= 0"])
     end
   else
     s.add_dependency(%q<diff-lcs>, [">= 0"])
     s.add_dependency(%q<mocha>, [">= 0"])
     s.add_dependency(%q<hpricot>, [">= 0"])
     s.add_dependency(%q<tamtam>, [">= 0"])
+    s.add_dependency(%q<rspec-core>, [">= 0"])
+    s.add_dependency(%q<rspec-expectations>, [">= 0"])
+    s.add_dependency(%q<rr>, [">= 0"])
+    s.add_dependency(%q<faker>, [">= 0"])
+    s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<metric_fu>, [">= 0"])
   end
 end
 
