@@ -104,7 +104,7 @@ describe DiffToHtml do
     end
 
     diff = DiffToHtml.new
-    mock(diff).check_handled_commits(anything, 'master') { |commits, branch| commits }
+    mock(diff).check_handled_commits(anything) { |commits| commits }
     diff.diff_between_revisions REVISIONS.first, REVISIONS.last, 'testproject', 'master'
 
     diff.result.should have(5).commits # one result for each of the commits
@@ -155,7 +155,7 @@ describe DiffToHtml do
       mock(Git).show(rev) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end
     diff = DiffToHtml.new
-    mock(diff).check_handled_commits(anything, 'rvm') { |commits, branch| commits }
+    mock(diff).check_handled_commits(anything) { |commits| commits }
     diff.diff_between_revisions(first_rev, last_rev, 'tm-admin', 'rvm')
     diff.result.should have(1).commit
     hp = Nokogiri::HTML diff.result.first[:html_content]

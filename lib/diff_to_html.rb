@@ -146,7 +146,7 @@ class DiffToHtml
     if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
       file_name = "<a href='#{@config['gitweb']['path']}?p=#{@config['gitweb']['project']};f=#{file_name};hb=HEAD'>#{file_name}</a>"
     elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
-      file_name = "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/blobs/#{branch}/#{file_name}'>#{file_name}</a>"
+      file_name = "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/blobs/#{branch_name}/#{file_name}'>#{file_name}</a>"
     elsif (@config["link_files"] && @config["link_files"] == "cgit" && @config["cgit"])
       file_name = "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/tree/#{file_name}'>#{file_name}</a>"
     end
@@ -318,30 +318,45 @@ class DiffToHtml
     end
     previous_list
   end
+  
+  def previous_dir 
+    (!@previous_dir.nil? && File.exists?(@previous_dir)) ? @previous_dir : '/tmp'
+  end
 
-  def check_handled_commits(commits, branch)
-    previous_dir = (!@previous_dir.nil? && File.exists?(@previous_dir)) ? @previous_dir : '/tmp'
-    prefix = unique_commits_per_branch? ? "#{Digest::SHA1.hexdigest(branch)}." : ''
-    previous_name = "#{prefix}#{HANDLED_COMMITS_FILE}"
-    new_name = "#{prefix}#{NEW_HANDLED_COMMITS_FILE}"
-    previous_file = File.join(previous_dir, previous_name)
-    new_file = File.join(previous_dir, new_name)
+  def previous_prefix
+    unique_commits_per_branch? ? "#{Digest::SHA1.hexdigest(branch)}." : ''
+  end
 
+  def previous_file_path
+    previous_name = "#{previous_prefix}#{HANDLED_COMMITS_FILE}"
+    File.join(previous_dir, previous_name)
+  end
+
+  def new_file_path
+    new_name = "#{previous_prefix}#{NEW_HANDLED_COMMITS_FILE}"
+    File.join(previous_dir, new_name)
+  end
+
+  def save_handled_commits(previous_list, flatten_commits)
+    return if flatten_commits.empty?
+    current_list = (previous_list + flatten_commits).last(MAX_COMMITS_PER_ACTION)
+  
+    # use new file, unlink and rename to make it more atomic
+    File.open(new_file_path, 'w') { |f| f << current_list.join("\n") }
+    File.unlink(previous_file_path) if File.exists?(previous_file_path)
+    File.rename(new_file_path, previous_file_path)
+  end
+
+  def check_handled_commits(commits)
     previous_list = get_previous_commits(previous_file)
-
     commits.reject! {|c| c.find { |sha| previous_list.include?(sha) } }
-
-    # if commit list empty there is no need to override list of handled commits
-    flatten_commits = commits.flatten
-    unless flatten_commits.empty?
-      current_list = (previous_list + flatten_commits).last(MAX_COMMITS_PER_ACTION)
-
-      # use new file, unlink and rename to make it more atomic
-      File.open(new_file, 'w') { |f| f << current_list.join("\n") }
-      File.unlink(previous_file) if File.exists?(previous_file)
-      File.rename(new_file, previous_file)
-    end
+    save_handled_commits(previous_list, commits.flatten)
+  
     commits
+  end
+
+  def branch_name
+    branch.split('/').last
   end
 
   def diff_between_revisions(rev1, rev2, repo, branch)
@@ -360,10 +375,9 @@ class DiffToHtml
       commits = log.scan(/^commit\s([a-f0-9]+)/).map { |a| a.first }
     end
 
-    commits = check_handled_commits(commits, branch)
+    commits = check_handled_commits(commits)
 
     commits.each_with_index do |commit, i|
-
       raw_diff = Git.show(commit)
       raise "git show output is empty" if raw_diff.empty?
 
@@ -387,7 +401,7 @@ class DiffToHtml
 
       title += "<br />\n"
 
-      title += "<strong>Branch:</strong> #{branch}\n<br />" unless branch =~ /\/head/
+      title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}\n<br />"
       title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
       title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n</div>"
 
