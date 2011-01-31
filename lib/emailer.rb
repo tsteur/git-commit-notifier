@@ -84,29 +84,38 @@ class Emailer
     end
   end
 
+  def perform_delivery_nntp(content, nntp_settings)
+    require 'rubygems'
+    require 'nntp'
+    Net::NNTP.start(nntp_settings['address'], nntp_settings['port']) do |nntp|
+        nntp.post content
+    end
+  end
+
   def send
+    to_tag = config['delivery_method'] == 'nntp' ? 'Newsgroups' : 'To'
     from = quote_if_necessary(@from_alias.empty? ? @from_address : "#{@from_alias} <#{@from_address}>", 'utf-8')
-    content = ["From: #{from}",
-        "Reply-To: #{from}",
-        "To: #{quote_if_necessary(@recipient, 'utf-8')}",
-        "Subject: #{quote_if_necessary(@subject, 'utf-8')}",
-        "X-Mailer: git-commit-notifier",
-        "X-Git-Refname: #{@ref_name}",
-        "X-Git-Oldrev: #{@old_rev}",
-        "X-Git-Newrev: #{@new_rev}",
-        "Mime-Version: 1.0",
+
+    content = ["From: #{from}\n",
+        "#{to_tag}: #{quote_if_necessary(@recipient, 'utf-8')}\n",
+        "Subject: #{quote_if_necessary(@subject, 'utf-8')}\n",
+        "X-Mailer: git-commit-notifier\n",
+        "X-Git-Refname: #{@ref_name}\n",
+        "X-Git-Oldrev: #{@old_rev}\n",
+        "X-Git-Newrev: #{@new_rev}\n",
+        "Mime-Version: 1.0\n",
         "Content-Type: multipart/alternative; boundary=#{boundary}\n\n\n",
-        "--#{boundary}",
-        "Content-Type: text/plain; charset=utf-8",
-        "Content-Transfer-Encoding: 8bit",
+        "--#{boundary}\n",
+        "Content-Type: text/plain; charset=utf-8\n",
+        "Content-Transfer-Encoding: 8bit\n",
         "Content-Disposition: inline\n\n\n",
         @text_message,
-        "--#{boundary}",
-        "Content-Type: text/html; charset=utf-8",
-        "Content-Transfer-Encoding: 8bit",
+        "\n--#{boundary}\n",
+        "Content-Type: text/html; charset=utf-8\n",
+        "Content-Transfer-Encoding: 8bit\n",
         "Content-Disposition: inline\n\n\n",
         mail_html_message,
-        "--#{boundary}--"]
+        "\n--#{boundary}--"]
 
     if @recipient.empty?
       puts content.join("\n")
@@ -115,8 +124,12 @@ class Emailer
 
     if config['delivery_method'] == 'smtp'
       perform_delivery_smtp(content, @config['smtp_server'])
-    else
-      perform_delivery_sendmail(content, @config['sendmail_options'])
+    else 
+      if config['delivery_method'] == 'nntp'
+         perform_delivery_nntp(content, @config['nntp_settings'])
+      else
+          perform_delivery_sendmail(content, @config['sendmail_options'])
+      end
     end
   end
 
