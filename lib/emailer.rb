@@ -93,12 +93,7 @@ class Emailer
   end
 
   def send
-    if config['delivery_method'] == 'nntp'
-      to_tag = 'Newsgroups'
-    else
-      to_tag = 'To'
-    end
-
+    to_tag = config['delivery_method'] == 'nntp' ? 'Newsgroups' : 'To'
     from = quote_if_necessary(@from_alias.empty? ? @from_address : "#{@from_alias} <#{@from_address}>", 'utf-8')
 
     content = ["From: #{from}\n",
