@@ -11,7 +11,17 @@ end
 class DiffToHtml
   INTEGRATION_MAP = {
     :mediawiki => { :search_for => /\[\[([^\[\]]+)\]\]/, :replace_with => '#{url}/\1' },
-    :redmine => { :search_for => /\b(?:refs|fixes)\s*\#(\d+)/i, :replace_with => '#{url}/issues/show/\1' },
+    :redmine => { :search_for => /\b(?:refs|fixes)([\s&,]+\#\d+)+/i, :replace_with => lambda do |m, url|
+      # we can provide Proc that gets matched string and configuration url.
+      # result should be in form of:
+      # { :phrase => 'phrase started with', :links => [ { :title => 'title of url', :url => 'target url' }, ... ] }
+      match = m.match(/^(refs|fixes)(.*)$/i)
+      return m unless match
+      r = { :phrase => match[1] }
+      captures = match[2].split(/[\s\&\,]+/).map { |m| (m =~ /(\d+)/) ? $1 : m }.reject { |c| c.empty? }
+      r[:links] = captures.map { |mn| { :title => "##{mn}", :url => "#{url}/issues/show/#{mn}" } }
+      r
+    end },
     :bugzilla => { :search_for => /\bBUG\s*(\d+)/i, :replace_with => '#{url}/show_bug.cgi?id=\1' },
     :fogbugz => { :search_for => /\bbugzid:\s*(\d+)/i, :replace_with => '#{url}\1' }
   }.freeze
@@ -416,24 +426,38 @@ class DiffToHtml
   end
 
   def message_replace!(message, search_for, replace_with)
-    full_replace_with = "<a href=\"#{replace_with}\">\\0</a>"
-    message.gsub!(Regexp.new(search_for), full_replace_with)
+    if replace_with.kind_of?(Proc)
+      message.gsub!(Regexp.new(search_for)) do |m|
+        r = replace_with.call(m)
+        r[:phrase] + ' ' + r[:links].map { |m| "<a href=\"#{m[:url]}\">#{m[:title]}</a>" }.join(', ')
+      end
+    else
+      full_replace_with = "<a href=\"#{replace_with}\">\\0</a>"
+      message.gsub!(Regexp.new(search_for), full_replace_with)
+    end
+  end
+
+  def do_message_integration(message)
+    return message unless @config['message_integration'].respond_to?(:each_pair)
+    @config['message_integration'].each_pair do |pm, url|
+      pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
+      replace_with = pm_def[:replace_with]
+      replace_with = replace_with.kind_of?(Proc) ? lambda { |m| pm_def[:replace_with].call(m, url) } : replace_with.gsub('#{url}', url)
+      message_replace!(message, pm_def[:search_for], replace_with)
+    end
+    message
+  end
+
+  def do_message_map(message)
+    return message unless @config['message_map'].respond_to?(:each_pair)
+    @config['message_map'].each_pair do |search_for, replace_with|
+      message_replace!(message, Regexp.new(search_for), replace_with)
+    end
+    message
   end
 
   def message_map(message)
-    if @config['message_integration'].respond_to?(:each_pair)
-      @config['message_integration'].each_pair do |pm, url|
-        pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
-        replace_with = pm_def[:replace_with].gsub('#{url}', url)
-        message_replace!(message, pm_def[:search_for], replace_with)
-      end
-    end
-    if @config['message_map'].respond_to?(:each_pair)
-      @config['message_map'].each_pair do |search_for, replace_with|
-        message_replace!(message, Regexp.new(search_for), replace_with)
-      end
-    end
-    message
+    do_message_map(do_message_integration(message))
   end
 end
 

@@ -162,5 +162,56 @@ describe DiffToHtml do
     (hp/"table").should have(1).table
     (hp/"tr.r").should have(1).row
   end
+
+  describe :message_map do
+    before(:each) do
+      @diff = DiffToHtml.new
+    end
+
+    it "should do message mapping" do
+      stub(@diff).do_message_integration("msg") { "msg2" }
+      mock(@diff).do_message_map("msg2") { "msg3" }
+      @diff.message_map("msg").should == "msg3"
+    end
+
+    it "should do message integration" do
+      mock(@diff).do_message_integration("msg") { "msg2" }
+      stub(@diff).do_message_map("msg2") { "msg3" }
+      @diff.message_map("msg").should == "msg3"
+    end
+  end
+
+  describe :do_message_integration do
+    before(:each) do
+      @config = Hash.new
+      @diff = DiffToHtml.new(nil, @config)
+    end
+=begin
+    return message unless @config['message_integration'].respond_to?(:each_pair)
+    @config['message_integration'].each_pair do |pm, url|
+      pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
+      replace_with = pm_def[:replace_with]
+      replace_with = replace_with.kind_of?(Proc) ? lambda { |m| pm_def[:replace_with].call(m, url) } : replace_with.gsub('#{url}', url)
+      message_replace!(message, pm_def[:search_for], replace_with)
+    end
+    message
+=end
+    it "should do nothing unless message_integration config section exists" do
+      mock.proxy(nil).respond_to?(:each_pair)
+      dont_allow(@diff).message_replace!
+      @diff.do_message_integration('yu').should == 'yu'
+    end
+    it "should pass MESSAGE_INTEGRATION through message_replace!" do
+      @config['message_integration'] = {
+        'mediawiki' => 'http://example.com/wiki', # will rework [[text]] to MediaWiki pages
+        'redmine' => 'http://redmine.example.com' # will rework refs #123, #125 to Redmine issues
+      }
+      @diff.do_message_integration("[[text]] refs #123, #125").should == "<a href=\"http://example.com/wiki/text\">[[text]]</a> refs <a href=\"http://redmine.example.com/issues/show/123\">#123</a>, <a href=\"http://redmine.example.com/issues/show/125\">#125</a>"
+    end
+
+
+  end
+
+
 end
 
