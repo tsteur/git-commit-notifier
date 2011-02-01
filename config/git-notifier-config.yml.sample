@@ -17,7 +17,7 @@ mailinglist: developers@example.com
 # stylesheet file (embedded template/styles.css by default)
 # stylesheet: /absolute/path/to/readable/stylesheet.css
 
-# select the delivery method: smtpi, nntp, or sendmail 
+# select the delivery method: smtp, nntp, or sendmail 
 delivery_method: sendmail 
 
 # Optionally group email by push: don't send an email for each commit when true.
