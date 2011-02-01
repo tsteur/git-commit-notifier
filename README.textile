@@ -5,7 +5,9 @@ __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' ab
 Sends email commit messages splitting commits that were pushed in one step. 
 Email is delivered as text or HTML with changes refined per word. Emails 
 have a scanable subject containing the first sentence of the commit as well 
-as the author, project and branch name.
+as the author, project and branch name. 
+
+It's also possible to send a mail to a newsgroup using NNTP.
 
 For example:
 

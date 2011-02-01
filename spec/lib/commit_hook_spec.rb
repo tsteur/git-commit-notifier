@@ -26,7 +26,7 @@ describe CommitHook do
 
     mock(CommitHook).info(/Sending mail/)
 
-    any_instance_of(DiffToHtml, :check_handled_commits => lambda { |commits, branch| commits })
+    any_instance_of(DiffToHtml, :check_handled_commits => lambda { |commits| commits })
     CommitHook.run config, REVISIONS.first, REVISIONS.last, 'refs/heads/master'
   end
 

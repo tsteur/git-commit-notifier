@@ -7,7 +7,7 @@ ignore_merge: false
 # Limit lines per diff
 # lines_per_diff: 300
 
-# The recipient for the commit:
+# The recipient (or newsgroup for nntp) for the commit:
 mailinglist: developers@example.com 
 
 # The from addres. If not defined it will use 
@@ -17,7 +17,7 @@ mailinglist: developers@example.com
 # stylesheet file (embedded template/styles.css by default)
 # stylesheet: /absolute/path/to/readable/stylesheet.css
 
-# select the delivery method: smtp or sendmail 
+# select the delivery method: smtp, nntp, or sendmail 
 delivery_method: sendmail 
 
 # Optionally group email by push: don't send an email for each commit when true.
@@ -37,6 +37,11 @@ smtp_server:
 sendmail_options:
   location: /usr/sbin/sendmail
   arguments: -i -t
+
+# settings for nntp/newsgroup
+nntp_settings:
+  address: your.nntp.host.here
+  port: 119
 
 # Decorate files and commit ids with link to a webview. Possible values: none, gitweb, gitorious, cgit or trac
 link_files: none 
