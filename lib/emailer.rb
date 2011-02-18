@@ -124,7 +124,7 @@ class Emailer
 
     if config['delivery_method'] == 'smtp'
       perform_delivery_smtp(content, @config['smtp_server'])
-    else 
+    else
       if config['delivery_method'] == 'nntp'
          perform_delivery_nntp(content, @config['nntp_settings'])
       else

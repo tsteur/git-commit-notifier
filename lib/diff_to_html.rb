@@ -330,8 +330,8 @@ class DiffToHtml
     end
     previous_list
   end
-  
-  def previous_dir 
+
+  def previous_dir
     (!@previous_dir.nil? && File.exists?(@previous_dir)) ? @previous_dir : '/tmp'
   end
 
@@ -352,7 +352,7 @@ class DiffToHtml
   def save_handled_commits(previous_list, flatten_commits)
     return if flatten_commits.empty?
     current_list = (previous_list + flatten_commits).last(MAX_COMMITS_PER_ACTION)
-  
+
     # use new file, unlink and rename to make it more atomic
     File.open(new_file_path, 'w') { |f| f << current_list.join("\n") }
     File.unlink(previous_file_path) if File.exists?(previous_file_path)
@@ -363,7 +363,7 @@ class DiffToHtml
     previous_list = get_previous_commits(previous_file_path)
     commits.reject! {|c| c.find { |sha| previous_list.include?(sha) } }
     save_handled_commits(previous_list, commits.flatten)
-  
+
     commits
   end
 
