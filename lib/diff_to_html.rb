@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'diff/lcs'
 require 'digest/sha1'
+require 'time'
 
 require File.dirname(__FILE__) + '/result_processor'
 
@@ -28,6 +29,7 @@ class DiffToHtml
   MAX_COMMITS_PER_ACTION = 10000
   HANDLED_COMMITS_FILE = 'previously.txt'.freeze
   NEW_HANDLED_COMMITS_FILE = 'previously_new.txt'.freeze
+  SECS_PER_DAY = 24 * 60 * 60
 
   attr_accessor :file_prefix, :current_file_name
   attr_reader :result, :branch
@@ -328,8 +330,8 @@ class DiffToHtml
     end
     previous_list
   end
-  
-  def previous_dir 
+
+  def previous_dir
     (!@previous_dir.nil? && File.exists?(@previous_dir)) ? @previous_dir : '/tmp'
   end
 
@@ -350,7 +352,7 @@ class DiffToHtml
   def save_handled_commits(previous_list, flatten_commits)
     return if flatten_commits.empty?
     current_list = (previous_list + flatten_commits).last(MAX_COMMITS_PER_ACTION)
-  
+
     # use new file, unlink and rename to make it more atomic
     File.open(new_file_path, 'w') { |f| f << current_list.join("\n") }
     File.unlink(previous_file_path) if File.exists?(previous_file_path)
@@ -361,12 +363,18 @@ class DiffToHtml
     previous_list = get_previous_commits(previous_file_path)
     commits.reject! {|c| c.find { |sha| previous_list.include?(sha) } }
     save_handled_commits(previous_list, commits.flatten)
-  
+
     commits
   end
 
   def branch_name
     branch.split('/').last
+  end
+
+  def old_commit?(commit_info)
+    return false if !@config.include?('skip_commits_older_than') || @config['skip_commits_older_than'].to_i <= 0
+    commit_when = Time.parse(commit_info[:date])
+    (Time.now - commit_when) > (SECS_PER_DAY * @config['skip_commits_older_than'].to_i)
   end
 
   def diff_between_revisions(rev1, rev2, repo, branch)
@@ -392,6 +400,7 @@ class DiffToHtml
       raise "git show output is empty" if raw_diff.empty?
 
       commit_info = extract_commit_info_from_git_show_output(raw_diff)
+      next if old_commit?(commit_info)
 
       title = "<div class=\"title\">"
       title += "<strong>Message:</strong> #{message_array_as_html commit_info[:message]}<br />\n"

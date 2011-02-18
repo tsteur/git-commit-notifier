@@ -208,8 +208,37 @@ describe DiffToHtml do
       }
       @diff.do_message_integration("[[text]] refs #123, #125").should == "<a href=\"http://example.com/wiki/text\">[[text]]</a> refs <a href=\"http://redmine.example.com/issues/show/123\">#123</a>, <a href=\"http://redmine.example.com/issues/show/125\">#125</a>"
     end
+  end
 
+  describe :old_commit? do
+    before(:each) do
+      @config = Hash.new
+      @diff_to_html = DiffToHtml.new(nil, @config)
+    end
 
+    it "should be false unless skip_commits_older_than set" do
+      @diff_to_html.old_commit?(Hash.new).should be_false
+    end
+
+    it "should be false if skip_commits_older_than less than zero" do
+      @config['skip_commits_older_than'] = '-7'
+      @diff_to_html.old_commit?(Hash.new).should be_false
+    end
+
+    it "should be false if skip_commits_older_than is equal to zero" do
+      @config['skip_commits_older_than'] = 0
+      @diff_to_html.old_commit?(Hash.new).should be_false
+    end
+
+    it "should be false if commit is newer than required by skip_commits_older_than" do
+      @config['skip_commits_older_than'] = 1
+      @diff_to_html.old_commit?({:date => (Time.now - 1).to_s}).should be_false
+    end
+
+    it "should be true if commit is older than required by skip_commits_older_than" do
+      @config['skip_commits_older_than'] = 1
+      @diff_to_html.old_commit?({:date => (Time.now - 2 * DiffToHtml::SECS_PER_DAY).to_s}).should be_true
+    end
   end
 
 
