@@ -7,8 +7,9 @@ ignore_merge: false
 # Limit lines per diff
 # lines_per_diff: 300
 
-# The recipient (or newsgroup for nntp) for the commit:
-mailinglist: developers@example.com 
+# The recipient (or newsgroup for nntp) for the commit
+# It can send to multiple destination, just seperate email address by "," :
+mailinglist: developers@example.com,dev2@example.com,dev3@example.com,cto@example.com
 
 # The from addres. If not defined it will use 
 # the address that is configured in git
@@ -32,6 +33,17 @@ smtp_server:
   password: password
   authentication: plain
   enable_tls: false
+
+# settings for the tls smtp server (gmail,etc)
+# If you use gmail, just uncomment follow section and configure password
+#smtp_server:
+#  address: smtp.gmail.com
+#  port: 587
+#  domain: smtp.gmail.com
+#  user_name: username@gmail.com
+#  password: password
+#  authentication: plain
+#  enable_tls: true
 
 # settings for sendmail
 sendmail_options:
