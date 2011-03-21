@@ -100,6 +100,6 @@ skip_commits_older_than: 7
 
 # This is developer debugging options. Do not uncomment it if You aren't Jedi
 # debug:
-#   enable: true
+#   enabled: true
 #   log_directory: /path/to/log/directory
 
