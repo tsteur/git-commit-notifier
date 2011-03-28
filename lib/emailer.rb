@@ -36,7 +36,7 @@ class Emailer
 
   def mail_html_message
     html = Emailer.template.result(binding)
-    premailer = Premailer.new(html, :with_html_string => true)
+    premailer = Premailer.new(html, :with_html_string => true, :adapter => :nokogiri)
     premailer.to_inline_css
   end
 

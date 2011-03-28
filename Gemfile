@@ -1,12 +1,12 @@
-source 'http://rubygems.org'
+source :rubygems
 
 gem 'diff-lcs'
 gem 'nntp'
 gem 'premailer', '~>1.5.6'
-gem 'jeweler'
-gem 'code-cleaner'
 
 group :development do
+  gem 'jeweler'
+  gem 'code-cleaner'
   gem 'nokogiri'
   gem 'rspec-core'
   gem 'rspec-expectations'
