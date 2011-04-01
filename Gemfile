@@ -2,7 +2,7 @@ source :rubygems
 
 gem 'diff-lcs'
 gem 'nntp'
-gem 'premailer', '~>1.5.6'
+gem 'premailer', '~>1.7.0'
 
 group :development do
   gem 'jeweler'
