@@ -14,7 +14,7 @@ begin
     gem.authors = ["Bodo Tasche"]
     gem.add_dependency('diff-lcs')
     gem.add_dependency('nntp')
-    gem.add_dependency('premailer', '~>1.5.6')
+    gem.add_dependency('premailer', '~>1.7.0')
     gem.add_development_dependency('nokogiri')
     gem.add_development_dependency('rspec-core')
     gem.add_development_dependency('rspec-expectations')
