@@ -3,6 +3,7 @@ source :rubygems
 gem 'diff-lcs'
 gem 'nntp'
 gem 'premailer', '~>1.7.0'
+gem 'nokogiri'
 
 group :development do
   gem 'jeweler'
@@ -11,7 +12,6 @@ group :development do
 end
 
 group :test do
-  gem 'nokogiri'
   gem 'rspec-core'
   gem 'rspec-expectations'
   gem 'rr'
