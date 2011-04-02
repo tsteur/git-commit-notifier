@@ -1,6 +1,6 @@
 require 'tmpdir'
 
-class Logger
+class GitCommitNotifier::Logger
   DEFAULT_LOG_DIRECTORY = Dir.tmpdir.freeze
   LOG_NAME = 'git-commit-notifier.log'.freeze
 

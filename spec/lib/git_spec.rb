@@ -1,5 +1,7 @@
 require File.expand_path('../../spec_helper', __FILE__)
-require 'git'
+require 'git_commit_notifier'
+
+include GitCommitNotifier
 
 describe Git do
   SAMPLE_REV = '51b986619d88f7ba98be7d271188785cbbb541a0'.freeze
@@ -87,7 +89,3 @@ describe Git do
   end
 
 end
-
-__END__
-
- vim: tabstop=2 expandtab shiftwidth=2

@@ -1,8 +1,9 @@
 require File.expand_path('../../spec_helper', __FILE__)
-require 'logger'
+require 'git_commit_notifier'
+
+include GitCommitNotifier
 
 describe Logger do
-
   describe :debug? do
     it "should be false unless debug section exists" do
       logger = Logger.new({})
@@ -57,7 +58,3 @@ describe Logger do
     end
   end
 end
-
-__END__
-
- vim: tabstop=2 expandtab shiftwidth=2

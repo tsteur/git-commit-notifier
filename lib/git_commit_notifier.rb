@@ -1,0 +1,8 @@
+require 'git_commit_notifier/commit_hook'
+require 'git_commit_notifier/diff_to_html'
+require 'git_commit_notifier/diff_callback'
+require 'git_commit_notifier/emailer'
+require 'git_commit_notifier/escape_helper'
+require 'git_commit_notifier/git'
+require 'git_commit_notifier/logger'
+require 'git_commit_notifier/result_processor'

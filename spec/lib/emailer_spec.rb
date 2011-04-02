@@ -1,10 +1,10 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
-require 'erb'
-require 'emailer'
+require 'git_commit_notifier'
+
+include GitCommitNotifier
 
 describe Emailer do
-
   describe :new do
     it "should assign config if given" do
       Emailer.new({:a => :b}).config[:a].should == :b
@@ -80,15 +80,12 @@ describe Emailer do
     end
 
     it "should return ERB template unless Erubis installed" do
+      require 'erb'
       mock(Emailer).require('erubis') { raise LoadError.new('erubis') }
       mock(Emailer).require('erb')
       mock.proxy(ERB).new('erb')
+      
       Emailer.template.should be_kind_of(ERB)
     end
   end
 end
-
-__END__
-
- vim: tabstop=2 expandtab shiftwidth=2
-

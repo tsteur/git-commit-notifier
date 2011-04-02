@@ -1,4 +1,4 @@
-class Git
+class GitCommitNotifier::Git
   class << self
     def from_shell(cmd)
       `#{cmd}`

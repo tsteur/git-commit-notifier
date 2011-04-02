@@ -1,8 +1,8 @@
 require 'premailer'
 
-class Emailer
-  DEFAULT_STYLESHEET_PATH = File.join(File.dirname(__FILE__), '/../template/styles.css').freeze
-  TEMPLATE = File.join(File.dirname(__FILE__), '/../template/email.html.erb').freeze
+class GitCommitNotifier::Emailer
+  DEFAULT_STYLESHEET_PATH = File.join(File.dirname(__FILE__), '/../../template/styles.css').freeze
+  TEMPLATE = File.join(File.dirname(__FILE__), '/../../template/email.html.erb').freeze
   PARAMETERS = %w[project_path recipient from_address from_alias subject text_message html_message ref_name old_rev new_rev].freeze
 
   attr_reader :config

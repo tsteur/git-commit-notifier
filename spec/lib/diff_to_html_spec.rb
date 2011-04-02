@@ -1,9 +1,11 @@
 require File.expand_path('../../spec_helper', __FILE__)
-require 'diff_to_html'
-require 'git'
 require 'nokogiri'
+require 'git_commit_notifier'
+
+include GitCommitNotifier
 
 describe DiffToHtml do
+  
   describe :lines_are_sequential? do
     before(:all) do
       @diff_to_html = DiffToHtml.new
@@ -241,6 +243,4 @@ describe DiffToHtml do
     end
   end
 
-
 end
-

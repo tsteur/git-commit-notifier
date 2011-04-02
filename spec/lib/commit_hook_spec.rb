@@ -1,5 +1,7 @@
 require File.expand_path('../../spec_helper', __FILE__)
-require 'commit_hook'
+require 'git_commit_notifier'
+
+include GitCommitNotifier
 
 describe CommitHook do
 
@@ -81,8 +83,3 @@ describe CommitHook do
   end
 
 end
-
-__END__
-
- vim: tabstop=2 expandtab shiftwidth=2
-

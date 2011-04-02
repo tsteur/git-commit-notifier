@@ -1,7 +1,9 @@
 # encoding: utf-8
 
 require File.expand_path('../../spec_helper', __FILE__)
-require 'diff_to_html'
+require 'git_commit_notifier'
+
+include GitCommitNotifier
 
 describe ResultProcessor do
   before(:all) do
