@@ -1,5 +1,3 @@
-__This fork is for adding the ability to restrict the emails from unwanted branches
-
 h1. Git Commit Notifier
 
 __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)__
