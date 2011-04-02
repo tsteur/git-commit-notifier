@@ -20,17 +20,46 @@ describe CommitHook do
     run_with_config('spec/fixtures/git-notifier-group-email-by-push.yml', 1)
   end
 
-  def run_with_config(config, times)
+  it "should ignore commits to non specified branches if branch limits supplied" do
+    # 4 commits, one email for each of them, without merge
+    run_and_reject('spec/fixtures/git-notifier-with-branch-restrictions.yml',0,'refs/heads/branchx')
+  end
+
+  it "should email for commits to branch in include_branch" do
+    # 4 commits, one email for each of them, without merge
+    run_with_config('spec/fixtures/git-notifier-with-branch-restrictions.yml',4,'refs/heads/branch2')
+  end
+  
+
+  it "should email for commits to master if master set as include_branch" do
+    # 4 commits, one email for each of them, without merge
+    run_with_config('spec/fixtures/git-notifier-with-branch-restrictions.yml',4)
+  end
+  
+  
+  def run_with_config(config, times, branch = 'refs/heads/master')
     expect_repository_access
 
     emailer = mock!.send.times(times).subject
     mock(Emailer).new(anything, anything) { emailer }.times(times)
-
     mock(CommitHook).info(/Sending mail/)
 
     any_instance_of(DiffToHtml, :check_handled_commits => lambda { |commits| commits })
-    CommitHook.run config, REVISIONS.first, REVISIONS.last, 'refs/heads/master'
+    CommitHook.run config, REVISIONS.first, REVISIONS.last, branch
   end
+  
+
+  def run_and_reject(config,times,branch)
+    mock(Git).mailing_list_address { 'recipient@test.com' }
+
+    emailer = mock!.send.times(times).subject
+    mock(Emailer).new(anything, anything).times(times)
+
+    mock(CommitHook).info(/Supressing mail for branch/)
+
+    CommitHook.run config, REVISIONS.first, REVISIONS.last, branch
+  end
+  
 
   def test_commit_from
     # 1 commit with a from: adress
