@@ -41,20 +41,29 @@ module GitCommitNotifier
           return
         end
 
+        include_branches = config["include_branches"]
+
         logger.debug('----')
         logger.debug("pwd: #{Dir.pwd}")
         logger.debug("ref_name: #{ref_name}")
         logger.debug("rev1: #{rev1}")
         logger.debug("rev2: #{rev2}")
-
-
-        info("Sending mail...")
+        logger.debug("included branches: #{include_branches.join(',')}") unless include_branches.nil?
 
         prefix = @config["emailprefix"] || Git.repo_name
-        branch_name = (ref_name =~ /master$/i) ? "" : "/#{ref_name.split("/").last}"
+        branch_name = ref_name.split("/").last
 
         logger.debug("prefix: #{prefix}")
         logger.debug("branch: #{branch_name}")
+
+        unless include_branches.nil? || include_branches.include?(branch_name)
+          info("Supressing mail for branch #{branch_name}...")
+          return
+        end
+
+        branch_name = branch_name.eql?('master') ? "" : "/#{branch_name}"
+        
+        info("Sending mail...")
 
         diff2html = GitCommitNotifier::DiffToHtml.new(Dir.pwd, config)
         diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name)
