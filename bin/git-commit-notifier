@@ -10,26 +10,7 @@ require 'rubygems'
 
 # parameters: revision1, revision 2, branch
 
-require 'git_commit_notifier'
+require 'git_commit_notifier/executor'
 
-class GitExecutor
-  def self.run!(args)
-    case args.length
-    when 0
-      GitCommitNotifier::CommitHook.show_error("You have to add a path to the config file for git-commit-notifier")
-      puts "Usage:  git-commit-notifier config-script [oldrev newrev [ref]]"
-    when 1
-      oldrev, newrev, ref = $stdin.gets.strip.split
-      GitCommitNotifier::CommitHook.run args.first, oldrev, newrev, ref
-    when 2
-      GitCommitNotifier::CommitHook.run args.first, args.last, args.last, ""
-    when 3
-      GitCommitNotifier::CommitHook.run args.first, args[1], args.last, ""
-    else
-      GitCommitNotifier::CommitHook.run args.first, args[1], args[2], args[3]
-    end
-  end
-end
-
-GitExecutor.run!(ARGV)
+GitCommitNotifier::Executor.run!(ARGV)
 
