@@ -9,24 +9,27 @@ end
 require 'rubygems'
 
 # parameters: revision1, revision 2, branch
-THIS_FILE = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
-$:.unshift File.join(File.dirname(THIS_FILE), "../lib")
 
 require 'git_commit_notifier'
-include GitCommitNotifier
 
-case ARGV.length
-when 0
-  CommitHook.show_error("You have to add a path to the config file for git-commit-notifier")
-  puts "Usage:  git-commit-notifier config-script [oldrev newrev [ref]]"
-when 1
-  oldrev, newrev, ref = STDIN.gets.strip.split
-  CommitHook.run ARGV[0], oldrev, newrev, ref
-when 2
-  CommitHook.run ARGV[0], ARGV[1], ARGV[1], ""
-when 3
-  CommitHook.run ARGV[0], ARGV[1], ARGV[2], ""
-else
-  CommitHook.run ARGV[0], ARGV[1], ARGV[2], ARGV[3]
+class GitExecutor
+  def self.run!(args)
+    case args.length
+    when 0
+      GitCommitNotifier::CommitHook.show_error("You have to add a path to the config file for git-commit-notifier")
+      puts "Usage:  git-commit-notifier config-script [oldrev newrev [ref]]"
+    when 1
+      oldrev, newrev, ref = $stdin.gets.strip.split
+      GitCommitNotifier::CommitHook.run args.first, oldrev, newrev, ref
+    when 2
+      GitCommitNotifier::CommitHook.run args.first, args.last, args.last, ""
+    when 3
+      GitCommitNotifier::CommitHook.run args.first, args[1], args.last, ""
+    else
+      GitCommitNotifier::CommitHook.run args.first, args[1], args[2], args[3]
+    end
+  end
 end
+
+GitExecutor.run!(ARGV)
 
