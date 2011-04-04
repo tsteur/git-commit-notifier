@@ -125,14 +125,11 @@ class GitCommitNotifier::Emailer
       return
     end
 
-    if config['delivery_method'] == 'smtp'
-      perform_delivery_smtp(content, @config['smtp_server'])
-    else
-      if config['delivery_method'] == 'nntp'
-         perform_delivery_nntp(content, @config['nntp_settings'])
-      else
-          perform_delivery_sendmail(content, @config['sendmail_options'])
-      end
+    case config['delivery_method'].to_sym
+    when :smtp then perform_delivery_smtp(content, config['smtp_server'])
+    when :nntp then perform_delivery_nntp(content, config['nntp_settings'])
+    else # sendmail
+      perform_delivery_sendmail(content, @config['sendmail_options'])
     end
   end
 
