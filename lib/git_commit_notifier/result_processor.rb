@@ -1,5 +1,4 @@
 require 'cgi'
-
 require 'git_commit_notifier/escape_helper'
 
 module GitCommitNotifier

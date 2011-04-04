@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'yaml'
 require 'cgi'
 require 'net/smtp'

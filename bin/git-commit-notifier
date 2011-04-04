@@ -6,6 +6,8 @@ if RUBY_VERSION < '1.9'
   require 'jcode'
 end
 
+require 'rubygems'
+
 # parameters: revision1, revision 2, branch
 THIS_FILE = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
 $:.unshift File.join(File.dirname(THIS_FILE), "../lib")
@@ -27,3 +29,4 @@ when 3
 else
   CommitHook.run ARGV[0], ARGV[1], ARGV[2], ARGV[3]
 end
+
