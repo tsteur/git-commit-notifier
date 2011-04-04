@@ -2,7 +2,7 @@ source :rubygems
 
 gem 'diff-lcs'
 gem 'nntp'
-gem 'premailer', '~>1.7.0'
+gem 'premailer', '~>1.7.1'
 gem 'nokogiri'
 
 group :development do
