@@ -87,7 +87,6 @@ class GitCommitNotifier::Emailer
   end
 
   def perform_delivery_nntp(content, nntp_settings)
-    require 'rubygems'
     require 'nntp'
     Net::NNTP.start(nntp_settings['address'], nntp_settings['port']) do |nntp|
         nntp.post content
