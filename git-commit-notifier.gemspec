@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{git-commit-notifier}
-  s.version = "0.9.0"
+  s.version = "0.9.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bodo Tasche"]
-  s.date = %q{2011-04-04}
+  s.date = %q{2011-04-05}
   s.default_executable = %q{git-commit-notifier}
   s.description = %q{This git commit notifier sends html mails with nice diffs for every changed file.}
   s.email = %q{bodo@bitboxer.de}
@@ -35,9 +35,11 @@ Gem::Specification.new do |s|
     "lib/git_commit_notifier/diff_to_html.rb",
     "lib/git_commit_notifier/emailer.rb",
     "lib/git_commit_notifier/escape_helper.rb",
+    "lib/git_commit_notifier/executor.rb",
     "lib/git_commit_notifier/git.rb",
     "lib/git_commit_notifier/logger.rb",
     "lib/git_commit_notifier/result_processor.rb",
+    "local-run.rb",
     "spec/fixtures/existing_file_one_line.txt",
     "spec/fixtures/git-notifier-group-email-by-push.yml",
     "spec/fixtures/git-notifier-ignore-merge.yml",
