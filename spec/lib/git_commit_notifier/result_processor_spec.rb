@@ -3,15 +3,13 @@
 require File.expand_path('../../../spec_helper', __FILE__)
 require 'git_commit_notifier'
 
-include GitCommitNotifier
-
-describe ResultProcessor do
+describe GitCommitNotifier::ResultProcessor do
   before(:all) do
     create_test_input
   end
 
   it :processor do
-    processor = ResultProcessor.new(@diff)
+    processor = GitCommitNotifier::ResultProcessor.new(@diff)
     removal, addition = processor.results
     removal.should have(1).line
 
@@ -34,7 +32,7 @@ describe ResultProcessor do
       { :action => :match, :token => 'x' }
     ]
 
-    processor = ResultProcessor.new(@diff)
+    processor = GitCommitNotifier::ResultProcessor.new(@diff)
     removal, addition = processor.results
 
     removal.should have(1).line
@@ -59,7 +57,7 @@ describe ResultProcessor do
     diff << { :action => :discard_b, :token => 'u' }
     diff << { :action => :discard_b, :token => 'b' }
 
-    processor = ResultProcessor.new(diff)
+    processor = GitCommitNotifier::ResultProcessor.new(diff)
     removal, addition = processor.results
 
     removal.should have(1).line
@@ -96,7 +94,7 @@ describe ResultProcessor do
 
   describe :length_in_chars do
     it "should be unicode friendly" do
-      processor = ResultProcessor.new(@diff)
+      processor = GitCommitNotifier::ResultProcessor.new(@diff)
       processor.length_in_chars([{ :token => 'японская мама' }]).should == 13
     end
   end

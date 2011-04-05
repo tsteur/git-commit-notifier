@@ -2,13 +2,11 @@ require File.expand_path('../../../spec_helper', __FILE__)
 require 'nokogiri'
 require 'git_commit_notifier'
 
-include GitCommitNotifier
-
-describe DiffToHtml do
+describe GitCommitNotifier::DiffToHtml do
   
   describe :lines_are_sequential? do
     before(:all) do
-      @diff_to_html = DiffToHtml.new
+      @diff_to_html = GitCommitNotifier::DiffToHtml.new
     end
 
     it "should be true if left line numbers are sequential" do
@@ -74,25 +72,25 @@ describe DiffToHtml do
 
   describe :unique_commits_per_branch? do
     it "should be false unless specified in config" do
-      diff = DiffToHtml.new(nil, {})
+      diff = GitCommitNotifier::DiffToHtml.new(nil, {})
       diff.should_not be_unique_commits_per_branch
     end
 
     it "should be false if specified as false in config" do
-      diff = DiffToHtml.new(nil, { 'unique_commits_per_branch' => false })
+      diff = GitCommitNotifier::DiffToHtml.new(nil, { 'unique_commits_per_branch' => false })
       diff.should_not be_unique_commits_per_branch
     end
 
     it "should be true if specified as true in config" do
-      diff = DiffToHtml.new(nil, { 'unique_commits_per_branch' => true })
+      diff = GitCommitNotifier::DiffToHtml.new(nil, { 'unique_commits_per_branch' => true })
       diff.should be_unique_commits_per_branch
     end
   end
 
   describe :get_previous_commits do
     it "should read and parse previous file if it exists" do
-      fn = DiffToHtml::HANDLED_COMMITS_FILE
-      diff = DiffToHtml.new
+      fn = GitCommitNotifier::DiffToHtml::HANDLED_COMMITS_FILE
+      diff = GitCommitNotifier::DiffToHtml.new
       mock(File).exists?(fn) { true }
       mock(IO).read(fn) { "a\nb" }
       diff.get_previous_commits(fn).should == %w[a b]
@@ -100,12 +98,12 @@ describe DiffToHtml do
   end
 
   it "multiple commits" do
-    mock(Git).log(REVISIONS.first, REVISIONS.last) { IO.read(FIXTURES_PATH + 'git_log') }
+    mock(GitCommitNotifier::Git).log(REVISIONS.first, REVISIONS.last) { IO.read(FIXTURES_PATH + 'git_log') }
     REVISIONS.each do |rev|
-      mock(Git).show(rev) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
+      mock(GitCommitNotifier::Git).show(rev) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end
 
-    diff = DiffToHtml.new
+    diff = GitCommitNotifier::DiffToHtml.new
     mock(diff).check_handled_commits(anything) { |commits| commits }
     diff.diff_between_revisions REVISIONS.first, REVISIONS.last, 'testproject', 'master'
 
@@ -152,11 +150,11 @@ describe DiffToHtml do
 
   it "should get good diff when new branch created" do
     first_rev, last_rev = %w[ 0000000000000000000000000000000000000000 9b15cebcc5434e27c00a4a2acea43509f9faea21 ]
-    mock(Git).branch_commits('rvm') { %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ] }
+    mock(GitCommitNotifier::Git).branch_commits('rvm') { %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ] }
     %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ].each do |rev|
-      mock(Git).show(rev) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
+      mock(GitCommitNotifier::Git).show(rev) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end
-    diff = DiffToHtml.new
+    diff = GitCommitNotifier::DiffToHtml.new
     mock(diff).check_handled_commits(anything) { |commits| commits }
     diff.diff_between_revisions(first_rev, last_rev, 'tm-admin', 'rvm')
     diff.result.should have(1).commit
@@ -167,7 +165,7 @@ describe DiffToHtml do
 
   describe :message_map do
     before(:each) do
-      @diff = DiffToHtml.new
+      @diff = GitCommitNotifier::DiffToHtml.new
     end
 
     it "should do message mapping" do
@@ -186,18 +184,9 @@ describe DiffToHtml do
   describe :do_message_integration do
     before(:each) do
       @config = Hash.new
-      @diff = DiffToHtml.new(nil, @config)
+      @diff = GitCommitNotifier::DiffToHtml.new(nil, @config)
     end
-=begin
-    return message unless @config['message_integration'].respond_to?(:each_pair)
-    @config['message_integration'].each_pair do |pm, url|
-      pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
-      replace_with = pm_def[:replace_with]
-      replace_with = replace_with.kind_of?(Proc) ? lambda { |m| pm_def[:replace_with].call(m, url) } : replace_with.gsub('#{url}', url)
-      message_replace!(message, pm_def[:search_for], replace_with)
-    end
-    message
-=end
+
     it "should do nothing unless message_integration config section exists" do
       mock.proxy(nil).respond_to?(:each_pair)
       dont_allow(@diff).message_replace!
@@ -215,7 +204,7 @@ describe DiffToHtml do
   describe :old_commit? do
     before(:each) do
       @config = Hash.new
-      @diff_to_html = DiffToHtml.new(nil, @config)
+      @diff_to_html = GitCommitNotifier::DiffToHtml.new(nil, @config)
     end
 
     it "should be false unless skip_commits_older_than set" do
@@ -239,8 +228,7 @@ describe DiffToHtml do
 
     it "should be true if commit is older than required by skip_commits_older_than" do
       @config['skip_commits_older_than'] = 1
-      @diff_to_html.old_commit?({:date => (Time.now - 2 * DiffToHtml::SECS_PER_DAY).to_s}).should be_true
+      @diff_to_html.old_commit?({:date => (Time.now - 2 * GitCommitNotifier::DiffToHtml::SECS_PER_DAY).to_s}).should be_true
     end
   end
-
 end

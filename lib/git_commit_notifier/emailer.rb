@@ -35,7 +35,7 @@ class GitCommitNotifier::Emailer
   end
 
   def mail_html_message
-    html = Emailer.template.result(binding)
+    html = GitCommitNotifier::Emailer.template.result(binding)
     premailer = Premailer.new(html, :with_html_string => true, :adapter => :nokogiri)
     premailer.to_inline_css
   end
