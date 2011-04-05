@@ -33,7 +33,7 @@ module GitCommitNotifier
         recipient = config["mailinglist"] || Git.mailing_list_address
 
         if recipient.nil? || recipient.length == 0
-          GitCommitNotifier::CommitHook.show_error(
+          CommitHook.show_error(
             "Please add a recipient for the emails. Eg : \n" +
             "      git config hooks.mailinglist  developer@example.com"
           )
@@ -64,7 +64,7 @@ module GitCommitNotifier
         
         info("Sending mail...")
 
-        diff2html = GitCommitNotifier::DiffToHtml.new(Dir.pwd, config)
+        diff2html = DiffToHtml.new(Dir.pwd, config)
         diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name)
 
         diffresult = diff2html.result
@@ -84,7 +84,7 @@ module GitCommitNotifier
           result = diffresult.first
           return if result.nil? || !result[:commit_info]
 
-          emailer = GitCommitNotifier::Emailer.new(config,
+          emailer = Emailer.new(config,
             :project_path => project_path,
             :recipient => recipient,
             :from_address => config["from"] || result[:commit_info][:email],
@@ -102,7 +102,7 @@ module GitCommitNotifier
             next unless result[:commit_info]
             nr = number(diffresult.size, i)
 
-            emailer = GitCommitNotifier::Emailer.new(config,
+            emailer = Emailer.new(config,
               :project_path => project_path,
               :recipient => recipient,
               :from_address => config["from"] || result[:commit_info][:email],
