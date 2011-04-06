@@ -8,7 +8,6 @@ ignore_merge: false
 # lines_per_diff: 300
 
 # defines what branches to email for (defaults to all)
-# include_branches: master
 # include_branches: [master,some_other_branch]
 
 # The recipient (or newsgroup for nntp) for the commit
