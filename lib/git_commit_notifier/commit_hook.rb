@@ -70,7 +70,7 @@ module GitCommitNotifier
         end
 
         branch_name = "/#{branch_name}"
-        branch_name = "" if !config["show_master_branch_name"] && branch_name.eql?('master')
+        branch_name = "" if !config["show_master_branch_name"] && branch_name.eql?('/master')
         
         info("Sending mail...")
 
