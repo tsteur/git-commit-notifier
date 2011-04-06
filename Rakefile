@@ -4,28 +4,10 @@ require 'rake'
 APP_ROOT = File.dirname(__FILE__).freeze
 
 begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "git-commit-notifier"
-    gem.summary = %Q{Sends git commit messages with diffs}
-    gem.description = %Q{This git commit notifier sends html mails with nice diffs for every changed file.}
-    gem.email = "bodo@bitboxer.de"
-    gem.homepage = "http://github.com/bitboxer/git-commit-notifier"
-    gem.authors = ["Bodo Tasche"]
-    gem.add_dependency('diff-lcs')
-    gem.add_dependency('nntp')
-    gem.add_dependency('premailer', '~>1.7.1')
-    gem.add_dependency('nokogiri')
-    gem.add_development_dependency('rspec-core')
-    gem.add_development_dependency('rspec-expectations')
-    gem.add_development_dependency('rr')
-    gem.add_development_dependency('faker')
-    gem.add_development_dependency('rcov')
-    gem.add_development_dependency('metric_fu')
-  end
-  Jeweler::GemcutterTasks.new
+  require 'bundler'
+  Bundler::GemHelper.install_tasks
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+  puts "Bundler not available. Install it with: gem install bundler"
 end
 
 begin
