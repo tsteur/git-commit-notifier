@@ -26,6 +26,17 @@ module GitCommitNotifier
         @logger ||= Logger.new(config)
       end
 
+      def include_branches
+        include_branches = config["include_branches"]
+        unless include_branches.nil?
+          if include_branches.kind_of?(String) && include_branches =~ /\,/
+            include_branches = include_branches.split(/\s*\,\s*/)
+          end
+          include_branches = Array(include_branches)
+        end
+        include_branches
+      end
+
       def run(config_name, rev1, rev2, ref_name)
         @config = File.exists?(config_name) ? YAML::load_file(config_name) : {}
 
@@ -40,16 +51,14 @@ module GitCommitNotifier
           return
         end
 
-        include_branches = config["include_branches"]
-
         logger.debug('----')
         logger.debug("pwd: #{Dir.pwd}")
         logger.debug("ref_name: #{ref_name}")
         logger.debug("rev1: #{rev1}")
         logger.debug("rev2: #{rev2}")
-        logger.debug("included branches: #{include_branches.join(',')}") unless include_branches.nil?
+        logger.debug("included branches: #{include_branches.join(', ')}") unless include_branches.nil?
 
-        prefix = @config["emailprefix"] || Git.repo_name
+        prefix = config["emailprefix"] || Git.repo_name
         branch_name = ref_name.split("/").last
 
         logger.debug("prefix: #{prefix}")
@@ -60,7 +69,8 @@ module GitCommitNotifier
           return
         end
 
-        branch_name = branch_name.eql?('master') ? "" : "/#{branch_name}"
+        branch_name = "/#{branch_name}"
+        branch_name = "" if !config["show_master_branch_name"] && branch_name.eql?('master')
         
         info("Sending mail...")
 

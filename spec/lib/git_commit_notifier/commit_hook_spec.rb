@@ -109,4 +109,24 @@ describe GitCommitNotifier::CommitHook do
     end
   end
 
+  describe :include_branches do
+    it "should be nil if not specified in config" do
+      mock(GitCommitNotifier::CommitHook).config { Hash.new }
+      GitCommitNotifier::CommitHook.include_branches.should be_nil
+    end
+    it "should be single item array if one branch as string specified" do
+      mock(GitCommitNotifier::CommitHook).config { { 'include_branches' => 'staging' } }
+      GitCommitNotifier::CommitHook.include_branches.should == %w( staging )
+    end
+    it "should be array if specified as array" do
+      mock(GitCommitNotifier::CommitHook).config { { 'include_branches' => %w(test staging gotcha)  } }
+      GitCommitNotifier::CommitHook.include_branches.should == %w(test staging gotcha)
+    end
+    it "should be array of items, splitted by comma if specified as comma-separated list string" do
+      mock(GitCommitNotifier::CommitHook).config { { 'include_branches' => 'test, me, yourself'  } }
+      GitCommitNotifier::CommitHook.include_branches.should == %w(test me yourself)
+    end
+
+  end
+
 end
