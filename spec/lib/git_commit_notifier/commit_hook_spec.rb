@@ -27,14 +27,14 @@ describe GitCommitNotifier::CommitHook do
     # 4 commits, one email for each of them, without merge
     run_with_config('spec/fixtures/git-notifier-with-branch-restrictions.yml',4,'refs/heads/branch2')
   end
-  
+
 
   it "should email for commits to master if master set as include_branch" do
     # 4 commits, one email for each of them, without merge
     run_with_config('spec/fixtures/git-notifier-with-branch-restrictions.yml',4)
   end
-  
-  
+
+
   def run_with_config(config, times, branch = 'refs/heads/master')
     expect_repository_access
 
@@ -45,7 +45,7 @@ describe GitCommitNotifier::CommitHook do
     any_instance_of(GitCommitNotifier::DiffToHtml, :check_handled_commits => lambda { |commits| commits })
     GitCommitNotifier::CommitHook.run config, REVISIONS.first, REVISIONS.last, branch
   end
-  
+
 
   def run_and_reject(config,times,branch)
     mock(GitCommitNotifier::Git).mailing_list_address { 'recipient@test.com' }
@@ -57,7 +57,7 @@ describe GitCommitNotifier::CommitHook do
 
     GitCommitNotifier::CommitHook.run config, REVISIONS.first, REVISIONS.last, branch
   end
-  
+
 
   def test_commit_from
     # 1 commit with a from: adress

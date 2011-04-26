@@ -3,7 +3,7 @@ require 'nokogiri'
 require 'git_commit_notifier'
 
 describe GitCommitNotifier::DiffToHtml do
-  
+
   describe :lines_are_sequential? do
     before(:all) do
       @diff_to_html = GitCommitNotifier::DiffToHtml.new

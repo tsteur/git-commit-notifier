@@ -82,7 +82,7 @@ describe GitCommitNotifier::Emailer do
       mock(GitCommitNotifier::Emailer).require('erubis') { raise LoadError.new('erubis') }
       mock(GitCommitNotifier::Emailer).require('erb')
       mock.proxy(ERB).new('erb')
-      
+
       GitCommitNotifier::Emailer.template.should be_kind_of(ERB)
     end
   end
