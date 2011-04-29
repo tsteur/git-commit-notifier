@@ -13,7 +13,7 @@ class GitCommitNotifier::Git
     end
 
     def branch_commits(treeish)
-      args = Git.branch_heads - [ Git.branch_head(treeish) ]
+      args = branch_heads - [ branch_head(treeish) ]
       args.map! { |tree| "^#{tree}" }
       args << treeish
       lines = from_shell("git rev-list #{args.join(' ')}")
