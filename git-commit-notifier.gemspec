@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
   s.date = Time.now.strftime('%Y-%m-%d')
   s.description = %q{This git commit notifier sends html mails with nice diffs for every changed file.}
   s.email = %q{bodo@bitboxer.de}
-  s.executables = ["git-commit-notifier"]
   s.extra_rdoc_files = [
     "LICENSE",
     "README.textile"
