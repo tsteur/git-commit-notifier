@@ -27,6 +27,8 @@ module GitCommitNotifier
     MAX_COMMITS_PER_ACTION = 10000
     HANDLED_COMMITS_FILE = 'previously.txt'.freeze
     NEW_HANDLED_COMMITS_FILE = 'previously_new.txt'.freeze
+    GIT_CONFIG_FILE = File.join('.git', 'config').freeze
+    DEFAULT_NEW_FILE_RIGHTS = 0664
     SECS_PER_DAY = 24 * 60 * 60
 
     attr_accessor :file_prefix, :current_file_name
@@ -319,14 +321,10 @@ module GitCommitNotifier
     end
 
     def get_previous_commits(previous_file)
-      previous_list = []
-      if File.exists?(previous_file)
-        lines = IO.read(previous_file)
-        lines = lines.lines if lines.respond_to?(:lines) # Ruby 1.9 tweak
-        previous_list = lines.to_a.map { |s| s.chomp }.compact.uniq
-        lines = nil
-      end
-      previous_list
+      return [] unless File.exists?(previous_file)
+      lines = IO.read(previous_file)
+      lines = lines.lines if lines.respond_to?(:lines) # Ruby 1.9 tweak
+      lines.to_a.map { |s| s.chomp }.compact.uniq
     end
 
     def previous_dir
@@ -347,12 +345,21 @@ module GitCommitNotifier
       File.join(previous_dir, new_name)
     end
 
+    def new_file_rights
+      git_config_path = File.expand_path(GIT_CONFIG_FILE, '.')
+      # we should copy rights from git config if possible
+      File.stat(git_config_path).mode
+    rescue
+      DEFAULT_NEW_FILE_RIGHTS
+    end
+
     def save_handled_commits(previous_list, flatten_commits)
       return if flatten_commits.empty?
       current_list = (previous_list + flatten_commits).last(MAX_COMMITS_PER_ACTION)
 
       # use new file, unlink and rename to make it more atomic
       File.open(new_file_path, 'w') { |f| f << current_list.join("\n") }
+      File.chmod(new_file_rights, new_file_path) rescue nil
       File.unlink(previous_file_path) if File.exists?(previous_file_path)
       File.rename(new_file_path, previous_file_path)
     end

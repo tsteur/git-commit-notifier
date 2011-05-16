@@ -1,8 +1,36 @@
 require File.expand_path('../../../spec_helper', __FILE__)
+require 'tempfile'
 require 'nokogiri'
 require 'git_commit_notifier'
 
 describe GitCommitNotifier::DiffToHtml do
+
+  describe :new_file_rights do
+    before(:all) do
+      @diff_to_html = GitCommitNotifier::DiffToHtml.new
+    end
+
+    it "should be DEFAULT_NEW_FILE_RIGHTS unless get stats of git config file" do
+      mock(File).stat(File.expand_path(GitCommitNotifier::DiffToHtml::GIT_CONFIG_FILE, '.')) { raise Errno::ENOENT.new('') }
+      @diff_to_html.new_file_rights.should == GitCommitNotifier::DiffToHtml::DEFAULT_NEW_FILE_RIGHTS
+    end
+
+    it "should be rights of git config file if exists" do
+      stats = mock!.mode { 0444 }.subject
+      mock(File).stat(File.expand_path(GitCommitNotifier::DiffToHtml::GIT_CONFIG_FILE, '.')) { stats }
+      @diff_to_html.new_file_rights.should == 0444
+    end
+  end
+
+  describe :chmod do
+    it "should not raise anything and set mode from stats mode" do
+      file = Tempfile.new('stattest')
+      file.close
+      lambda do
+        File.chmod(File.stat(file.path).mode, file.path)
+      end.should_not raise_error
+    end
+  end
 
   describe :lines_are_sequential? do
     before(:all) do
@@ -10,63 +38,63 @@ describe GitCommitNotifier::DiffToHtml do
     end
 
     it "should be true if left line numbers are sequential" do
-      @diff_to_html.lines_are_sequential?({
+      @diff_to_html.should be_lines_are_sequential({
         :added => 2,
         :removed => 2
       }, {
         :added => 3,
         :removed => 6
-      }).should be_true
+      })
     end
 
     it "should be true if right line numbers are sequential" do
-      @diff_to_html.lines_are_sequential?({
+      @diff_to_html.should be_lines_are_sequential({
         :added => 2,
         :removed => 2
       }, {
         :added => 7,
         :removed => 3
-      }).should be_true
+      })
     end
 
     it "should be false unless line numbers are sequential" do
-      @diff_to_html.lines_are_sequential?({
+      @diff_to_html.should_not be_lines_are_sequential({
         :added => 2,
         :removed => 2
       }, {
         :added => 4,
         :removed => 6
-      }).should be_false
+      })
     end
 
     it "should be true if left line numbers are sequential (right are nil)" do
-      @diff_to_html.lines_are_sequential?({
+      @diff_to_html.should be_lines_are_sequential({
         :added => 2,
         :removed => 2
       }, {
         :added => 3,
         :removed => nil
-      }).should be_true
+      })
     end
 
     it "should be true if right line numbers are sequential (left are nil)" do
-      @diff_to_html.lines_are_sequential?({
+      @diff_to_html.should be_lines_are_sequential({
         :added => nil,
         :removed => 2
       }, {
         :added => 7,
         :removed => 3
-      }).should be_true
+      })
     end
 
     it "should be false unless line numbers are sequential (nils)" do
-      @diff_to_html.lines_are_sequential?({
+      @diff_to_html.should_not be_lines_are_sequential({
         :added => nil,
         :removed => nil
       }, {
         :added => 4,
         :removed => 6
-      }).should be_false
+      })
     end
   end
 
