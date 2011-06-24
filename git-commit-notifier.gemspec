@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency(%q<nntp>, [">= 0"])
   s.add_runtime_dependency(%q<premailer>, [">= 1.7.1"])
   s.add_runtime_dependency(%q<nokogiri>, [">= 1.4.4"])
+  s.add_development_dependency(%q<rake>, ["!= 0.9.0"])
   s.add_development_dependency(%q<bundler>, [">= 1.0.10"])
   s.add_development_dependency(%q<code-cleaner>, [">= 0"])
   s.add_development_dependency(%q<rspec-core>, [">= 0"])
