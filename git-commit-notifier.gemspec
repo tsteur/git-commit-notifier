@@ -36,6 +36,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<rr>, [">= 0"])
   s.add_development_dependency(%q<faker>, [">= 0"])
   s.add_development_dependency(%q<rcov>, [">= 0"])
-  s.add_development_dependency(%q<metric_fu>, [">= 0"])
 end
 

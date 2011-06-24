@@ -26,12 +26,6 @@ end
 
 task :default => :spec
 
-begin
-  require 'metric_fu'
-rescue LoadError
-  $stderr.puts "metric_fu not available. Install it with: gem install metric_fu"
-end
-
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   version = File.exists?('VERSION') ? IO.read('VERSION') : ""
