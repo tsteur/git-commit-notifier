@@ -1,4 +1,6 @@
-h1. Git Commit Notifier
+# Git Commit Notifier
+
+[![Build Status](http://travis-ci.org/bitboxer/git-commit-notifier.png)](http://travis-ci.org/bitboxer/git-commit-notifier)
 
 __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)__
 
@@ -7,53 +9,50 @@ Email is delivered as text or HTML with changes refined per word. Emails
 have a scannable subject containing the first sentence of the commit as well 
 as the author, project and branch name. 
 
-It's also possible to send a mail to a newsgroup using NNTP.
+It''s also possible to send a mail to a newsgroup using NNTP.
 
 For example:
 
-<pre>[rails][branch] Fix Brasilia timezone. [#1180 state:resolved] </pre>
+    [rails][branch] Fix Brasilia timezone. [#1180 state:resolved]
 
 A reply-to header is added containing the author of the commit. This makes 
 follow up really simple. If multiple commits are pushed at once, emails are 
 numbered in chronological order:
 
-<pre> [rails][branch][000] Added deprecated warning messages to Float#months and Float#years deprications.
- [rails][branch][001] Enhance testing for fractional days and weeks. Update changelog.</pre>
+    [rails][branch][0] Added deprecated warning messages to Float#months and Float#years deprications.
+    [rails][branch][1] Enhance testing for fractional days and weeks. Update changelog.
 
 Example email:
 
-!http://img171.imageshack.us/img171/954/gitcommitnotifieremailpq3.png!
+![Example](http://img171.imageshack.us/img171/954/gitcommitnotifieremailpq3.png "Example")
 
-h2. Requirements
+## Requirements
 
 * Ruby
 * RubyGems
 
-h2. Installing and Configuring
+## Installing and Configuring
 
 Install the gem:
 
-<pre>sudo gem install git-commit-notifier</pre>
+    sudo gem install git-commit-notifier
 
 After you installed the gem, you need to configure your git repository. Add a file called 
 "post-receive" to the "hooks" directory of your git repository with this content:
 
-<pre>
-#!/bin/sh
-git-commit-notifier path_to_config.yml
-</pre>
+    #!/bin/sh
+    git-commit-notifier path_to_config.yml
+
 (Don't forget to make that file executable.)
 
-An example for the config file can be found in <a href="http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample">config/git-notifier-config.yml.sample</a>.
+An example for the config file can be found in [config/git-notifier-config.yml.sample](http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample).
 
 If you want to send mails on each commit instead on each push, you should add a file called "post-commit" with this content:
 
-<pre>
-#!/bin/sh
-echo "HEAD^1 HEAD refs/heads/master" | git-commit-notifier path_to_config.yml
-</pre>
+    #!/bin/sh
+    echo "HEAD^1 HEAD refs/heads/master" | git-commit-notifier path_to_config.yml
 
-h2. Integration with Redmine, Bugzilla, MediaWiki
+## Integration with Redmine, Bugzilla, MediaWiki
 
 Git-commit-notifier supports easy integration with Redmine, Bugzilla and MediaWiki. All you need is to uncomment the according line in the configuration and change the links to your software installations instead of example ones (no trailing slash please).
 
@@ -61,37 +60,39 @@ Git-commit-notifier supports easy integration with Redmine, Bugzilla and MediaWi
 * "refs #123" and "fixes #123" sentences in commit message will be replaced with link to issue in Redmine.
 * "[[SomePage]]" sentence in commit message will be replaced with link to page in MediaWiki.
 
-h2. Integration of links to other websites
+## Integration of links to other websites
 
-If you need integration with other websites not supported by git-commit-notifier you can use the message_map property. For that you need to know the basics of regular expressions syntax.
+If you need integration with other websites not supported by git-commit-notifier you can use the message\_map property. For that you need to know the basics of regular expressions syntax.
 
-Each key of message_map is a case sensitive Regexp pattern, and its value is the replacement string. 
+Each key of message\_map is a case sensitive Regexp pattern, and its value is the replacement string.
 Every matched group (that defined by round brackets in regular expression) will be automatically substituted instead of \1-\9 backreferences in replacement string where the number after the backslash informs which group should be substituted instead of the backreference. The first matched group is known as \1.
 
 For example, when we need to expand "follow 23" to http://example.com/answer/23, simply type this:
 
-'\bfollow\s+(\d+)': 'http://example.com/answer/\1'
+'''yaml
+  '\bfollow\s+(\d+)': 'http://example.com/answer/\1'
+'''
 
 Key and value are each enclosed in single quotes. \b means that "follow" must not be preceded by other word chars, so "befollow" will not match but "be follow" will match. After "follow" we expect one or more spaces followed by group of one or more digits. The \1 in the result url will be replaced with the matched group.
 
 More examples can be found in the config file.
 
-h2. Logic of commits handling
+## Logic of commits handling
 
-The commit notifier uses special files named *previously.txt to track already
+The commit notifier uses special files named *previously.txt* to track already
 handled commits to not send repeated messages about commits.
 
 By default all commits are tracked through the whole repository so after a merge 
 you should not receive messages about those commits already posted in other branches.
 
-This behaviour can be changed using unique_commits_per_branch option. When it's true,
+This behaviour can be changed using unique\_commits\_per\_branch option. When it's true,
 you should receive new message about commit when it's merged in other branch.
 
-Yet another option, skip_commits_older_than (in days), should be used to not inform about
+Yet another option, skip\_commits\_older\_than (in days), should be used to not inform about
 old commits in processes of forking, branching etc.
 
-h2. Note on Patches/Pull Requests
- 
+## Note on Patches/Pull Requests
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
@@ -100,12 +101,13 @@ h2. Note on Patches/Pull Requests
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-h2. Troubleshooting
+## Troubleshooting
 
-h3. Permission denied - /var/git/repo/previously.txt (Errno::EACCES)
+### Permission denied - /var/git/repo/previously.txt (Errno::EACCES)
 
-The file __previously.txt__ is created at the first commit. If you moved the file to the server, you have to check the rights to that file and fix them if needed. The git repo owner needs the right to write into that file. 
+The file _previously.txt_ is created at the first commit. If you moved the file to the server, you have to check the rights to that file and fix them if needed. The git repo owner needs the right to write into that file. 
 
-h2. License
+## License
 
 MIT License, see the file LICENSE.
+
