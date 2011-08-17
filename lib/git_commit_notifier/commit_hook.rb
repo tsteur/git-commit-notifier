@@ -74,6 +74,7 @@ module GitCommitNotifier
 
         info("Sending mail...")
 
+        # TODO: Review and send commits individually when possible to decrease memory usage
         diff2html = DiffToHtml.new(Dir.pwd, config)
         diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name)
 
