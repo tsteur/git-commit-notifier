@@ -181,8 +181,8 @@ module GitCommitNotifier
     def add_changes_to_result
       return if @current_file_name.nil?
       @diff_result << operation_description
-      @diff_result << '<table>'
-      unless @diff_lines.empty?
+      if !@diff_lines.empty? && !@too_many_files
+        @diff_result << '<table>'
         removals = []
         additions = []
         @diff_lines.each_with_index do |line, index|
@@ -206,9 +206,10 @@ module GitCommitNotifier
             end
             add_line_to_result(line, :escape) if line[:op] == :unchanged
           end
+
         end
-        @diff_lines = []
         @diff_result << '</table>'
+        @diff_lines = []
       end
       # reset values
       @right_ln = nil
@@ -218,6 +219,9 @@ module GitCommitNotifier
       @binary = false
     end
 
+    RE_DIFF_FILE_NAME = /^diff\s\-\-git\sa\/(.*)\sb\//
+    RE_DIFF_SHA       = /^index [0-9a-fA-F]+\.\.([0-9a-fA-F]+)/
+
     def diff_for_revision(content)
       @left_ln = @right_ln = nil
 
@@ -226,18 +230,36 @@ module GitCommitNotifier
       @removed_files = []
       @current_file_name = nil
       @current_sha = nil
+      @too_many_files = false
 
-      content.split("\n").each do |line|
-        if line =~ /^diff\s\-\-git\sa\/(.*)\sb\//
+      lines = content.split("\n")
+
+      if config['too_many_files'] && config['too_many_files'].to_i > 0
+        file_count = lines.inject(0) do |count, line|
+          (line =~ RE_DIFF_FILE_NAME) ? (count + 1) : count
+        end
+
+        if file_count >= config['too_many_files'].to_i
+          @too_many_files = true
+        end
+      end
+
+      lines.each do |line|
+        case line
+        when RE_DIFF_FILE_NAME then
           file_name = $1
           add_changes_to_result
           @current_file_name = file_name
-        elsif line =~ /^index [0-9a-fA-F]+\.\.([0-9a-fA-F]+)/
+        when RE_DIFF_SHA then
           @current_sha = $1
+        else
+          op = line[0, 1]
+          if @left_ln.nil? || op == '@'
+            process_info_line(line, op)
+          else
+            process_code_line(line, op)
+          end
         end
-
-        op = line[0,1]
-        @left_ln.nil? || op == '@' ? process_info_line(line, op) : process_code_line(line, op)
       end
       add_changes_to_result
       @diff_result.join("\n")
@@ -464,7 +486,7 @@ module GitCommitNotifier
         @lines_added = 0  unless config["group_email_by_push"]
         begin
           commit_result = diff_for_commit(commit)
-          next if commit_result.nil?
+          next  if commit_result.nil?
           if block_given?
             yield commit_result
           else
