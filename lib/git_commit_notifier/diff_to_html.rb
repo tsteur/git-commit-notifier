@@ -5,8 +5,6 @@ require 'time'
 require 'git_commit_notifier/escape_helper'
 
 module GitCommitNotifier
-  class SkipCommitError < StandardError; end
-
   class DiffToHtml
     include EscapeHelper
 
@@ -398,7 +396,7 @@ module GitCommitNotifier
       raise "git show output is empty" if raw_diff.empty?
 
       commit_info = extract_commit_info_from_git_show_output(raw_diff)
-      raise SkipCommitError if old_commit?(commit_info)
+      return nil  if old_commit?(commit_info)
 
       title = "<div class=\"title\">"
       title += "<strong>Message:</strong> #{message_array_as_html(commit_info[:message])}<br />\n"
@@ -440,6 +438,10 @@ module GitCommitNotifier
       }
     end
 
+    def clear_result
+      @result = []
+    end
+
     def diff_between_revisions(rev1, rev2, repo, branch)
       @branch = branch
       @result = []
@@ -461,9 +463,13 @@ module GitCommitNotifier
       commits.each do |commit|
         @lines_added = 0  unless config["group_email_by_push"]
         begin
-          @result << diff_for_commit(commit)
-        rescue SkipCommitError
-          next
+          commit_result = diff_for_commit(commit)
+          next if commit_result.nil?
+          if block_given?
+            yield commit_result
+          else
+            @result << commit_result
+          end
         end
       end
     end
