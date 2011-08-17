@@ -432,17 +432,17 @@ module GitCommitNotifier
     def diff_between_revisions(rev1, rev2, repo, branch)
       @branch = branch
       @result = []
-      if rev1 == rev2
-        commits = [rev1]
+      commits = if rev1 == rev2
+        [ rev1 ]
       elsif rev1 =~ /^0+$/
         # creating a new remote branch
-        commits = Git.branch_commits(branch)
+        Git.branch_commits(branch)
       elsif rev2 =~ /^0+$/
         # deleting an existing remote branch
-        commits = []
+        []
       else
         log = Git.log(rev1, rev2)
-        commits = log.scan(/^commit\s([a-f0-9]+)/).map { |a| a.first }
+        log.scan(/^commit\s([a-f0-9]+)/).map { |a| a.first }
       end
 
       commits = check_handled_commits(commits)
