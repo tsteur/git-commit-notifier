@@ -45,16 +45,16 @@ module GitCommitNotifier
 
     def range_info(range)
       matches = range.match(/^@@ \-(\S+) \+(\S+)/)
-      return matches[1..2].map { |m| m.split(',')[0].to_i }
+      matches[1..2].map { |m| m.split(',')[0].to_i }
     end
 
     def line_class(line)
       if line[:op] == :removal
-        return " class=\"r\""
+        " class=\"r\""
       elsif line[:op] == :addition
-        return " class=\"a\""
+        " class=\"a\""
       else
-        return ''
+        ''
       end
     end
 
