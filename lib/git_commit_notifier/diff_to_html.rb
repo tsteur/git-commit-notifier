@@ -481,8 +481,8 @@ module GitCommitNotifier
     end
 
     def do_message_integration(message)
-      return message unless @config['message_integration'].respond_to?(:each_pair)
-      @config['message_integration'].each_pair do |pm, url|
+      return message unless config['message_integration'].respond_to?(:each_pair)
+      config['message_integration'].each_pair do |pm, url|
         pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
         replace_with = pm_def[:replace_with]
         replace_with = replace_with.kind_of?(Proc) ? lambda { |m| pm_def[:replace_with].call(m, url) } : replace_with.gsub('#{url}', url)
@@ -492,8 +492,8 @@ module GitCommitNotifier
     end
 
     def do_message_map(message)
-      return message unless @config['message_map'].respond_to?(:each_pair)
-      @config['message_map'].each_pair do |search_for, replace_with|
+      return message unless config['message_map'].respond_to?(:each_pair)
+      config['message_map'].each_pair do |search_for, replace_with|
         message_replace!(message, Regexp.new(search_for), replace_with)
       end
       message
