@@ -423,9 +423,9 @@ module GitCommitNotifier
       commit_info[:message] = first_sentence(commit_info[:message])
 
       {
-        :commit_info => commit_info, 
-        :html_content => html, 
-        :text_content => text 
+        :commit_info  => commit_info,
+        :html_content => html,
+        :text_content => text
       }
     end
 
