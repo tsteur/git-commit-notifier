@@ -5,6 +5,8 @@ require 'time'
 require 'git_commit_notifier/escape_helper'
 
 module GitCommitNotifier
+  class SkipCommitError < StandardError; end
+
   class DiffToHtml
     include EscapeHelper
 
@@ -49,12 +51,10 @@ module GitCommitNotifier
     end
 
     def line_class(line)
-      if line[:op] == :removal
-        " class=\"r\""
-      elsif line[:op] == :addition
-        " class=\"a\""
-      else
-        ''
+      case line[:op]
+      when :removal  then ' class="r"'
+      when :addition then ' class="a"'
+      else                ''
       end
     end
 
@@ -145,12 +145,12 @@ module GitCommitNotifier
 
     def operation_description
       binary = @binary ? 'binary ' : ''
-      if @file_removed
-        op = "Deleted"
+      op = if @file_removed
+        "Deleted"
       elsif @file_added
-        op = "Added"
+        "Added"
       else
-        op = "Changed"
+        "Changed"
       end
 
       file_name = @current_file_name
@@ -391,7 +391,7 @@ module GitCommitNotifier
       raise "git show output is empty" if raw_diff.empty?
 
       commit_info = extract_commit_info_from_git_show_output(raw_diff)
-      next if old_commit?(commit_info)
+      raise SkipCommitError if old_commit?(commit_info)
 
       title = "<div class=\"title\">"
       title += "<strong>Message:</strong> #{message_array_as_html(commit_info[:message])}<br />\n"
@@ -448,7 +448,11 @@ module GitCommitNotifier
       commits = check_handled_commits(commits)
 
       commits.each do |commit|
-        @result << diff_for_commit(commit)
+        begin
+          @result << diff_for_commit(commit)
+        rescue SkipCommitError
+          next
+        end
       end
     end
 
