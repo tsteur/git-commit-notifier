@@ -385,6 +385,50 @@ module GitCommitNotifier
       (Time.now - commit_when) > (SECS_PER_DAY * @config['skip_commits_older_than'].to_i)
     end
 
+    def diff_for_commit(commit)
+      @current_commit = commit
+      raw_diff = Git.show(commit)
+      raise "git show output is empty" if raw_diff.empty?
+
+      commit_info = extract_commit_info_from_git_show_output(raw_diff)
+      next if old_commit?(commit_info)
+
+      title = "<div class=\"title\">"
+      title += "<strong>Message:</strong> #{message_array_as_html(commit_info[:message])}<br />\n"
+      title += "<strong>Commit:</strong> "
+
+      if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
+        title += "<a href='#{@config['gitweb']['path']}?p=#{Git.repo_name}.git;a=commitdiff;h=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+      elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
+        title += "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/commit/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+      elsif (@config["link_files"] && @config["link_files"] == "trac" && @config["trac"])
+        title += "<a href='#{@config['trac']['path']}/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+      elsif (@config["link_files"] && @config["link_files"] == "cgit" && @config["cgit"])
+        title += "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/commit/?id=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+      else
+        title += " #{commit_info[:commit]}"
+      end
+
+      title += "<br />\n"
+
+      title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}\n<br />"
+      title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
+      title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n</div>"
+
+      text = "#{raw_diff}\n\n\n"
+
+      html = title
+      html += diff_for_revision(extract_diff_from_git_show_output(raw_diff))
+      html += "<br /><br />"
+      commit_info[:message] = first_sentence(commit_info[:message])
+
+      {
+        :commit_info => commit_info, 
+        :html_content => html, 
+        :text_content => text 
+      }
+    end
+
     def diff_between_revisions(rev1, rev2, repo, branch)
       @branch = branch
       @result = []
@@ -403,43 +447,8 @@ module GitCommitNotifier
 
       commits = check_handled_commits(commits)
 
-      commits.each_with_index do |commit, i|
-        @current_commit = commit
-        raw_diff = Git.show(commit)
-        raise "git show output is empty" if raw_diff.empty?
-
-        commit_info = extract_commit_info_from_git_show_output(raw_diff)
-        next if old_commit?(commit_info)
-
-        title = "<div class=\"title\">"
-        title += "<strong>Message:</strong> #{message_array_as_html commit_info[:message]}<br />\n"
-        title += "<strong>Commit:</strong> "
-
-        if (@config["link_files"] && @config["link_files"] == "gitweb" && @config["gitweb"])
-          title += "<a href='#{@config['gitweb']['path']}?p=#{Git.repo_name}.git;a=commitdiff;h=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif (@config["link_files"] && @config["link_files"] == "gitorious" && @config["gitorious"])
-          title += "<a href='#{@config['gitorious']['path']}/#{@config['gitorious']['project']}/#{@config['gitorious']['repository']}/commit/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif (@config["link_files"] && @config["link_files"] == "trac" && @config["trac"])
-          title += "<a href='#{@config['trac']['path']}/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif (@config["link_files"] && @config["link_files"] == "cgit" && @config["cgit"])
-          title += "<a href='#{@config['cgit']['path']}/#{@config['cgit']['project']}/commit/?id=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        else
-          title += " #{commit_info[:commit]}"
-        end
-
-        title += "<br />\n"
-
-        title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}\n<br />"
-        title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
-        title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n</div>"
-
-        text = "#{raw_diff}\n\n\n"
-
-        html = title
-        html += diff_for_revision(extract_diff_from_git_show_output(raw_diff))
-        html += "<br /><br />"
-        commit_info[:message] = first_sentence(commit_info[:message])
-        @result << {:commit_info => commit_info, :html_content => html, :text_content => text }
+      commits.each do |commit|
+        @result << diff_for_commit(commit)
       end
     end
 
