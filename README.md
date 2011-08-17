@@ -69,9 +69,9 @@ Every matched group (that defined by round brackets in regular expression) will 
 
 For example, when we need to expand "follow 23" to http://example.com/answer/23, simply type this:
 
-'''yaml
+```yaml
   '\bfollow\s+(\d+)': 'http://example.com/answer/\1'
-'''
+```
 
 Key and value are each enclosed in single quotes. \b means that "follow" must not be preceded by other word chars, so "befollow" will not match but "be follow" will match. After "follow" we expect one or more spaces followed by group of one or more digits. The \1 in the result url will be replaced with the matched group.
 
