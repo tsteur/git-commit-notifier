@@ -5,6 +5,11 @@ APP_ROOT = File.dirname(__FILE__).freeze
 
 begin
   require 'bundler'
+  begin
+    Bundler.setup(:default, :test, :development)
+  rescue
+    Bundler.setup(:default, :test)
+  end
   Bundler::GemHelper.install_tasks
 rescue LoadError
   puts "Bundler not available. Install it with: gem install bundler"
