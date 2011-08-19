@@ -1,4 +1,5 @@
 # Git Commit Notifier
+
 [![Build Status](http://travis-ci.org/bitboxer/git-commit-notifier.png)](http://travis-ci.org/bitboxer/git-commit-notifier)
 
 __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)__
