@@ -27,8 +27,10 @@ Example email:
 
 ## Requirements
 
-* Ruby
+* Ruby 1.8.7 or higher
 * RubyGems
+
+We do not support ruby 1.8.6 because of nokogiri gem.
 
 ## Installing and Configuring
 
@@ -42,7 +44,7 @@ After you installed the gem, you need to configure your git repository. Add a fi
     #!/bin/sh
     git-commit-notifier path_to_config.yml
 
-(Don't forget to make that file executable.)
+(Don''t forget to make that file executable.)
 
 An example for the config file can be found in [config/git-notifier-config.yml.sample](http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample).
 
@@ -84,8 +86,8 @@ handled commits to not send repeated messages about commits.
 By default all commits are tracked through the whole repository so after a merge 
 you should not receive messages about those commits already posted in other branches.
 
-This behaviour can be changed using unique\_commits\_per\_branch option. When it's true,
-you should receive new message about commit when it's merged in other branch.
+This behaviour can be changed using unique\_commits\_per\_branch option. When it''s true,
+you should receive new message about commit when it''s merged in other branch.
 
 Yet another option, skip\_commits\_older\_than (in days), should be used to not inform about
 old commits in processes of forking, branching etc.
@@ -94,7 +96,7 @@ old commits in processes of forking, branching etc.
 
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
+* Add tests for it. This is important so I don''t break it in a
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)

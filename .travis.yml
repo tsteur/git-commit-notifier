@@ -4,7 +4,6 @@ notifications:
     - akzhan.abdulin@gmail.com
 bundler_args: --without development
 rvm:
-  - 1.8.6
   - 1.8.7
   - ree
   - 1.9.2
