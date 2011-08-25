@@ -72,7 +72,7 @@ describe GitCommitNotifier::CommitHook do
     mock(GitCommitNotifier::Git).log(REVISIONS.first, REVISIONS.last) { IO.read(FIXTURES_PATH + 'git_log') }
     mock(GitCommitNotifier::Git).mailing_list_address { 'recipient@test.com' }
     REVISIONS.each do |rev|
-      mock(GitCommitNotifier::Git).show(rev) { IO.read(FIXTURES_PATH + "git_show_#{rev}") }
+      mock(GitCommitNotifier::Git).show(rev, true) { IO.read(FIXTURES_PATH + "git_show_#{rev}") }
     end
   end
 
