@@ -462,7 +462,7 @@ module GitCommitNotifier
 
       title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}\n<br />"
       title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
-      title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n</div>"
+      title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n<br />"
       title += "<strong>Committer:</strong> #{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;\n</div>"
 
       text = "#{raw_diff}"
