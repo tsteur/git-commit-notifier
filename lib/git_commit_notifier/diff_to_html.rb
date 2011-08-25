@@ -67,9 +67,8 @@ module GitCommitNotifier
       config['lines_per_diff']
     end
 
-    def ignore_whitespace
-      return true if @config['ignore_whitespace'] != false
-      return false
+    def ignore_whitespace?
+      @config['ignore_whitespace'].nil? || @config['ignore_whitespace']
     end
 
     def skip_lines?
@@ -419,7 +418,7 @@ module GitCommitNotifier
 
     def diff_for_commit(commit)
       @current_commit = commit
-      raw_diff = Git.show(commit, ignore_whitespace)
+      raw_diff = Git.show(commit, ignore_whitespace?)
       raise "git show output is empty" if raw_diff.empty?
 
       commit_info = extract_commit_info_from_git_show_output(raw_diff)

@@ -4,10 +4,10 @@ class GitCommitNotifier::Git
       `#{cmd}`
     end
 
-    def show(rev, ignore_whitespace=true)
+    def show(rev, ignore_whitespace)
       gitopt = ""
-      gitopt = "-w" if ignore_whitespace
-      from_shell("git show #{rev.strip} #{gitopt}")
+      gitopt += " -w" if ignore_whitespace
+      from_shell("git show #{rev.strip}#{gitopt}")
     end
 
     def log(rev1, rev2)
