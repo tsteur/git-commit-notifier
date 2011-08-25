@@ -321,15 +321,15 @@ module GitCommitNotifier
         elsif line =~ /^commit /
           result[:commit] = line[7..-1]
         elsif line =~ /^Author:/
-          result[:author], result[:email] = author_name_and_email(line[8..-1])
+          result[:author], result[:email] = author_name_and_email(line[12..-1])
         elsif line =~ /^AuthorDate:/
-          result[:date] = line[8..-1]
+          result[:date] = line[12..-1]
         elsif line =~ /^Commit:/
-          result[:commitauthor], result[:commit_email] = author_name_and_email(line[8..-1])
+          result[:committer], result[:commit_email] = author_name_and_email(line[12..-1])
         elsif line =~ /^CommitDate:/
-          result[:commit_date] = line[8..-1]
+          result[:commit_date] = line[12..-1]
         elsif line =~ /^Merge/
-          result[:merge] = line[7..-1]
+          result[:merge] = line[12..-1]
         else
           clean_line = line.strip
           result[:message] << clean_line unless clean_line.empty?
