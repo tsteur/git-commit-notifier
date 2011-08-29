@@ -324,7 +324,7 @@ module GitCommitNotifier
         elsif line =~ /^Date/
           result[:date] = line[8..-1]
         elsif line =~ /^Merge/
-          result[:merge] = line[8..-1]
+          result[:merge] = line[7..-1]
         else
           clean_line = line.strip
           result[:message] << clean_line unless clean_line.empty?
