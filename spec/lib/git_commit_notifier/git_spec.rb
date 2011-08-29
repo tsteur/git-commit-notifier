@@ -92,4 +92,14 @@ describe GitCommitNotifier::Git do
     end
   end
 
+  describe :changed_files do
+    it "should run git log --name-status with given args and strip out the result" do
+      files = ["M       README.rdoc\n",
+               "D       git_commit_notifier/Rakefile\n",
+               "M       post-receive"]
+      puts FIXTURES_PATH
+      mock(GitCommitNotifier::Git).from_shell("git log #{SAMPLE_REV}..#{SAMPLE_REV_2} --name-status" ) { IO.read(FIXTURES_PATH + 'git_log_name_status') }
+      GitCommitNotifier::Git.changed_files(SAMPLE_REV, SAMPLE_REV_2).should == files
+    end
+  end
 end
