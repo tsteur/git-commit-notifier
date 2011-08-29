@@ -459,7 +459,7 @@ module GitCommitNotifier
       title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
       title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n</div>"
       text = "#{raw_diff}"
-      text +="#{changed_files}\n\n\n"
+      text += "#{changed_files}\n\n\n"
 
       html = title
       html += diff_for_revision(extract_diff_from_git_show_output(raw_diff))
