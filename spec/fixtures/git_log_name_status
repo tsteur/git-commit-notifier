@@ -1,10 +1,4 @@
-commit e5be953469f603f113ff065d3619853a1dbe4336
-Author: zoltan <ilozkaa@yahoo.com>
-Date:   Thu Oct 30 15:58:42 2008 +0200
-
-    add install script
-
+e5be953 add install script
 M       README.rdoc
 D       git_commit_notifier/Rakefile
 M       post-receive
-

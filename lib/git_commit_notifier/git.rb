@@ -16,8 +16,9 @@ class GitCommitNotifier::Git
 
     def changed_files(rev1, rev2)
       output = ""
-      lines = from_shell("git log #{rev1}..#{rev2} --name-status")
-      lines.select {|line| line =~ /^\w{1}\s+\w+/} # grep out only filenames
+      lines = from_shell("git log #{rev1}..#{rev2} --name-status --oneline")
+      lines = lines.select {|line| line =~ /^\w{1}\s+\w+/} # grep out only filenames
+      lines.uniq
     end
 
     def branch_commits(treeish)
