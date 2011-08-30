@@ -2,7 +2,7 @@
 
 [![Build Status](http://travis-ci.org/bitboxer/git-commit-notifier.png)](http://travis-ci.org/bitboxer/git-commit-notifier)
 
-__by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan (Primalgrasp) (zoltan 'at' primalgrasp 'dot' com)__
+__by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)__
 
 Sends email commit messages splitting commits that were pushed in one step. 
 Email is delivered as text or HTML with changes refined per word. Emails 
@@ -108,6 +108,10 @@ old commits in processes of forking, branching etc.
 ### Permission denied - /var/git/repo/previously.txt (Errno::EACCES)
 
 The file _previously.txt_ is created at the first commit. If you moved the file to the server, you have to check the rights to that file and fix them if needed. The git repo owner needs the right to write into that file. 
+
+## Credits
+
+Thanks for [Primalgrasp](http://www.primalgrasp.com) and [Undev](http://undev.ru/) for sponsoring this work.
 
 ## License
 
