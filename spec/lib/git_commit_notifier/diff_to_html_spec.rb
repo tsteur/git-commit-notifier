@@ -126,6 +126,7 @@ describe GitCommitNotifier::DiffToHtml do
   end
 
   it "multiple commits" do
+    mock(GitCommitNotifier::Git).changed_files('7e4f6b4', '4f13525') { [] }
     mock(GitCommitNotifier::Git).log(REVISIONS.first, REVISIONS.last) { IO.read(FIXTURES_PATH + 'git_log') }
     REVISIONS.each do |rev|
       mock(GitCommitNotifier::Git).show(rev, true) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }

@@ -49,6 +49,7 @@ describe GitCommitNotifier::CommitHook do
 
   def run_and_reject(config,times,branch)
     mock(GitCommitNotifier::Git).mailing_list_address { 'recipient@test.com' }
+    mock(GitCommitNotifier::Git).repo_name { 'testproject' }
 
     emailer = mock!.send.times(times).subject
     mock(GitCommitNotifier::Emailer).new(anything, anything).times(times)
@@ -71,6 +72,8 @@ describe GitCommitNotifier::CommitHook do
   def expect_repository_access
     mock(GitCommitNotifier::Git).log(REVISIONS.first, REVISIONS.last) { IO.read(FIXTURES_PATH + 'git_log') }
     mock(GitCommitNotifier::Git).mailing_list_address { 'recipient@test.com' }
+    mock(GitCommitNotifier::Git).repo_name { 'testproject' }
+    mock(GitCommitNotifier::Git).changed_files('7e4f6b4', '4f13525') { [] }
     REVISIONS.each do |rev|
       mock(GitCommitNotifier::Git).show(rev, true) { IO.read(FIXTURES_PATH + "git_show_#{rev}") }
     end
