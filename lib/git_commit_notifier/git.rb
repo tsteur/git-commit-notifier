@@ -1,7 +1,9 @@
 class GitCommitNotifier::Git
   class << self
     def from_shell(cmd)
-      `#{cmd}`
+      r = `#{cmd}`
+      raise ArgumentError.new("#{cmd} failed") unless $?.exitstatus.zero?
+      r
     end
 
     def show(rev, ignore_whitespace)
