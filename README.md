@@ -1,6 +1,6 @@
 # Git Commit Notifier
 
-[![Build Status](http://travis-ci.org/bitboxer/git-commit-notifier.png)](http://travis-ci.org/bitboxer/git-commit-notifier)
+[![Build Status](https://travis-ci.org/bitboxer/git-commit-notifier.png)](http://travis-ci.org/bitboxer/git-commit-notifier)
 
 __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)__
 
@@ -9,7 +9,7 @@ Email is delivered as text or HTML with changes refined per word. Emails
 have a scannable subject containing the first sentence of the commit as well 
 as the author, project and branch name. 
 
-It''s also possible to send a mail to a newsgroup using NNTP.
+It's also possible to send a mail to a newsgroup using NNTP.
 
 For example:
 
@@ -37,22 +37,28 @@ We do not support ruby 1.8.6 because of nokogiri gem.
 
 Install the gem:
 
-    sudo gem install git-commit-notifier
+```bash
+sudo gem install git-commit-notifier
+```
 
 After you installed the gem, you need to configure your git repository. Add a file called 
 "post-receive" to the "hooks" directory of your git repository with this content:
 
-    #!/bin/sh
-    git-commit-notifier path_to_config.yml
+```bash
+#!/bin/sh
+git-commit-notifier path_to_config.yml
+```
 
-(Don''t forget to make that file executable.)
+(Don't forget to make that file executable.)
 
 An example for the config file can be found in [config/git-notifier-config.yml.sample](http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.yml.sample).
 
 If you want to send mails on each commit instead on each push, you should add a file called "post-commit" with this content:
 
+```bash
     #!/bin/sh
     echo "HEAD^1 HEAD refs/heads/master" | git-commit-notifier path_to_config.yml
+```
 
 ## Integration with Redmine, Bugzilla, MediaWiki
 
@@ -87,8 +93,8 @@ handled commits to not send repeated messages about commits.
 By default all commits are tracked through the whole repository so after a merge 
 you should not receive messages about those commits already posted in other branches.
 
-This behaviour can be changed using unique\_commits\_per\_branch option. When it''s true,
-you should receive new message about commit when it''s merged in other branch.
+This behaviour can be changed using unique\_commits\_per\_branch option. When it's true,
+you should receive new message about commit when it's merged in other branch.
 
 Yet another option, skip\_commits\_older\_than (in days), should be used to not inform about
 old commits in processes of forking, branching etc.
@@ -97,7 +103,7 @@ old commits in processes of forking, branching etc.
 
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don''t break it in a
+* Add tests for it. This is important so I don't break it in a
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
