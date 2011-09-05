@@ -63,7 +63,11 @@ module GitCommitNotifier
         logger.debug("included branches: #{include_branches.join(', ')}") unless include_branches.nil?
 
         prefix = config["emailprefix"] || Git.repo_name
-        branch_name = ref_name.split("/").last
+        branch_name = if ref_name =~ /^refs\/heads\/(.+)$/
+          $1
+        else
+          ref_name.split("/").last
+        end
 
         logger.debug("prefix: #{prefix}")
         logger.debug("branch: #{branch_name}")
@@ -74,7 +78,7 @@ module GitCommitNotifier
         end
 
         branch_name = "/#{branch_name}"
-        branch_name = "" if !config["show_master_branch_name"] && branch_name.eql?('/master')
+        branch_name = "" if !config["show_master_branch_name"] && branch_name == '/master'
 
         info("Sending mail...")
 
