@@ -118,7 +118,7 @@ The file _previously.txt_ is created at the first commit. If you moved the file 
 
 ## Credits
 
-Thanks for [Primalgrasp](http://www.primalgrasp.com) and [Undev](http://undev.ru/) for sponsoring this work.
+Thanks for [putpat.tv](http://www.putpat.tv), [Primalgrasp](http://www.primalgrasp.com) and [Undev](http://undev.ru/) for sponsoring this work.
 
 ## License
 
