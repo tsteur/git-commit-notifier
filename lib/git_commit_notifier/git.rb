@@ -44,7 +44,11 @@ class GitCommitNotifier::Git
     end
 
     def repo_name
-      git_prefix = from_shell("git config hooks.emailprefix").strip
+      git_prefix = begin
+        from_shell("git config hooks.emailprefix").strip
+      rescue ArgumentError
+        ''
+      end
       return git_prefix unless git_prefix.empty?
       Dir.pwd.split("/").last.sub(/\.git$/, '')
     end
