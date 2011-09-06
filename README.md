@@ -28,17 +28,18 @@ Example email:
 
 ## Requirements
 
-* Ruby 1.8.7 or higher
-* RubyGems
+* Ruby 1.8.7 or higher.
+* RubyGems.
+* libxml2 and libxslt with headers (see [nokogiri installation notes](http://nokogiri.org/tutorials/installing_nokogiri.html) for details).
 
-We do not support ruby 1.8.6 because of nokogiri gem.
+We do not support ruby 1.8.6 because of nokogiri gem requirements.
 
 ## Installing and Configuring
 
 Install the gem:
 
 ```bash
-sudo gem install git-commit-notifier
+gem install git-commit-notifier
 ```
 
 After you installed the gem, you need to configure your git repository. Add a file called 
@@ -56,8 +57,8 @@ An example for the config file can be found in [config/git-notifier-config.yml.s
 If you want to send mails on each commit instead on each push, you should add a file called "post-commit" with this content:
 
 ```bash
-    #!/bin/sh
-    echo "HEAD^1 HEAD refs/heads/master" | git-commit-notifier path_to_config.yml
+#!/bin/sh
+echo "HEAD^1 HEAD refs/heads/master" | git-commit-notifier path_to_config.yml
 ```
 
 ## Integration with Redmine, Bugzilla, MediaWiki
