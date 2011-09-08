@@ -116,6 +116,10 @@ old commits in processes of forking, branching etc.
 
 The file _previously.txt_ is created at the first commit. If you moved the file to the server, you have to check the rights to that file and fix them if needed. The git repo owner needs the right to write into that file. 
 
+### Empty html on ruby 1.8.7
+
+Check <code>gem list premailer</code>. Please remove premailer 1.7.2 if exists (<code>gem uninstall premailer -v 1.7.2; gem install premailer</code>), because 1.7.2 was broken.
+
 ## Credits
 
 Thanks for [putpat.tv](http://www.putpat.tv), [Primalgrasp](http://www.primalgrasp.com) and [Undev](http://undev.ru/) for sponsoring this work.
