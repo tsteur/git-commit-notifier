@@ -25,17 +25,16 @@ Gem::Specification.new do |s|
 
   s.specification_version = 3
 
-  s.add_runtime_dependency(%q<diff-lcs>, [">= 0"])
-  s.add_runtime_dependency(%q<nntp>, [">= 0"])
-  s.add_runtime_dependency(%q<premailer>, ["= 1.7.1"])
-  s.add_runtime_dependency(%q<nokogiri>, [">= 1.4.4"])
-  s.add_development_dependency(%q<rake>, ["!= 0.9.0"])
-  s.add_development_dependency(%q<bundler>, [">= 1.0.10"])
+  s.add_runtime_dependency(%q<diff-lcs>, ["~> 1.1.2"])
+  s.add_runtime_dependency(%q<nntp>, ["~> 1.0"])
+  s.add_runtime_dependency(%q<premailer>, ["~> 1.7", "!= 1.7.2"])
+  s.add_runtime_dependency(%q<nokogiri>, ["~> 1.4"])
+  s.add_development_dependency(%q<rake>, ["~> 0.8", "!= 0.9.0"])
+  s.add_development_dependency(%q<bundler>, ["~> 1.0", ">=1.0.10"])
   s.add_development_dependency(%q<code-cleaner>, [">= 0"])
   s.add_development_dependency(%q<rspec-core>, [">= 0"])
   s.add_development_dependency(%q<rspec-expectations>, [">= 0"])
-  s.add_development_dependency(%q<rr>, [">= 0"])
-  s.add_development_dependency(%q<faker>, [">= 0"])
-  s.add_development_dependency(%q<rcov>, [">= 0"])
+  s.add_development_dependency(%q<rr>, ["~> 1.0"])
+  s.add_development_dependency(%q<faker>, ["~> 0.9.5"])
 end
 
