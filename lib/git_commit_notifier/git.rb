@@ -3,6 +3,7 @@ class GitCommitNotifier::Git
     def from_shell(cmd)
       r = `#{cmd}`
       raise ArgumentError.new("#{cmd} failed") unless $?.exitstatus.zero?
+      r.force_encoding(Encoding::UTF_8) if r.respond_to?(:force_encoding)
       r
     end
 
@@ -11,13 +12,11 @@ class GitCommitNotifier::Git
       gitopt += " --pretty=fuller"
       gitopt += " -w" if ignore_whitespace
       data = from_shell("git show #{rev.strip}#{gitopt}")
-      data.force_encoding(Encoding::UTF_8) if data.respond_to?(:force_encoding)
       data
     end
 
     def log(rev1, rev2)
       data = from_shell("git log --pretty=fuller #{rev1}..#{rev2}").strip
-      data.force_encoding(Encoding::UTF_8) if data.respond_to?(:force_encoding)
       data
     end
 
