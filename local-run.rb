@@ -6,12 +6,6 @@ if RUBY_VERSION < '1.9'
   require 'jcode'
 end
 
-if RUBY_VERSION >= '1.9'
-  Encoding.default_external = "utf-8"
-  Encoding.default_internal = "utf-8"
-end
-
-
 require 'rubygems'
 $LOAD_PATH.unshift(File.expand_path('./lib', File.dirname(__FILE__)))
 
