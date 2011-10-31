@@ -36,5 +36,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<rspec-expectations>, [">= 0"])
   s.add_development_dependency(%q<rr>, ["~> 1.0"])
   s.add_development_dependency(%q<faker>, ["~> 0.9.5"])
+  s.add_development_dependency(%q<yard>, ["~> 0.7.3"])
+  s.add_development_dependency(%q<redcarpet>, ["~> 1.17.2"])
+  s.add_development_dependency(%q<github-markup>, ["~> 0.5.3"])
 end
 

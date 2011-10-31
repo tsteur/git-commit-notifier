@@ -26,14 +26,20 @@ end
 
 task :default => :spec
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exists?('VERSION') ? IO.read('VERSION') : ""
+begin
+  require 'yard'
 
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "git-commit-notifier #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+  YARD::Rake::YardocTask.new do |yard|
+    version = File.exists?('VERSION') ? IO.read('VERSION') : ""
+    yard.options << "--title='git-commit-notifier #{version}'"
+    yard.options << "--charset"
+    yard.options << "utf-8"
+    yard.options << "-rREADME.md"
+    yard.options << "-mmarkdown"
+    yard.options << "-Mredcarpet"
+  end
+rescue LoadError
+  $stderr.puts "Please install YARD with: gem install yard"
 end
 
 begin
