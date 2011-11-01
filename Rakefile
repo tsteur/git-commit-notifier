@@ -32,11 +32,6 @@ begin
   YARD::Rake::YardocTask.new do |yard|
     version = File.exists?('VERSION') ? IO.read('VERSION') : ""
     yard.options << "--title='git-commit-notifier #{version}'"
-    yard.options << "--charset"
-    yard.options << "utf-8"
-    yard.options << "-rREADME.md"
-    yard.options << "-mmarkdown"
-    yard.options << "-Mredcarpet"
   end
 rescue LoadError
   $stderr.puts "Please install YARD with: gem install yard"
