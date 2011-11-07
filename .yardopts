@@ -2,4 +2,8 @@
 --markup-provider redcarpet
 --charset utf-8
 --readme README.md
+-
+README.md
+LICENSE
+lib/**/*.rb
 
