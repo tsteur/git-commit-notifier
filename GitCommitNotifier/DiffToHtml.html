@@ -1,0 +1,3511 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: GitCommitNotifier::DiffToHtml
+  
+    &mdash; 'git-commit-notifier 0.10.5
+'
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '..';
+  if (relpath != '') relpath += '/';
+</script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (D)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../GitCommitNotifier.html" title="GitCommitNotifier (module)">GitCommitNotifier</a></span></span>
+     &raquo; 
+    <span class="title">DiffToHtml</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a id="class_list_link" href="#">Class List</a>
+  
+    <a id="method_list_link" href="#">Method List</a>
+  
+    <a id="file_list_link" href="#">File List</a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: GitCommitNotifier::DiffToHtml
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">GitCommitNotifier::DiffToHtml</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+      <dt class="r2">Includes:</dt>
+      <dd class="r2"><span class='object_link'><a href="EscapeHelper.html" title="GitCommitNotifier::EscapeHelper (module)">EscapeHelper</a></span></dd>
+      
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/git_commit_notifier/diff_to_html.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="INTEGRATION_MAP-constant" class="">INTEGRATION_MAP =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='symbol'>:mediawiki</span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span> <span class='symbol'>:search_for</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\[\[([^\[\]]+)\]\]</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='symbol'>:replace_with</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>#{url}/\1</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='symbol'>:redmine</span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span> <span class='symbol'>:search_for</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\b(?:refs|fixes)([\s&amp;,]+\#\d+)+</span><span class='regexp_end'>/i</span></span><span class='comma'>,</span> <span class='symbol'>:replace_with</span> <span class='op'>=&gt;</span> <span class='id lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id m'>m</span><span class='comma'>,</span> <span class='id url'>url</span><span class='op'>|</span>
+    <span class='comment'># we can provide Proc that gets matched string and configuration url.
+</span>    <span class='comment'># result should be in form of:
+</span>    <span class='comment'># { :phrase =&gt; 'phrase started with', :links =&gt; [ { :title =&gt; 'title of url', :url =&gt; 'target url' }, ... ] }
+</span>    <span class='id match'>match</span> <span class='op'>=</span> <span class='id m'>m</span><span class='period'>.</span><span class='id match'>match</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^(refs|fixes)(.*)$</span><span class='regexp_end'>/i</span></span><span class='rparen'>)</span>
+    <span class='kw'>return</span> <span class='id m'>m</span> <span class='kw'>unless</span> <span class='id match'>match</span>
+    <span class='id r'>r</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='symbol'>:phrase</span> <span class='op'>=&gt;</span> <span class='id match'>match</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+    <span class='id captures'>captures</span> <span class='op'>=</span> <span class='id match'>match</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[\s\&amp;\,]+</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id m'>m</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id m'>m</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>(\d+)</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span> <span class='op'>?</span> <span class='backref'>$1</span> <span class='op'>:</span> <span class='id m'>m</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id c'>c</span><span class='op'>|</span> <span class='id c'>c</span><span class='period'>.</span><span class='id empty?'>empty?</span> <span class='rbrace'>}</span>
+    <span class='id r'>r</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id captures'>captures</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id mn'>mn</span><span class='op'>|</span> <span class='lbrace'>{</span> <span class='symbol'>:title</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>#</span><span class='embexpr_beg'>#{</span><span class='id mn'>mn</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:url</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id url'>url</span><span class='rbrace'>}</span><span class='tstring_content'>/issues/show/</span><span class='embexpr_beg'>#{</span><span class='id mn'>mn</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+    <span class='id r'>r</span>
+  <span class='kw'>end</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='symbol'>:bugzilla</span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span> <span class='symbol'>:search_for</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\bBUG\s*(\d+)</span><span class='regexp_end'>/i</span></span><span class='comma'>,</span> <span class='symbol'>:replace_with</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>#{url}/show_bug.cgi?id=\1</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='symbol'>:fogbugz</span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span> <span class='symbol'>:search_for</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\bbugzid:\s*(\d+)</span><span class='regexp_end'>/i</span></span><span class='comma'>,</span> <span class='symbol'>:replace_with</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>#{url}\1</span><span class='tstring_end'>'</span></span> <span class='rbrace'>}</span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id freeze'>freeze</span></pre></dd>
+      
+        <dt id="MAX_COMMITS_PER_ACTION-constant" class="">MAX_COMMITS_PER_ACTION =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>10000</span></pre></dd>
+      
+        <dt id="HANDLED_COMMITS_FILE-constant" class="">HANDLED_COMMITS_FILE =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>previously.txt</span><span class='tstring_end'>'</span></span><span class='period'>.</span><span class='id freeze'>freeze</span></pre></dd>
+      
+        <dt id="NEW_HANDLED_COMMITS_FILE-constant" class="">NEW_HANDLED_COMMITS_FILE =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>previously_new.txt</span><span class='tstring_end'>'</span></span><span class='period'>.</span><span class='id freeze'>freeze</span></pre></dd>
+      
+        <dt id="GIT_CONFIG_FILE-constant" class="">GIT_CONFIG_FILE =
+          
+        </dt>
+        <dd><pre class="code"><span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>.git</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>config</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id freeze'>freeze</span></pre></dd>
+      
+        <dt id="DEFAULT_NEW_FILE_RIGHTS-constant" class="">DEFAULT_NEW_FILE_RIGHTS =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>0664</span></pre></dd>
+      
+        <dt id="SECS_PER_DAY-constant" class="">SECS_PER_DAY =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>24</span> <span class='op'>*</span> <span class='int'>60</span> <span class='op'>*</span> <span class='int'>60</span></pre></dd>
+      
+        <dt id="RE_DIFF_FILE_NAME-constant" class="">RE_DIFF_FILE_NAME =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^diff\s\-\-git\sa\/(.*)\sb\/</span><span class='regexp_end'>/</span></span></pre></dd>
+      
+        <dt id="RE_DIFF_SHA-constant" class="">RE_DIFF_SHA =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^index [0-9a-fA-F]+\.\.([0-9a-fA-F]+)</span><span class='regexp_end'>/</span></span></pre></dd>
+      
+    </dl>
+  
+
+
+  
+  
+  
+  
+  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#branch-instance_method" title="#branch (instance method)">- (Object) <strong>branch</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute branch.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#config-instance_method" title="#config (instance method)">- (Object) <strong>config</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute config.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#current_file_name-instance_method" title="#current_file_name (instance method)">- (Object) <strong>current_file_name</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute current_file_name.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#file_prefix-instance_method" title="#file_prefix (instance method)">- (Object) <strong>file_prefix</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute file_prefix.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#result-instance_method" title="#result (instance method)">- (Object) <strong>result</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute result.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+  
+  
+  
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_block_to_results-instance_method" title="#add_block_to_results (instance method)">- (Object) <strong>add_block_to_results</strong>(block, escape) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_changes_to_result-instance_method" title="#add_changes_to_result (instance method)">- (Object) <strong>add_changes_to_result</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_line_to_result-instance_method" title="#add_line_to_result (instance method)">- (Object) <strong>add_line_to_result</strong>(line, escape) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_separator-instance_method" title="#add_separator (instance method)">- (Object) <strong>add_separator</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_skip_notification-instance_method" title="#add_skip_notification (instance method)">- (Object) <strong>add_skip_notification</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#author_name_and_email-instance_method" title="#author_name_and_email (instance method)">- (Object) <strong>author_name_and_email</strong>(info) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#branch_name-instance_method" title="#branch_name (instance method)">- (Object) <strong>branch_name</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#check_handled_commits-instance_method" title="#check_handled_commits (instance method)">- (Object) <strong>check_handled_commits</strong>(commits) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#clear_result-instance_method" title="#clear_result (instance method)">- (Object) <strong>clear_result</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#diff_between_revisions-instance_method" title="#diff_between_revisions (instance method)">- (Object) <strong>diff_between_revisions</strong>(rev1, rev2, repo, branch) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#diff_for_commit-instance_method" title="#diff_for_commit (instance method)">- (Object) <strong>diff_for_commit</strong>(commit) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#diff_for_revision-instance_method" title="#diff_for_revision (instance method)">- (Object) <strong>diff_for_revision</strong>(content) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#do_message_integration-instance_method" title="#do_message_integration (instance method)">- (Object) <strong>do_message_integration</strong>(message) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#do_message_map-instance_method" title="#do_message_map (instance method)">- (Object) <strong>do_message_map</strong>(message) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#extract_block_content-instance_method" title="#extract_block_content (instance method)">- (Object) <strong>extract_block_content</strong>(block) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#extract_commit_info_from_git_show_output-instance_method" title="#extract_commit_info_from_git_show_output (instance method)">- (Object) <strong>extract_commit_info_from_git_show_output</strong>(content) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#extract_diff_from_git_show_output-instance_method" title="#extract_diff_from_git_show_output (instance method)">- (Object) <strong>extract_diff_from_git_show_output</strong>(content) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#first_sentence-instance_method" title="#first_sentence (instance method)">- (Object) <strong>first_sentence</strong>(message_array) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_previous_commits-instance_method" title="#get_previous_commits (instance method)">- (Object) <strong>get_previous_commits</strong>(previous_file) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#ignore_whitespaces%3F-instance_method" title="#ignore_whitespaces? (instance method)">- (Boolean) <strong>ignore_whitespaces?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (DiffToHtml) <strong>initialize</strong>(previous_dir = nil, config = nil) </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>A new instance of DiffToHtml.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#lcs_diff-instance_method" title="#lcs_diff (instance method)">- (Object) <strong>lcs_diff</strong>(removals, additions) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#line_class-instance_method" title="#line_class (instance method)">- (Object) <strong>line_class</strong>(line) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#lines_are_sequential%3F-instance_method" title="#lines_are_sequential? (instance method)">- (Boolean) <strong>lines_are_sequential?</strong>(first, second) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#lines_per_diff-instance_method" title="#lines_per_diff (instance method)">- (Object) <strong>lines_per_diff</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#merge_commit%3F-instance_method" title="#merge_commit? (instance method)">- (Boolean) <strong>merge_commit?</strong>(commit_info) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#message_array_as_html-instance_method" title="#message_array_as_html (instance method)">- (Object) <strong>message_array_as_html</strong>(message) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#message_map-instance_method" title="#message_map (instance method)">- (Object) <strong>message_map</strong>(message) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#message_replace%21-instance_method" title="#message_replace! (instance method)">- (Object) <strong>message_replace!</strong>(message, search_for, replace_with) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#new_file_path-instance_method" title="#new_file_path (instance method)">- (Object) <strong>new_file_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#new_file_rights-instance_method" title="#new_file_rights (instance method)">- (Object) <strong>new_file_rights</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#old_commit%3F-instance_method" title="#old_commit? (instance method)">- (Boolean) <strong>old_commit?</strong>(commit_info) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#operation_description-instance_method" title="#operation_description (instance method)">- (Object) <strong>operation_description</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#previous_dir-instance_method" title="#previous_dir (instance method)">- (Object) <strong>previous_dir</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#previous_file_path-instance_method" title="#previous_file_path (instance method)">- (Object) <strong>previous_file_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#previous_prefix-instance_method" title="#previous_prefix (instance method)">- (Object) <strong>previous_prefix</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#process_code_line-instance_method" title="#process_code_line (instance method)">- (Object) <strong>process_code_line</strong>(line, op) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#process_info_line-instance_method" title="#process_info_line (instance method)">- (Object) <strong>process_info_line</strong>(line, op) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#range_info-instance_method" title="#range_info (instance method)">- (Object) <strong>range_info</strong>(range) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#save_handled_commits-instance_method" title="#save_handled_commits (instance method)">- (Object) <strong>save_handled_commits</strong>(previous_list, flatten_commits) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#skip_lines%3F-instance_method" title="#skip_lines? (instance method)">- (Boolean) <strong>skip_lines?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#tokenize_string-instance_method" title="#tokenize_string (instance method)">- (Object) <strong>tokenize_string</strong>(str) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#unique_commits_per_branch%3F-instance_method" title="#unique_commits_per_branch? (instance method)">- (Boolean) <strong>unique_commits_per_branch?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="EscapeHelper.html" title="GitCommitNotifier::EscapeHelper (module)">EscapeHelper</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="EscapeHelper.html#escape_content-instance_method" title="GitCommitNotifier::EscapeHelper#escape_content (method)">#escape_content</a></span></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="GitCommitNotifier::DiffToHtml (class)">DiffToHtml</a></span></tt>) <strong>initialize</strong>(previous_dir = nil, config = nil) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>A new instance of DiffToHtml</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39
+40
+41
+42
+43
+44</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id previous_dir'>previous_dir</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id config'>config</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@previous_dir</span> <span class='op'>=</span> <span class='id previous_dir'>previous_dir</span>
+  <span class='ivar'>@config</span> <span class='op'>=</span> <span class='id config'>config</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='ivar'>@lines_added</span> <span class='op'>=</span> <span class='int'>0</span>
+  <span class='ivar'>@file_added</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='ivar'>@file_removed</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='kw'>false</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <span id="branch-instance_method"></span>
+      <div class="method_details first">
+  <p class="signature first" id="branch-instance_method">
+  
+    - (<tt>Object</tt>) <strong>branch</strong>  <span class="extras">(readonly)</span>
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute branch</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id branch'>branch</span>
+  <span class='ivar'>@branch</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <span id="config-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="config-instance_method">
+  
+    - (<tt>Object</tt>) <strong>config</strong>  <span class="extras">(readonly)</span>
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute config</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id config'>config</span>
+  <span class='ivar'>@config</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="current_file_name=-instance_method"></span>
+      <span id="current_file_name-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="current_file_name-instance_method">
+  
+    - (<tt>Object</tt>) <strong>current_file_name</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute current_file_name</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='id current_file_name'>current_file_name</span>
+  <span class='ivar'>@current_file_name</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="file_prefix=-instance_method"></span>
+      <span id="file_prefix-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="file_prefix-instance_method">
+  
+    - (<tt>Object</tt>) <strong>file_prefix</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute file_prefix</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='id file_prefix'>file_prefix</span>
+  <span class='ivar'>@file_prefix</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <span id="result-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="result-instance_method">
+  
+    - (<tt>Object</tt>) <strong>result</strong>  <span class="extras">(readonly)</span>
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute result</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id result'>result</span>
+  <span class='ivar'>@result</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="add_block_to_results-instance_method">
+  
+    - (<tt>Object</tt>) <strong>add_block_to_results</strong>(block, escape) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+59
+60
+61
+62
+63
+64</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 59</span>
+
+<span class='kw'>def</span> <span class='id add_block_to_results'>add_block_to_results</span><span class='lparen'>(</span><span class='id block'>block</span><span class='comma'>,</span> <span class='id escape'>escape</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id block'>block</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+  <span class='id block'>block</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id line'>line</span><span class='op'>|</span>
+    <span class='id add_line_to_result'>add_line_to_result</span><span class='lparen'>(</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id escape'>escape</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="add_changes_to_result-instance_method">
+  
+    - (<tt>Object</tt>) <strong>add_changes_to_result</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 185</span>
+
+<span class='kw'>def</span> <span class='id add_changes_to_result'>add_changes_to_result</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='ivar'>@current_file_name</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+  <span class='ivar'>@diff_result</span> <span class='op'>&lt;&lt;</span> <span class='id operation_description'>operation_description</span>
+  <span class='kw'>if</span> <span class='op'>!</span><span class='ivar'>@diff_lines</span><span class='period'>.</span><span class='id empty?'>empty?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@too_many_files</span>
+    <span class='ivar'>@diff_result</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&lt;table&gt;</span><span class='tstring_end'>'</span></span>
+    <span class='id removals'>removals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+    <span class='id additions'>additions</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+    <span class='ivar'>@diff_lines</span><span class='period'>.</span><span class='id each_with_index'>each_with_index</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id index'>index</span><span class='op'>|</span>
+      <span class='kw'>if</span> <span class='id skip_lines?'>skip_lines?</span>
+        <span class='id add_skip_notification'>add_skip_notification</span>
+        <span class='kw'>break</span>
+      <span class='kw'>end</span>
+      <span class='id removals'>removals</span> <span class='op'>&lt;&lt;</span> <span class='id line'>line</span> <span class='kw'>if</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:op</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:removal</span>
+      <span class='id additions'>additions</span> <span class='op'>&lt;&lt;</span> <span class='id line'>line</span> <span class='kw'>if</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:op</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:addition</span>
+      <span class='kw'>if</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:op</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:unchanged</span> <span class='op'>||</span> <span class='id index'>index</span> <span class='op'>==</span> <span class='ivar'>@diff_lines</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>-</span> <span class='int'>1</span> <span class='comment'># unchanged line or end of block, add prev lines to result
+</span>        <span class='kw'>if</span> <span class='id removals'>removals</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='op'>&amp;&amp;</span> <span class='id additions'>additions</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='comment'># block of removed and added lines - perform intelligent diff
+</span>          <span class='id add_block_to_results'>add_block_to_results</span><span class='lparen'>(</span><span class='id lcs_diff'>lcs_diff</span><span class='lparen'>(</span><span class='id removals'>removals</span><span class='comma'>,</span> <span class='id additions'>additions</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='symbol'>:dont_escape</span><span class='rparen'>)</span>
+        <span class='kw'>else</span> <span class='comment'># some lines removed or added - no need to perform intelligent diff
+</span>          <span class='id add_block_to_results'>add_block_to_results</span><span class='lparen'>(</span><span class='id removals'>removals</span> <span class='op'>+</span> <span class='id additions'>additions</span><span class='comma'>,</span> <span class='symbol'>:escape</span><span class='rparen'>)</span>
+        <span class='kw'>end</span>
+        <span class='id removals'>removals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+        <span class='id additions'>additions</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+        <span class='kw'>if</span> <span class='id index'>index</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='op'>&amp;&amp;</span> <span class='id index'>index</span> <span class='op'>!=</span> <span class='ivar'>@diff_lines</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>-</span> <span class='int'>1</span>
+          <span class='id prev_line'>prev_line</span> <span class='op'>=</span> <span class='ivar'>@diff_lines</span><span class='lbracket'>[</span><span class='id index'>index</span> <span class='op'>-</span> <span class='int'>1</span><span class='rbracket'>]</span>
+          <span class='id add_separator'>add_separator</span> <span class='kw'>unless</span> <span class='id lines_are_sequential?'>lines_are_sequential?</span><span class='lparen'>(</span><span class='id prev_line'>prev_line</span><span class='comma'>,</span> <span class='id line'>line</span><span class='rparen'>)</span>
+        <span class='kw'>end</span>
+        <span class='id add_line_to_result'>add_line_to_result</span><span class='lparen'>(</span><span class='id line'>line</span><span class='comma'>,</span> <span class='symbol'>:escape</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:op</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:unchanged</span>
+      <span class='kw'>end</span>
+
+    <span class='kw'>end</span>
+    <span class='ivar'>@diff_result</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&lt;/table&gt;</span><span class='tstring_end'>'</span></span>
+    <span class='ivar'>@diff_lines</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
+  <span class='comment'># reset values
+</span>  <span class='ivar'>@right_ln</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@left_ln</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@file_added</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='ivar'>@file_removed</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='kw'>false</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="add_line_to_result-instance_method">
+  
+    - (<tt>Object</tt>) <strong>add_line_to_result</strong>(line, escape) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+86
+87
+88
+89
+90
+91
+92</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 86</span>
+
+<span class='kw'>def</span> <span class='id add_line_to_result'>add_line_to_result</span><span class='lparen'>(</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id escape'>escape</span><span class='rparen'>)</span>
+  <span class='ivar'>@lines_added</span> <span class='op'>+=</span> <span class='int'>1</span>
+  <span class='id klass'>klass</span> <span class='op'>=</span> <span class='id line_class'>line_class</span><span class='lparen'>(</span><span class='id line'>line</span><span class='rparen'>)</span>
+  <span class='id content'>content</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id escape'>escape</span> <span class='op'>==</span> <span class='symbol'>:escape</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id escape_content'>escape_content</span><span class='lparen'>(</span><span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:content</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:content</span><span class='rbracket'>]</span>
+  <span class='id padding'>padding</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&amp;nbsp;</span><span class='tstring_end'>'</span></span> <span class='kw'>if</span> <span class='id klass'>klass</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+  <span class='ivar'>@diff_result</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;tr</span><span class='embexpr_beg'>#{</span><span class='id klass'>klass</span><span class='rbrace'>}</span><span class='tstring_content'>&gt;\n&lt;td class=\&quot;ln\&quot;&gt;</span><span class='embexpr_beg'>#{</span><span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:removed</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/td&gt;\n&lt;td class=\&quot;ln\&quot;&gt;</span><span class='embexpr_beg'>#{</span><span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:added</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/td&gt;\n&lt;td&gt;</span><span class='embexpr_beg'>#{</span><span class='id padding'>padding</span><span class='rbrace'>}</span><span class='embexpr_beg'>#{</span><span class='id content'>content</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/td&gt;&lt;/tr&gt;</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="add_separator-instance_method">
+  
+    - (<tt>Object</tt>) <strong>add_separator</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+78
+79
+80</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 78</span>
+
+<span class='kw'>def</span> <span class='id add_separator'>add_separator</span>
+  <span class='ivar'>@diff_result</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&lt;tr class=&quot;sep&quot;&gt;&lt;td class=&quot;sep&quot; colspan=&quot;3&quot; title=&quot;Unchanged content skipped between diff. blocks&quot;&gt;&amp;hellip;&lt;/td&gt;&lt;/tr&gt;</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="add_skip_notification-instance_method">
+  
+    - (<tt>Object</tt>) <strong>add_skip_notification</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+82
+83
+84</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 82</span>
+
+<span class='kw'>def</span> <span class='id add_skip_notification'>add_skip_notification</span>
+  <span class='ivar'>@diff_result</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;Diff too large and stripped&amp;hellip;&lt;/td&gt;&lt;/tr&gt;</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="author_name_and_email-instance_method">
+  
+    - (<tt>Object</tt>) <strong>author_name_and_email</strong>(info) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+345
+346
+347
+348
+349
+350</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 345</span>
+
+<span class='kw'>def</span> <span class='id author_name_and_email'>author_name_and_email</span><span class='lparen'>(</span><span class='id info'>info</span><span class='rparen'>)</span>
+  <span class='comment'># input string format: &quot;autor name &lt;author@email.net&gt;&quot;
+</span>  <span class='kw'>return</span> <span class='lbracket'>[</span><span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id info'>info</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^([^\&lt;]+)\s+\&lt;\s*(.*)\s*\&gt;\s*$</span><span class='regexp_end'>/</span></span> <span class='comment'># normal operation
+</span>  <span class='comment'># incomplete author info - return it as author name
+</span>  <span class='lbracket'>[</span><span class='id info'>info</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="branch_name-instance_method">
+  
+    - (<tt>Object</tt>) <strong>branch_name</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+414
+415
+416</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 414</span>
+
+<span class='kw'>def</span> <span class='id branch_name'>branch_name</span>
+  <span class='id branch'>branch</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id last'>last</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="check_handled_commits-instance_method">
+  
+    - (<tt>Object</tt>) <strong>check_handled_commits</strong>(commits) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+406
+407
+408
+409
+410
+411
+412</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 406</span>
+
+<span class='kw'>def</span> <span class='id check_handled_commits'>check_handled_commits</span><span class='lparen'>(</span><span class='id commits'>commits</span><span class='rparen'>)</span>
+  <span class='id previous_list'>previous_list</span> <span class='op'>=</span> <span class='id get_previous_commits'>get_previous_commits</span><span class='lparen'>(</span><span class='id previous_file_path'>previous_file_path</span><span class='rparen'>)</span>
+  <span class='id commits'>commits</span><span class='period'>.</span><span class='id reject!'>reject!</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id c'>c</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id c'>c</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id c'>c</span><span class='period'>.</span><span class='id lines'>lines</span> <span class='op'>:</span> <span class='id c'>c</span><span class='rparen'>)</span><span class='period'>.</span><span class='id find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id sha'>sha</span><span class='op'>|</span> <span class='id previous_list'>previous_list</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='id sha'>sha</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+  <span class='id save_handled_commits'>save_handled_commits</span><span class='lparen'>(</span><span class='id previous_list'>previous_list</span><span class='comma'>,</span> <span class='id commits'>commits</span><span class='period'>.</span><span class='id flatten'>flatten</span><span class='rparen'>)</span>
+
+  <span class='id commits'>commits</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="clear_result-instance_method">
+  
+    - (<tt>Object</tt>) <strong>clear_result</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+490
+491
+492</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 490</span>
+
+<span class='kw'>def</span> <span class='id clear_result'>clear_result</span>
+  <span class='ivar'>@result</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="diff_between_revisions-instance_method">
+  
+    - (<tt>Object</tt>) <strong>diff_between_revisions</strong>(rev1, rev2, repo, branch) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 494</span>
+
+<span class='kw'>def</span> <span class='id diff_between_revisions'>diff_between_revisions</span><span class='lparen'>(</span><span class='id rev1'>rev1</span><span class='comma'>,</span> <span class='id rev2'>rev2</span><span class='comma'>,</span> <span class='id repo'>repo</span><span class='comma'>,</span> <span class='id branch'>branch</span><span class='rparen'>)</span>
+  <span class='ivar'>@branch</span> <span class='op'>=</span> <span class='id branch'>branch</span>
+  <span class='ivar'>@result</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id commits'>commits</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id rev1'>rev1</span> <span class='op'>==</span> <span class='id rev2'>rev2</span>
+    <span class='lbracket'>[</span> <span class='id rev1'>rev1</span> <span class='rbracket'>]</span>
+  <span class='kw'>elsif</span> <span class='id rev1'>rev1</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^0+$</span><span class='regexp_end'>/</span></span>
+    <span class='comment'># creating a new remote branch
+</span>    <span class='const'>Git</span><span class='period'>.</span><span class='id branch_commits'>branch_commits</span><span class='lparen'>(</span><span class='id branch'>branch</span><span class='rparen'>)</span>
+  <span class='kw'>elsif</span> <span class='id rev2'>rev2</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^0+$</span><span class='regexp_end'>/</span></span>
+    <span class='comment'># deleting an existing remote branch
+</span>    <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='kw'>else</span>
+    <span class='id log'>log</span> <span class='op'>=</span> <span class='const'>Git</span><span class='period'>.</span><span class='id log'>log</span><span class='lparen'>(</span><span class='id rev1'>rev1</span><span class='comma'>,</span> <span class='id rev2'>rev2</span><span class='rparen'>)</span>
+    <span class='id log'>log</span><span class='period'>.</span><span class='id scan'>scan</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^commit\s([a-f0-9]+)</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id a'>a</span><span class='op'>|</span> <span class='id a'>a</span><span class='period'>.</span><span class='id first'>first</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+
+  <span class='id commits'>commits</span> <span class='op'>=</span> <span class='id check_handled_commits'>check_handled_commits</span><span class='lparen'>(</span><span class='id commits'>commits</span><span class='rparen'>)</span>
+
+  <span class='id commits'>commits</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id commit'>commit</span><span class='op'>|</span>
+    <span class='ivar'>@lines_added</span> <span class='op'>=</span> <span class='int'>0</span>  <span class='kw'>unless</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>group_email_by_push</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+    <span class='kw'>begin</span>
+      <span class='id commit_result'>commit_result</span> <span class='op'>=</span> <span class='id diff_for_commit'>diff_for_commit</span><span class='lparen'>(</span><span class='id commit'>commit</span><span class='rparen'>)</span>
+      <span class='kw'>next</span>  <span class='kw'>if</span> <span class='id commit_result'>commit_result</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+      <span class='kw'>if</span> <span class='id block_given?'>block_given?</span>
+        <span class='kw'>yield</span> <span class='id commit_result'>commit_result</span>
+      <span class='kw'>else</span>
+        <span class='ivar'>@result</span> <span class='op'>&lt;&lt;</span> <span class='id commit_result'>commit_result</span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="diff_for_commit-instance_method">
+  
+    - (<tt>Object</tt>) <strong>diff_for_commit</strong>(commit) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 428</span>
+
+<span class='kw'>def</span> <span class='id diff_for_commit'>diff_for_commit</span><span class='lparen'>(</span><span class='id commit'>commit</span><span class='rparen'>)</span>
+  <span class='ivar'>@current_commit</span> <span class='op'>=</span> <span class='id commit'>commit</span>
+  <span class='id raw_diff'>raw_diff</span> <span class='op'>=</span> <span class='const'>Git</span><span class='period'>.</span><span class='id show'>show</span><span class='lparen'>(</span><span class='id commit'>commit</span><span class='comma'>,</span> <span class='symbol'>:ignore_whitespaces</span> <span class='op'>=&gt;</span> <span class='id ignore_whitespaces?'>ignore_whitespaces?</span><span class='rparen'>)</span>
+  <span class='id raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git show output is empty</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id raw_diff'>raw_diff</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+
+  <span class='id commit_info'>commit_info</span> <span class='op'>=</span> <span class='id extract_commit_info_from_git_show_output'>extract_commit_info_from_git_show_output</span><span class='lparen'>(</span><span class='id raw_diff'>raw_diff</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>nil</span>  <span class='kw'>if</span> <span class='id old_commit?'>old_commit?</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='rparen'>)</span>
+  <span class='id changed_files'>changed_files</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>if</span> <span class='id merge_commit?'>merge_commit?</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='rparen'>)</span>
+    <span class='id changed_file_list'>changed_file_list</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+    <span class='id merge_revisions'>merge_revisions</span> <span class='op'>=</span> <span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:merge</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id split'>split</span>
+    <span class='id merge_revisions'>merge_revisions</span><span class='period'>.</span><span class='id map!'>map!</span><span class='lbrace'>{</span><span class='op'>|</span><span class='id rev'>rev</span><span class='op'>|</span> <span class='id rev'>rev</span><span class='period'>.</span><span class='id chomp'>chomp</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>...</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rbrace'>}</span>
+    <span class='id merge_first_parent'>merge_first_parent</span> <span class='op'>=</span> <span class='id merge_revisions'>merge_revisions</span><span class='period'>.</span><span class='id slice!'>slice!</span><span class='lparen'>(</span><span class='int'>0</span><span class='rparen'>)</span>
+    <span class='id merge_revisions'>merge_revisions</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id merge_other_parent'>merge_other_parent</span><span class='op'>|</span>
+      <span class='id changed_file_list'>changed_file_list</span> <span class='op'>+=</span> <span class='const'>Git</span><span class='period'>.</span><span class='id changed_files'>changed_files</span><span class='lparen'>(</span><span class='id merge_first_parent'>merge_first_parent</span><span class='comma'>,</span> <span class='id merge_other_parent'>merge_other_parent</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+    <span class='id changed_files'>changed_files</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Changed files:\n\n</span><span class='embexpr_beg'>#{</span><span class='id changed_file_list'>changed_file_list</span><span class='period'>.</span><span class='id uniq'>uniq</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='id title'>title</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;div class=\&quot;title\&quot;&gt;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;strong&gt;Message:&lt;/strong&gt; </span><span class='embexpr_beg'>#{</span><span class='id message_array_as_html'>message_array_as_html</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;br /&gt;\n</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;strong&gt;Commit:&lt;/strong&gt; </span><span class='tstring_end'>&quot;</span></span>
+
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='kw'>if</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+    <span class='kw'>if</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitweb</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitweb</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href='</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitweb</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>?p=</span><span class='embexpr_beg'>#{</span><span class='const'>Git</span><span class='period'>.</span><span class='id repo_name'>repo_name</span><span class='rbrace'>}</span><span class='tstring_content'>.git;a=commitdiff;h=</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>'&gt;</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>elsif</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href='</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>project</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>repository</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/commit/</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>'&gt;</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>elsif</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>trac</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>trac</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href='</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>trac</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>'&gt;</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>elsif</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cgit</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cgit</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href='</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>cgit</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>cgit</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>project</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/commit/?id=</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>'&gt;</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>else</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;br /&gt;\n</span><span class='tstring_end'>&quot;</span></span>
+
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;strong&gt;Branch:&lt;/strong&gt; </span><span class='embexpr_beg'>#{</span><span class='const'>CGI</span><span class='period'>.</span><span class='id escapeHTML'>escapeHTML</span><span class='lparen'>(</span><span class='id branch_name'>branch_name</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>\n&lt;br /&gt;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id branch_name'>branch_name</span>
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;strong&gt;Date:&lt;/strong&gt; </span><span class='embexpr_beg'>#{</span><span class='const'>CGI</span><span class='period'>.</span><span class='id escapeHTML'>escapeHTML</span> <span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:date</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>\n&lt;br /&gt;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;strong&gt;Author:&lt;/strong&gt; </span><span class='embexpr_beg'>#{</span><span class='const'>CGI</span><span class='period'>.</span><span class='id escapeHTML'>escapeHTML</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'> &amp;lt;</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&amp;gt;\n&lt;br /&gt;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id title'>title</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;strong&gt;Committer:&lt;/strong&gt; </span><span class='embexpr_beg'>#{</span><span class='const'>CGI</span><span class='period'>.</span><span class='id escapeHTML'>escapeHTML</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:committer</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'> &amp;lt;</span><span class='embexpr_beg'>#{</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit_email</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&amp;gt;\n&lt;/div&gt;</span><span class='tstring_end'>&quot;</span></span>
+
+  <span class='id text'>text</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id raw_diff'>raw_diff</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id text'>text</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id changed_files'>changed_files</span><span class='rbrace'>}</span><span class='tstring_content'>\n\n\n</span><span class='tstring_end'>&quot;</span></span>
+
+  <span class='id html'>html</span> <span class='op'>=</span> <span class='id title'>title</span>
+  <span class='id html'>html</span> <span class='op'>+=</span> <span class='id diff_for_revision'>diff_for_revision</span><span class='lparen'>(</span><span class='id extract_diff_from_git_show_output'>extract_diff_from_git_show_output</span><span class='lparen'>(</span><span class='id raw_diff'>raw_diff</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id html'>html</span> <span class='op'>+=</span> <span class='id message_array_as_html'>message_array_as_html</span><span class='lparen'>(</span><span class='id changed_files'>changed_files</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id html'>html</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;br /&gt;&lt;br /&gt;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id first_sentence'>first_sentence</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+  <span class='lbrace'>{</span>
+    <span class='symbol'>:commit_info</span>  <span class='op'>=&gt;</span> <span class='id commit_info'>commit_info</span><span class='comma'>,</span>
+    <span class='symbol'>:html_content</span> <span class='op'>=&gt;</span> <span class='id html'>html</span><span class='comma'>,</span>
+    <span class='symbol'>:text_content</span> <span class='op'>=&gt;</span> <span class='id text'>text</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="diff_for_revision-instance_method">
+  
+    - (<tt>Object</tt>) <strong>diff_for_revision</strong>(content) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 229</span>
+
+<span class='kw'>def</span> <span class='id diff_for_revision'>diff_for_revision</span><span class='lparen'>(</span><span class='id content'>content</span><span class='rparen'>)</span>
+  <span class='ivar'>@left_ln</span> <span class='op'>=</span> <span class='ivar'>@right_ln</span> <span class='op'>=</span> <span class='kw'>nil</span>
+
+  <span class='ivar'>@diff_result</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@diff_lines</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@removed_files</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@current_file_name</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@current_sha</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@too_many_files</span> <span class='op'>=</span> <span class='kw'>false</span>
+
+  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id content'>content</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+
+  <span class='kw'>if</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>too_many_files</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>too_many_files</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span> <span class='op'>&gt;</span> <span class='int'>0</span>
+    <span class='id file_count'>file_count</span> <span class='op'>=</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id inject'>inject</span><span class='lparen'>(</span><span class='int'>0</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id count'>count</span><span class='comma'>,</span> <span class='id line'>line</span><span class='op'>|</span>
+      <span class='lparen'>(</span><span class='id line'>line</span> <span class='op'>=~</span> <span class='const'>RE_DIFF_FILE_NAME</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='lparen'>(</span><span class='id count'>count</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id count'>count</span>
+    <span class='kw'>end</span>
+
+    <span class='kw'>if</span> <span class='id file_count'>file_count</span> <span class='op'>&gt;=</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>too_many_files</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span>
+      <span class='ivar'>@too_many_files</span> <span class='op'>=</span> <span class='kw'>true</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='id lines'>lines</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id line'>line</span><span class='op'>|</span>
+    <span class='kw'>case</span> <span class='id line'>line</span>
+    <span class='kw'>when</span> <span class='const'>RE_DIFF_FILE_NAME</span> <span class='kw'>then</span>
+      <span class='id file_name'>file_name</span> <span class='op'>=</span> <span class='backref'>$1</span>
+      <span class='id add_changes_to_result'>add_changes_to_result</span>
+      <span class='ivar'>@current_file_name</span> <span class='op'>=</span> <span class='id file_name'>file_name</span>
+    <span class='kw'>when</span> <span class='const'>RE_DIFF_SHA</span> <span class='kw'>then</span>
+      <span class='ivar'>@current_sha</span> <span class='op'>=</span> <span class='backref'>$1</span>
+    <span class='kw'>else</span>
+      <span class='id op'>op</span> <span class='op'>=</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>0</span><span class='comma'>,</span> <span class='int'>1</span><span class='rbracket'>]</span>
+      <span class='kw'>if</span> <span class='ivar'>@left_ln</span><span class='period'>.</span><span class='id nil?'>nil?</span> <span class='op'>||</span> <span class='id op'>op</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>@</span><span class='tstring_end'>'</span></span>
+        <span class='id process_info_line'>process_info_line</span><span class='lparen'>(</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id op'>op</span><span class='rparen'>)</span>
+      <span class='kw'>else</span>
+        <span class='id process_code_line'>process_code_line</span><span class='lparen'>(</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id op'>op</span><span class='rparen'>)</span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id add_changes_to_result'>add_changes_to_result</span>
+  <span class='ivar'>@diff_result</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="do_message_integration-instance_method">
+  
+    - (<tt>Object</tt>) <strong>do_message_integration</strong>(message) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 538</span>
+
+<span class='kw'>def</span> <span class='id do_message_integration'>do_message_integration</span><span class='lparen'>(</span><span class='id message'>message</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='id message'>message</span> <span class='kw'>unless</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>message_integration</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:each_pair</span><span class='rparen'>)</span>
+  <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>message_integration</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id each_pair'>each_pair</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id pm'>pm</span><span class='comma'>,</span> <span class='id url'>url</span><span class='op'>|</span>
+    <span class='id pm_def'>pm_def</span> <span class='op'>=</span> <span class='const'>DiffToHtml</span><span class='op'>::</span><span class='const'>INTEGRATION_MAP</span><span class='lbracket'>[</span><span class='id pm'>pm</span><span class='period'>.</span><span class='id to_sym'>to_sym</span><span class='rbracket'>]</span> <span class='kw'>or</span> <span class='kw'>next</span>
+    <span class='id replace_with'>replace_with</span> <span class='op'>=</span> <span class='id pm_def'>pm_def</span><span class='lbracket'>[</span><span class='symbol'>:replace_with</span><span class='rbracket'>]</span>
+    <span class='id replace_with'>replace_with</span> <span class='op'>=</span> <span class='id replace_with'>replace_with</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Proc</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id lambda'>lambda</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id m'>m</span><span class='op'>|</span> <span class='id pm_def'>pm_def</span><span class='lbracket'>[</span><span class='symbol'>:replace_with</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id call'>call</span><span class='lparen'>(</span><span class='id m'>m</span><span class='comma'>,</span> <span class='id url'>url</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='op'>:</span> <span class='id replace_with'>replace_with</span><span class='period'>.</span><span class='id gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>#{url}</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id url'>url</span><span class='rparen'>)</span>
+    <span class='id message_replace!'>message_replace!</span><span class='lparen'>(</span><span class='id message'>message</span><span class='comma'>,</span> <span class='id pm_def'>pm_def</span><span class='lbracket'>[</span><span class='symbol'>:search_for</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id replace_with'>replace_with</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='id message'>message</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="do_message_map-instance_method">
+  
+    - (<tt>Object</tt>) <strong>do_message_map</strong>(message) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+549
+550
+551
+552
+553
+554
+555</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 549</span>
+
+<span class='kw'>def</span> <span class='id do_message_map'>do_message_map</span><span class='lparen'>(</span><span class='id message'>message</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='id message'>message</span> <span class='kw'>unless</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>message_map</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:each_pair</span><span class='rparen'>)</span>
+  <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>message_map</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id each_pair'>each_pair</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id search_for'>search_for</span><span class='comma'>,</span> <span class='id replace_with'>replace_with</span><span class='op'>|</span>
+    <span class='id message_replace!'>message_replace!</span><span class='lparen'>(</span><span class='id message'>message</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id search_for'>search_for</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id replace_with'>replace_with</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='id message'>message</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="extract_block_content-instance_method">
+  
+    - (<tt>Object</tt>) <strong>extract_block_content</strong>(block) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+94
+95
+96</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 94</span>
+
+<span class='kw'>def</span> <span class='id extract_block_content'>extract_block_content</span><span class='lparen'>(</span><span class='id block'>block</span><span class='rparen'>)</span>
+  <span class='id block'>block</span><span class='period'>.</span><span class='id collect'>collect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id b'>b</span><span class='op'>|</span> <span class='id b'>b</span><span class='lbracket'>[</span><span class='symbol'>:content</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="extract_commit_info_from_git_show_output-instance_method">
+  
+    - (<tt>Object</tt>) <strong>extract_commit_info_from_git_show_output</strong>(content) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 315</span>
+
+<span class='kw'>def</span> <span class='id extract_commit_info_from_git_show_output'>extract_commit_info_from_git_show_output</span><span class='lparen'>(</span><span class='id content'>content</span><span class='rparen'>)</span>
+  <span class='id result'>result</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='symbol'>:message</span> <span class='op'>=&gt;</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:commit</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:author</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:date</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:email</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:committer</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:commit_date</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:committer_email</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='rbrace'>}</span>
+  <span class='id content'>content</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id line'>line</span><span class='op'>|</span>
+    <span class='kw'>if</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^diff</span><span class='regexp_end'>/</span></span> <span class='comment'># end of commit info, return results
+</span>      <span class='kw'>return</span> <span class='id result'>result</span>
+    <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^commit </span><span class='regexp_end'>/</span></span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>7</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
+    <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^Author:</span><span class='regexp_end'>/</span></span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id author_name_and_email'>author_name_and_email</span><span class='lparen'>(</span><span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>12</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^AuthorDate:</span><span class='regexp_end'>/</span></span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:date</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>12</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
+    <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^Commit:</span><span class='regexp_end'>/</span></span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:committer</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_email</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id author_name_and_email'>author_name_and_email</span><span class='lparen'>(</span><span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>12</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^CommitDate:</span><span class='regexp_end'>/</span></span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_date</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>12</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
+    <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^Merge:</span><span class='regexp_end'>/</span></span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:merge</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>7</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span>
+    <span class='kw'>else</span>
+      <span class='id clean_line'>clean_line</span> <span class='op'>=</span> <span class='id line'>line</span><span class='period'>.</span><span class='id strip'>strip</span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id clean_line'>clean_line</span> <span class='kw'>unless</span> <span class='id clean_line'>clean_line</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id result'>result</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="extract_diff_from_git_show_output-instance_method">
+  
+    - (<tt>Object</tt>) <strong>extract_diff_from_git_show_output</strong>(content) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 304</span>
+
+<span class='kw'>def</span> <span class='id extract_diff_from_git_show_output'>extract_diff_from_git_show_output</span><span class='lparen'>(</span><span class='id content'>content</span><span class='rparen'>)</span>
+  <span class='id diff'>diff</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id diff_found'>diff_found</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='id content'>content</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id line'>line</span><span class='op'>|</span>
+    <span class='id diff_found'>diff_found</span> <span class='op'>=</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^diff\s\-\-git</span><span class='regexp_end'>/</span></span>
+    <span class='kw'>next</span> <span class='kw'>unless</span> <span class='id diff_found'>diff_found</span>
+    <span class='id diff'>diff</span> <span class='op'>&lt;&lt;</span> <span class='id line'>line</span>
+  <span class='kw'>end</span>
+  <span class='id diff'>diff</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="first_sentence-instance_method">
+  
+    - (<tt>Object</tt>) <strong>first_sentence</strong>(message_array) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+352
+353
+354
+355
+356</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 352</span>
+
+<span class='kw'>def</span> <span class='id first_sentence'>first_sentence</span><span class='lparen'>(</span><span class='id message_array'>message_array</span><span class='rparen'>)</span>
+  <span class='id msg'>msg</span> <span class='op'>=</span> <span class='id message_array'>message_array</span><span class='period'>.</span><span class='id first'>first</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='period'>.</span><span class='id strip'>strip</span>
+  <span class='kw'>return</span> <span class='id message_array'>message_array</span><span class='period'>.</span><span class='id first'>first</span> <span class='kw'>if</span> <span class='id msg'>msg</span><span class='period'>.</span><span class='id empty?'>empty?</span> <span class='op'>||</span> <span class='id msg'>msg</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^Merge\:</span><span class='regexp_end'>/</span></span>
+  <span class='id msg'>msg</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="get_previous_commits-instance_method">
+  
+    - (<tt>Object</tt>) <strong>get_previous_commits</strong>(previous_file) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+362
+363
+364
+365
+366
+367</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 362</span>
+
+<span class='kw'>def</span> <span class='id get_previous_commits'>get_previous_commits</span><span class='lparen'>(</span><span class='id previous_file'>previous_file</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id exists?'>exists?</span><span class='lparen'>(</span><span class='id previous_file'>previous_file</span><span class='rparen'>)</span>
+  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='const'>IO</span><span class='period'>.</span><span class='id read'>read</span><span class='lparen'>(</span><span class='id previous_file'>previous_file</span><span class='rparen'>)</span>
+  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id lines'>lines</span> <span class='kw'>if</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span> <span class='comment'># Ruby 1.9 tweak
+</span>  <span class='id lines'>lines</span><span class='period'>.</span><span class='id to_a'>to_a</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id s'>s</span><span class='op'>|</span> <span class='id s'>s</span><span class='period'>.</span><span class='id chomp'>chomp</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id compact'>compact</span><span class='period'>.</span><span class='id uniq'>uniq</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="ignore_whitespaces?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>ignore_whitespaces?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+70
+71
+72</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 70</span>
+
+<span class='kw'>def</span> <span class='id ignore_whitespaces?'>ignore_whitespaces?</span>
+  <span class='ivar'>@config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ignore_whitespace</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id nil?'>nil?</span> <span class='op'>||</span> <span class='ivar'>@config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ignore_whitespace</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="lcs_diff-instance_method">
+  
+    - (<tt>Object</tt>) <strong>lcs_diff</strong>(removals, additions) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 98</span>
+
+<span class='kw'>def</span> <span class='id lcs_diff'>lcs_diff</span><span class='lparen'>(</span><span class='id removals'>removals</span><span class='comma'>,</span> <span class='id additions'>additions</span><span class='rparen'>)</span>
+  <span class='comment'># arrays always have at least 1 element
+</span>  <span class='id callback'>callback</span> <span class='op'>=</span> <span class='const'>DiffCallback</span><span class='period'>.</span><span class='id new'>new</span>
+
+  <span class='id s1'>s1</span> <span class='op'>=</span> <span class='id extract_block_content'>extract_block_content</span><span class='lparen'>(</span><span class='id removals'>removals</span><span class='rparen'>)</span>
+  <span class='id s2'>s2</span> <span class='op'>=</span> <span class='id extract_block_content'>extract_block_content</span><span class='lparen'>(</span><span class='id additions'>additions</span><span class='rparen'>)</span>
+
+  <span class='id s1'>s1</span> <span class='op'>=</span> <span class='id tokenize_string'>tokenize_string</span><span class='lparen'>(</span><span class='id s1'>s1</span><span class='rparen'>)</span>
+  <span class='id s2'>s2</span> <span class='op'>=</span> <span class='id tokenize_string'>tokenize_string</span><span class='lparen'>(</span><span class='id s2'>s2</span><span class='rparen'>)</span>
+
+  <span class='const'>Diff</span><span class='op'>::</span><span class='const'>LCS</span><span class='period'>.</span><span class='id traverse_balanced'>traverse_balanced</span><span class='lparen'>(</span><span class='id s1'>s1</span><span class='comma'>,</span> <span class='id s2'>s2</span><span class='comma'>,</span> <span class='id callback'>callback</span><span class='rparen'>)</span>
+
+  <span class='id processor'>processor</span> <span class='op'>=</span> <span class='const'>ResultProcessor</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id callback'>callback</span><span class='period'>.</span><span class='id tags'>tags</span><span class='rparen'>)</span>
+
+  <span class='id diff_for_removals'>diff_for_removals</span><span class='comma'>,</span> <span class='id diff_for_additions'>diff_for_additions</span> <span class='op'>=</span> <span class='id processor'>processor</span><span class='period'>.</span><span class='id results'>results</span>
+  <span class='id result'>result</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+
+  <span class='id ln_start'>ln_start</span> <span class='op'>=</span> <span class='id removals'>removals</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:removed</span><span class='rbracket'>]</span>
+  <span class='id diff_for_removals'>diff_for_removals</span><span class='period'>.</span><span class='id each_with_index'>each_with_index</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id i'>i</span><span class='op'>|</span>
+    <span class='id result'>result</span> <span class='op'>&lt;&lt;</span> <span class='lbrace'>{</span> <span class='symbol'>:removed</span> <span class='op'>=&gt;</span> <span class='id ln_start'>ln_start</span> <span class='op'>+</span> <span class='id i'>i</span><span class='comma'>,</span> <span class='symbol'>:added</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='symbol'>:op</span> <span class='op'>=&gt;</span> <span class='symbol'>:removal</span><span class='comma'>,</span> <span class='symbol'>:content</span> <span class='op'>=&gt;</span> <span class='id line'>line</span><span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+
+  <span class='id ln_start'>ln_start</span> <span class='op'>=</span> <span class='id additions'>additions</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:added</span><span class='rbracket'>]</span>
+  <span class='id diff_for_additions'>diff_for_additions</span><span class='period'>.</span><span class='id each_with_index'>each_with_index</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id i'>i</span><span class='op'>|</span>
+    <span class='id result'>result</span> <span class='op'>&lt;&lt;</span> <span class='lbrace'>{</span> <span class='symbol'>:removed</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='symbol'>:added</span> <span class='op'>=&gt;</span> <span class='id ln_start'>ln_start</span> <span class='op'>+</span> <span class='id i'>i</span><span class='comma'>,</span> <span class='symbol'>:op</span> <span class='op'>=&gt;</span> <span class='symbol'>:addition</span><span class='comma'>,</span> <span class='symbol'>:content</span> <span class='op'>=&gt;</span> <span class='id line'>line</span><span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+
+  <span class='id result'>result</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="line_class-instance_method">
+  
+    - (<tt>Object</tt>) <strong>line_class</strong>(line) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+51
+52
+53
+54
+55
+56
+57</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 51</span>
+
+<span class='kw'>def</span> <span class='id line_class'>line_class</span><span class='lparen'>(</span><span class='id line'>line</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='symbol'>:op</span><span class='rbracket'>]</span>
+  <span class='kw'>when</span> <span class='symbol'>:removal</span>  <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> class=&quot;r&quot;</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>when</span> <span class='symbol'>:addition</span> <span class='kw'>then</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> class=&quot;a&quot;</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>else</span>                <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="lines_are_sequential?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>lines_are_sequential?</strong>(first, second) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+175
+176
+177
+178
+179
+180
+181
+182
+183</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 175</span>
+
+<span class='kw'>def</span> <span class='id lines_are_sequential?'>lines_are_sequential?</span><span class='lparen'>(</span><span class='id first'>first</span><span class='comma'>,</span> <span class='id second'>second</span><span class='rparen'>)</span>
+  <span class='id result'>result</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='lbracket'>[</span><span class='symbol'>:added</span><span class='comma'>,</span> <span class='symbol'>:removed</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id side'>side</span><span class='op'>|</span>
+    <span class='kw'>if</span> <span class='op'>!</span><span class='id first'>first</span><span class='lbracket'>[</span><span class='id side'>side</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id second'>second</span><span class='lbracket'>[</span><span class='id side'>side</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+      <span class='id result'>result</span> <span class='op'>=</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id first'>first</span><span class='lbracket'>[</span><span class='id side'>side</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='lparen'>(</span><span class='id second'>second</span><span class='lbracket'>[</span><span class='id side'>side</span><span class='rbracket'>]</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id result'>result</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="lines_per_diff-instance_method">
+  
+    - (<tt>Object</tt>) <strong>lines_per_diff</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+66
+67
+68</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 66</span>
+
+<span class='kw'>def</span> <span class='id lines_per_diff'>lines_per_diff</span>
+  <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>lines_per_diff</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="merge_commit?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>merge_commit?</strong>(commit_info) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+424
+425
+426</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 424</span>
+
+<span class='kw'>def</span> <span class='id merge_commit?'>merge_commit?</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='rparen'>)</span>
+  <span class='op'>!</span> <span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:merge</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="message_array_as_html-instance_method">
+  
+    - (<tt>Object</tt>) <strong>message_array_as_html</strong>(message) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+341
+342
+343</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 341</span>
+
+<span class='kw'>def</span> <span class='id message_array_as_html'>message_array_as_html</span><span class='lparen'>(</span><span class='id message'>message</span><span class='rparen'>)</span>
+  <span class='id message_map'>message_map</span><span class='lparen'>(</span><span class='id message'>message</span><span class='period'>.</span><span class='id collect'>collect</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id m'>m</span><span class='op'>|</span> <span class='const'>CGI</span><span class='period'>.</span><span class='id escapeHTML'>escapeHTML</span><span class='lparen'>(</span><span class='id m'>m</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&lt;br /&gt;</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="message_map-instance_method">
+  
+    - (<tt>Object</tt>) <strong>message_map</strong>(message) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+557
+558
+559</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 557</span>
+
+<span class='kw'>def</span> <span class='id message_map'>message_map</span><span class='lparen'>(</span><span class='id message'>message</span><span class='rparen'>)</span>
+  <span class='id do_message_map'>do_message_map</span><span class='lparen'>(</span><span class='id do_message_integration'>do_message_integration</span><span class='lparen'>(</span><span class='id message'>message</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="message_replace!-instance_method">
+  
+    - (<tt>Object</tt>) <strong>message_replace!</strong>(message, search_for, replace_with) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 526</span>
+
+<span class='kw'>def</span> <span class='id message_replace!'>message_replace!</span><span class='lparen'>(</span><span class='id message'>message</span><span class='comma'>,</span> <span class='id search_for'>search_for</span><span class='comma'>,</span> <span class='id replace_with'>replace_with</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id replace_with'>replace_with</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Proc</span><span class='rparen'>)</span>
+    <span class='id message'>message</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id search_for'>search_for</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id m'>m</span><span class='op'>|</span>
+      <span class='id r'>r</span> <span class='op'>=</span> <span class='id replace_with'>replace_with</span><span class='period'>.</span><span class='id call'>call</span><span class='lparen'>(</span><span class='id m'>m</span><span class='rparen'>)</span>
+      <span class='id r'>r</span><span class='lbracket'>[</span><span class='symbol'>:phrase</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> </span><span class='tstring_end'>'</span></span> <span class='op'>+</span> <span class='id r'>r</span><span class='lbracket'>[</span><span class='symbol'>:links</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id m'>m</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href=\&quot;</span><span class='embexpr_beg'>#{</span><span class='id m'>m</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>\&quot;&gt;</span><span class='embexpr_beg'>#{</span><span class='id m'>m</span><span class='lbracket'>[</span><span class='symbol'>:title</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>, </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='id full_replace_with'>full_replace_with</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href=\&quot;</span><span class='embexpr_beg'>#{</span><span class='id replace_with'>replace_with</span><span class='rbrace'>}</span><span class='tstring_content'>\&quot;&gt;\\0&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id message'>message</span><span class='period'>.</span><span class='id gsub!'>gsub!</span><span class='lparen'>(</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id search_for'>search_for</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id full_replace_with'>full_replace_with</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="new_file_path-instance_method">
+  
+    - (<tt>Object</tt>) <strong>new_file_path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+382
+383
+384
+385</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 382</span>
+
+<span class='kw'>def</span> <span class='id new_file_path'>new_file_path</span>
+  <span class='id new_name'>new_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id previous_prefix'>previous_prefix</span><span class='rbrace'>}</span><span class='embexpr_beg'>#{</span><span class='const'>NEW_HANDLED_COMMITS_FILE</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='id previous_dir'>previous_dir</span><span class='comma'>,</span> <span class='id new_name'>new_name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="new_file_rights-instance_method">
+  
+    - (<tt>Object</tt>) <strong>new_file_rights</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+387
+388
+389
+390
+391
+392
+393</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 387</span>
+
+<span class='kw'>def</span> <span class='id new_file_rights'>new_file_rights</span>
+  <span class='id git_config_path'>git_config_path</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id expand_path'>expand_path</span><span class='lparen'>(</span><span class='const'>GIT_CONFIG_FILE</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>.</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='comment'># we should copy rights from git config if possible
+</span>  <span class='const'>File</span><span class='period'>.</span><span class='id stat'>stat</span><span class='lparen'>(</span><span class='id git_config_path'>git_config_path</span><span class='rparen'>)</span><span class='period'>.</span><span class='id mode'>mode</span>
+<span class='kw'>rescue</span>
+  <span class='const'>DEFAULT_NEW_FILE_RIGHTS</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="old_commit?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>old_commit?</strong>(commit_info) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+418
+419
+420
+421
+422</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 418</span>
+
+<span class='kw'>def</span> <span class='id old_commit?'>old_commit?</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='op'>!</span> <span class='id config'>config</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>skip_commits_older_than</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>skip_commits_older_than</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span> <span class='op'>&lt;=</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='id commit_when'>commit_when</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='id commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:date</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='lparen'>(</span><span class='const'>Time</span><span class='period'>.</span><span class='id now'>now</span> <span class='op'>-</span> <span class='id commit_when'>commit_when</span><span class='rparen'>)</span> <span class='op'>&gt;</span> <span class='lparen'>(</span><span class='const'>SECS_PER_DAY</span> <span class='op'>*</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>skip_commits_older_than</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="operation_description-instance_method">
+  
+    - (<tt>Object</tt>) <strong>operation_description</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 147</span>
+
+<span class='kw'>def</span> <span class='id operation_description'>operation_description</span>
+  <span class='id binary'>binary</span> <span class='op'>=</span> <span class='ivar'>@binary</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>binary </span><span class='tstring_end'>'</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+  <span class='id op'>op</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ivar'>@file_removed</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Deleted</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>elsif</span> <span class='ivar'>@file_added</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Added</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>else</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Changed</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='id file_name'>file_name</span> <span class='op'>=</span> <span class='ivar'>@current_file_name</span>
+
+  <span class='kw'>if</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>link_files</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+    <span class='id file_name'>file_name</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitweb</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitweb</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href='</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitweb</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>?p=</span><span class='embexpr_beg'>#{</span><span class='const'>Git</span><span class='period'>.</span><span class='id repo_name'>repo_name</span><span class='rbrace'>}</span><span class='tstring_content'>.git;f=</span><span class='embexpr_beg'>#{</span><span class='id file_name'>file_name</span><span class='rbrace'>}</span><span class='tstring_content'>;h=</span><span class='embexpr_beg'>#{</span><span class='ivar'>@current_sha</span><span class='rbrace'>}</span><span class='tstring_content'>;hb=</span><span class='embexpr_beg'>#{</span><span class='ivar'>@current_commit</span><span class='rbrace'>}</span><span class='tstring_content'>'&gt;</span><span class='embexpr_beg'>#{</span><span class='id file_name'>file_name</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>elsif</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href='</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>project</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>gitorious</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>repository</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/blobs/</span><span class='embexpr_beg'>#{</span><span class='id branch_name'>branch_name</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id file_name'>file_name</span><span class='rbrace'>}</span><span class='tstring_content'>'&gt;</span><span class='embexpr_beg'>#{</span><span class='id file_name'>file_name</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>elsif</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>link_files</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cgit</span><span class='tstring_end'>&quot;</span></span> <span class='op'>&amp;&amp;</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cgit</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;a href='</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>cgit</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>cgit</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>project</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>/tree/</span><span class='embexpr_beg'>#{</span><span class='id file_name'>file_name</span><span class='rbrace'>}</span><span class='tstring_content'>'&gt;</span><span class='embexpr_beg'>#{</span><span class='id file_name'>file_name</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/a&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>else</span>
+      <span class='id file_name'>file_name</span>
+    <span class='kw'>end</span>
+<span class='kw'>end</span>
+
+  <span class='id header'>header</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id op'>op</span><span class='rbrace'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id binary'>binary</span><span class='rbrace'>}</span><span class='tstring_content'>file </span><span class='embexpr_beg'>#{</span><span class='id file_name'>file_name</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;h2&gt;</span><span class='embexpr_beg'>#{</span><span class='id header'>header</span><span class='rbrace'>}</span><span class='tstring_content'>&lt;/h2&gt;\n</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="previous_dir-instance_method">
+  
+    - (<tt>Object</tt>) <strong>previous_dir</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+369
+370
+371</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 369</span>
+
+<span class='kw'>def</span> <span class='id previous_dir'>previous_dir</span>
+  <span class='lparen'>(</span><span class='op'>!</span><span class='ivar'>@previous_dir</span><span class='period'>.</span><span class='id nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='const'>File</span><span class='period'>.</span><span class='id exists?'>exists?</span><span class='lparen'>(</span><span class='ivar'>@previous_dir</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='ivar'>@previous_dir</span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/tmp</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="previous_file_path-instance_method">
+  
+    - (<tt>Object</tt>) <strong>previous_file_path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+377
+378
+379
+380</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 377</span>
+
+<span class='kw'>def</span> <span class='id previous_file_path'>previous_file_path</span>
+  <span class='id previous_name'>previous_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id previous_prefix'>previous_prefix</span><span class='rbrace'>}</span><span class='embexpr_beg'>#{</span><span class='const'>HANDLED_COMMITS_FILE</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='id previous_dir'>previous_dir</span><span class='comma'>,</span> <span class='id previous_name'>previous_name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="previous_prefix-instance_method">
+  
+    - (<tt>Object</tt>) <strong>previous_prefix</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+373
+374
+375</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 373</span>
+
+<span class='kw'>def</span> <span class='id previous_prefix'>previous_prefix</span>
+  <span class='id unique_commits_per_branch?'>unique_commits_per_branch?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Digest</span><span class='op'>::</span><span class='const'>SHA1</span><span class='period'>.</span><span class='id hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='id branch'>branch</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="process_code_line-instance_method">
+  
+    - (<tt>Object</tt>) <strong>process_code_line</strong>(line, op) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 272</span>
+
+<span class='kw'>def</span> <span class='id process_code_line'>process_code_line</span><span class='lparen'>(</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id op'>op</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id op'>op</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>-</span><span class='tstring_end'>'</span></span>
+    <span class='ivar'>@diff_lines</span> <span class='op'>&lt;&lt;</span> <span class='lbrace'>{</span> <span class='symbol'>:removed</span> <span class='op'>=&gt;</span> <span class='ivar'>@left_ln</span><span class='comma'>,</span> <span class='symbol'>:added</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='symbol'>:op</span> <span class='op'>=&gt;</span> <span class='symbol'>:removal</span><span class='comma'>,</span> <span class='symbol'>:content</span> <span class='op'>=&gt;</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>1</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+    <span class='ivar'>@left_ln</span> <span class='op'>+=</span> <span class='int'>1</span>
+  <span class='kw'>elsif</span> <span class='id op'>op</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>+</span><span class='tstring_end'>'</span></span>
+    <span class='ivar'>@diff_lines</span> <span class='op'>&lt;&lt;</span> <span class='lbrace'>{</span> <span class='symbol'>:added</span> <span class='op'>=&gt;</span> <span class='ivar'>@right_ln</span><span class='comma'>,</span> <span class='symbol'>:removed</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='symbol'>:op</span> <span class='op'>=&gt;</span> <span class='symbol'>:addition</span><span class='comma'>,</span> <span class='symbol'>:content</span> <span class='op'>=&gt;</span> <span class='id line'>line</span><span class='lbracket'>[</span><span class='int'>1</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+    <span class='ivar'>@right_ln</span> <span class='op'>+=</span> <span class='int'>1</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@diff_lines</span> <span class='op'>&lt;&lt;</span> <span class='lbrace'>{</span> <span class='symbol'>:added</span> <span class='op'>=&gt;</span> <span class='ivar'>@right_ln</span><span class='comma'>,</span> <span class='symbol'>:removed</span> <span class='op'>=&gt;</span> <span class='ivar'>@left_ln</span><span class='comma'>,</span> <span class='symbol'>:op</span> <span class='op'>=&gt;</span> <span class='symbol'>:unchanged</span><span class='comma'>,</span> <span class='symbol'>:content</span> <span class='op'>=&gt;</span> <span class='id line'>line</span> <span class='rbrace'>}</span>
+    <span class='ivar'>@right_ln</span> <span class='op'>+=</span> <span class='int'>1</span>
+    <span class='ivar'>@left_ln</span> <span class='op'>+=</span> <span class='int'>1</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="process_info_line-instance_method">
+  
+    - (<tt>Object</tt>) <strong>process_info_line</strong>(line, op) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 286</span>
+
+<span class='kw'>def</span> <span class='id process_info_line'>process_info_line</span><span class='lparen'>(</span><span class='id line'>line</span><span class='comma'>,</span> <span class='id op'>op</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id line'>line</span> <span class='op'>=~</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^deleted\sfile\s</span><span class='regexp_end'>/</span></span>
+    <span class='ivar'>@file_removed</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\-\-\-\s</span><span class='regexp_end'>/</span></span> <span class='op'>&amp;&amp;</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\/dev\/null</span><span class='regexp_end'>/</span></span>
+    <span class='ivar'>@file_added</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\+\+\+\s</span><span class='regexp_end'>/</span></span> <span class='op'>&amp;&amp;</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\/dev\/null</span><span class='regexp_end'>/</span></span>
+    <span class='ivar'>@file_removed</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^Binary files \/dev\/null</span><span class='regexp_end'>/</span></span> <span class='comment'># Binary files /dev/null and ... differ (addition)
+</span>    <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='kw'>true</span>
+    <span class='ivar'>@file_added</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='kw'>elsif</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\/dev\/null differ</span><span class='regexp_end'>/</span></span> <span class='comment'># Binary files ... and /dev/null differ (removal)
+</span>    <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='kw'>true</span>
+    <span class='ivar'>@file_removed</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='kw'>elsif</span> <span class='id op'>op</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>@</span><span class='tstring_end'>'</span></span>
+    <span class='ivar'>@left_ln</span><span class='comma'>,</span> <span class='ivar'>@right_ln</span> <span class='op'>=</span> <span class='id range_info'>range_info</span><span class='lparen'>(</span><span class='id line'>line</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="range_info-instance_method">
+  
+    - (<tt>Object</tt>) <strong>range_info</strong>(range) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48
+49</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id range_info'>range_info</span><span class='lparen'>(</span><span class='id range'>range</span><span class='rparen'>)</span>
+  <span class='id matches'>matches</span> <span class='op'>=</span> <span class='id range'>range</span><span class='period'>.</span><span class='id match'>match</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^@@ \-(\S+) \+(\S+)</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span>
+  <span class='id matches'>matches</span><span class='lbracket'>[</span><span class='int'>1</span><span class='op'>..</span><span class='int'>2</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id m'>m</span><span class='op'>|</span> <span class='id m'>m</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>,</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="save_handled_commits-instance_method">
+  
+    - (<tt>Object</tt>) <strong>save_handled_commits</strong>(previous_list, flatten_commits) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 395</span>
+
+<span class='kw'>def</span> <span class='id save_handled_commits'>save_handled_commits</span><span class='lparen'>(</span><span class='id previous_list'>previous_list</span><span class='comma'>,</span> <span class='id flatten_commits'>flatten_commits</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id flatten_commits'>flatten_commits</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+  <span class='id current_list'>current_list</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id previous_list'>previous_list</span> <span class='op'>+</span> <span class='id flatten_commits'>flatten_commits</span><span class='rparen'>)</span><span class='period'>.</span><span class='id last'>last</span><span class='lparen'>(</span><span class='const'>MAX_COMMITS_PER_ACTION</span><span class='rparen'>)</span>
+
+  <span class='comment'># use new file, unlink and rename to make it more atomic
+</span>  <span class='const'>File</span><span class='period'>.</span><span class='id open'>open</span><span class='lparen'>(</span><span class='id new_file_path'>new_file_path</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>w</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id f'>f</span><span class='op'>|</span> <span class='id f'>f</span> <span class='op'>&lt;&lt;</span> <span class='id current_list'>current_list</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id chmod'>chmod</span><span class='lparen'>(</span><span class='id new_file_rights'>new_file_rights</span><span class='comma'>,</span> <span class='id new_file_path'>new_file_path</span><span class='rparen'>)</span> <span class='kw'>rescue</span> <span class='kw'>nil</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id unlink'>unlink</span><span class='lparen'>(</span><span class='id previous_file_path'>previous_file_path</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id exists?'>exists?</span><span class='lparen'>(</span><span class='id previous_file_path'>previous_file_path</span><span class='rparen'>)</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id rename'>rename</span><span class='lparen'>(</span><span class='id new_file_path'>new_file_path</span><span class='comma'>,</span> <span class='id previous_file_path'>previous_file_path</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="skip_lines?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>skip_lines?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+74
+75
+76</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 74</span>
+
+<span class='kw'>def</span> <span class='id skip_lines?'>skip_lines?</span>
+  <span class='id lines_per_diff'>lines_per_diff</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='ivar'>@lines_added</span> <span class='op'>&gt;=</span> <span class='id lines_per_diff'>lines_per_diff</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="tokenize_string-instance_method">
+  
+    - (<tt>Object</tt>) <strong>tokenize_string</strong>(str) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 128</span>
+
+<span class='kw'>def</span> <span class='id tokenize_string'>tokenize_string</span><span class='lparen'>(</span><span class='id str'>str</span><span class='rparen'>)</span>
+  <span class='comment'># tokenize by non-word characters
+</span>  <span class='id tokens'>tokens</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id token'>token</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+  <span class='id str'>str</span><span class='period'>.</span><span class='id scan'>scan</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>.</span><span class='regexp_end'>/mu</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id ch'>ch</span><span class='op'>|</span>
+    <span class='kw'>if</span> <span class='id ch'>ch</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^\W_]</span><span class='regexp_end'>/u</span></span>
+      <span class='id token'>token</span> <span class='op'>+=</span> <span class='id ch'>ch</span>
+    <span class='kw'>else</span>
+      <span class='kw'>unless</span> <span class='id token'>token</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+        <span class='id tokens'>tokens</span> <span class='op'>&lt;&lt;</span> <span class='id token'>token</span>
+        <span class='id token'>token</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+      <span class='kw'>end</span>
+      <span class='id tokens'>tokens</span> <span class='op'>&lt;&lt;</span> <span class='id ch'>ch</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id tokens'>tokens</span> <span class='op'>&lt;&lt;</span> <span class='id token'>token</span> <span class='kw'>unless</span> <span class='id token'>token</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+  <span class='id tokens'>tokens</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="unique_commits_per_branch?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>unique_commits_per_branch?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+358
+359
+360</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/diff_to_html.rb', line 358</span>
+
+<span class='kw'>def</span> <span class='id unique_commits_per_branch?'>unique_commits_per_branch?</span>
+  <span class='op'>!</span> <span class='op'>!</span> <span class='id config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>unique_commits_per_branch</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Mon Nov  7 18:13:33 2011 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.7.3 (ruby-1.9.3).
+</div>
+
+  </body>
+</html>
