@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files       = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables      = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
 
-  s.homepage = %q{http://github.com/bitboxer/git-commit-notifier}
+  s.homepage = %q{http://bitboxer.github.com/git-commit-notifier/}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Sends git commit messages with diffs}
