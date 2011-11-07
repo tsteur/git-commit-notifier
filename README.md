@@ -102,7 +102,7 @@ old commits in processes of forking, branching etc.
 
 ## Note on Patches/Pull Requests
 
-* Fork the project.
+* Fork [the project](https://github.com/bitboxer/git-commit-notifier).
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
   future version unintentionally.
@@ -126,5 +126,5 @@ Thanks for [putpat.tv](http://www.putpat.tv), [Primalgrasp](http://www.primalgra
 
 ## License
 
-MIT License, see the file LICENSE.
+MIT License, see the {file:LICENSE}.
 
