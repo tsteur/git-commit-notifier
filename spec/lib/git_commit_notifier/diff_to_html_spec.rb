@@ -129,7 +129,7 @@ describe GitCommitNotifier::DiffToHtml do
     mock(GitCommitNotifier::Git).changed_files('7e4f6b4', '4f13525') { [] }
     mock(GitCommitNotifier::Git).log(REVISIONS.first, REVISIONS.last) { IO.read(FIXTURES_PATH + 'git_log') }
     REVISIONS.each do |rev|
-      mock(GitCommitNotifier::Git).show(rev, true) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
+      mock(GitCommitNotifier::Git).show(rev, :ignore_whitespaces => true) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end
 
     diff = GitCommitNotifier::DiffToHtml.new
@@ -182,7 +182,7 @@ describe GitCommitNotifier::DiffToHtml do
     first_rev, last_rev = %w[ 0000000000000000000000000000000000000000 9b15cebcc5434e27c00a4a2acea43509f9faea21 ]
     mock(GitCommitNotifier::Git).branch_commits('rvm') { %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ] }
     %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ].each do |rev|
-      mock(GitCommitNotifier::Git).show(rev, true) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
+      mock(GitCommitNotifier::Git).show(rev, :ignore_whitespaces => true) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end
     diff = GitCommitNotifier::DiffToHtml.new
     mock(diff).check_handled_commits(anything) { |commits| commits }

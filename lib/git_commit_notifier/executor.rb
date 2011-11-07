@@ -2,8 +2,13 @@
 
 require 'git_commit_notifier'
 
+# Git commit notifier namespace
 module GitCommitNotifier
+  # binaries code
   class Executor
+    # runs git commit notifier life
+    # @param [Array(String)] args Command line arguments
+    # @return [nil] Nothing
     def self.run!(args)
       case args.length
       when 0
@@ -24,6 +29,7 @@ module GitCommitNotifier
       else
         GitCommitNotifier::CommitHook.run args.first, args[1], args[2], args[3]
       end
+      nil
     end
   end
 end

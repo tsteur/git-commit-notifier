@@ -1,5 +1,9 @@
+# Git methods
 class GitCommitNotifier::Git
   class << self
+    # Runs specified command.
+    # @return (String) Shell command STDOUT (forced to UTF-8)
+    # @raise [ArgumentError] when command exits with nonzero status.
     def from_shell(cmd)
       r = `#{cmd}`
       raise ArgumentError.new("#{cmd} failed") unless $?.exitstatus.zero?
@@ -7,19 +11,38 @@ class GitCommitNotifier::Git
       r
     end
 
-    def show(rev, ignore_whitespace)
+    # runs `git show`
+    # @note uses "--pretty=fuller" option.
+    # @return [String] Its output
+    # @see from_shell
+    # @param [String] rev Revision
+    # @param [Hash] opts Options
+    # @option opts [Boolean] :ignore_whitespaces Ignore whitespaces or not
+    def show(rev, opts = {})
       gitopt = ""
       gitopt += " --pretty=fuller"
-      gitopt += " -w" if ignore_whitespace
+      gitopt += " -w" if opts[:ignore_whitespaces]
       data = from_shell("git show #{rev.strip}#{gitopt}")
       data
     end
 
+    # runs `git log`
+    # @note uses "--pretty=fuller" option.
+    # @return [String] Its output
+    # @see from_shell
+    # @param [String] rev1 First revision
+    # @param [String] rev2 Second revision
     def log(rev1, rev2)
       data = from_shell("git log --pretty=fuller #{rev1}..#{rev2}").strip
       data
     end
 
+    # runs `git log` and extract filenames only
+    # @note uses "--pretty=fuller" and "--name-status" options.
+    # @return [Array(String)] File names
+    # @see from_shell
+    # @param [String] rev1 First revision
+    # @param [String] rev2 Second revision
     def changed_files(rev1, rev2)
       output = ""
       lines = from_shell("git log #{rev1}..#{rev2} --name-status --pretty=oneline")
