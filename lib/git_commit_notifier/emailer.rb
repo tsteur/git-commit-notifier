@@ -78,9 +78,12 @@ class GitCommitNotifier::Emailer
     main_smtp.start( settings['domain'],
                     settings['user_name'], settings['password'], settings['authentication']) do |smtp|
 
-      recp = @recipient.split(",")
-      smtp.open_message_stream(@from_address, recp) do |f|
+      recipients = @recipient.dup
+      recipients.force_encoding('ASCII-8BIT') if recipients.respond_to?(:force_encoding)
+      recipients = recipients.split(",")
+      smtp.open_message_stream(@from_address, recipients) do |f|
         content.each do |line|
+          line.force_encoding('ASCII-8BIT') if line.respond_to?(:force_encoding)
           f.puts line
         end
       end
