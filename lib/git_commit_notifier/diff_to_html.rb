@@ -508,9 +508,9 @@ module GitCommitNotifier
         []
       else
         log = Git.log(rev1, rev2)
-        log.scan(/^commit\s([a-f0-9]+)/).map { |a| a.first }
+        log.scan(/^commit\s([a-f0-9]+)/).map { |a| a.first }.reverse!
       end
-
+      
       commits = check_handled_commits(commits)
 
       commits.each do |commit|
