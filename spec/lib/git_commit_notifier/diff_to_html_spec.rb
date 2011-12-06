@@ -176,8 +176,6 @@ describe GitCommitNotifier::DiffToHtml do
         td.parent.search('td')[2].inner_html.should == "require&nbsp;'iconv'" # change
       end
     end
-
-
   end
 
   it "should get good diff when new branch created" do
