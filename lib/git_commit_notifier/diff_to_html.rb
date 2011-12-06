@@ -430,7 +430,6 @@ module GitCommitNotifier
 	MAX_LINE_LENGTH = 512
 	
     def truncate_long_lines(text)
-    
     	StringIO.open("", "w") do |output|
 			input = StringIO.new(text)
 			input.each_line "\n" do |line|
@@ -464,7 +463,6 @@ module GitCommitNotifier
 				end
 				output << line
 			end
-			
 			output.string
     	end
     end
