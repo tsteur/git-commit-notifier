@@ -149,7 +149,7 @@ class GitCommitNotifier::Emailer
       perform_delivery_sendmail(content, config['sendmail_options'])
     end
   end
-  
+
   # Convert a message into quoted printable encoding,
   # limiting line length to 76 characters per spec
   # Encoding messages in this way ensures that they
@@ -157,32 +157,32 @@ class GitCommitNotifier::Emailer
   # can result in the MTA breaking lines at inconvenient points,
   # such as in the middle of UTF8 characters.
   def encode_quoted_printable_message(text)
-	StringIO.open("", "w") do |output|
-		input = StringIO.new(text, "r")
-		line_max = 76
-		line_len = 0
-		input.each_byte do |b|
-			case (b)
-			when 9, 32, 33..60, 62..126
-				if line_len >= line_max - 1
-					output << "=\r\n"
-					line_len = 0
-				end
-				output << b.chr
-				line_len += 1
-			else
-				if line_len >= line_max - 3
-					output << "=\r\n"
-					line_len = 0
-				end
-				output << "=%02X" % b
-				line_len += 3
-			end
-		end
-		
-		output << "=\r\n" if line_len > 0
-		output.string
-	end
+    StringIO.open("", "w") do |output|
+      input = StringIO.new(text, "r")
+      line_max = 76
+      line_len = 0
+      input.each_byte do |b|
+        case (b)
+        when 9, 32, 33..60, 62..126
+          if line_len >= line_max - 1
+            output << "=\r\n"
+            line_len = 0
+          end
+          output << b.chr
+          line_len += 1
+        else
+          if line_len >= line_max - 3
+            output << "=\r\n"
+            line_len = 0
+          end
+          output << "=%02X" % b
+          line_len += 3
+        end
+      end
+
+      output << "=\r\n" if line_len > 0
+      output.string
+    end
   end
 
   # Convert the given text into quoted printable format, with an instruction

@@ -24,6 +24,7 @@ module GitCommitNotifier
       :bugzilla => { :search_for => /\bBUG\s*(\d+)/i, :replace_with => '#{url}/show_bug.cgi?id=\1' },
       :fogbugz => { :search_for => /\bbugzid:\s*(\d+)/i, :replace_with => '#{url}\1' }
     }.freeze
+    MAX_LINE_LENGTH = 512
     MAX_COMMITS_PER_ACTION = 10000
     HANDLED_COMMITS_FILE = 'previously.txt'.freeze
     NEW_HANDLED_COMMITS_FILE = 'previously_new.txt'.freeze
@@ -427,44 +428,42 @@ module GitCommitNotifier
       ! commit_info[:merge].nil?
     end
     
-	MAX_LINE_LENGTH = 512
-	
+
     def truncate_long_lines(text)
-    	StringIO.open("", "w") do |output|
-			input = StringIO.new(text)
-			input.each_line "\n" do |line|
-				if line.length > MAX_LINE_LENGTH && MAX_LINE_LENGTH >= 9
-				
-					# Truncate the line
-					line.slice!(MAX_LINE_LENGTH-3..-1)
-					
-					# Ruby < 1.9 doesn't know how to slice between
-					# characters, so deal specially with that case
-					# so that we don't truncate in the middle of a UTF8 sequence,
-					# which would be invalid.
-					if !line.respond_to?(:force_encoding)
-						# If the last remaining character is part of a UTF8 multibyte character,
-						# keep truncating until we go past the start of a UTF8 character.
-						# This assumes that this is a UTF8 string, which may be a false assumption
-						# unless somebody has taken care to check the encoding of the source file.
-						# We truncate at most 6 additional bytes, which is the length of the longest
-						# UTF8 sequence
-						6.times do
-							c = line[-1, 1].to_i
-							break if (c & 0x80) == 0		# Last character is plain ASCII: don't truncate
-							line.slice!(-1, 1)				# Truncate character
-							break if (c & 0xc0) == 0xc0		# Last character was the start of a UTF8 sequence, so we can stop now
-						end
-					end
-					
-					# Append three dots to the end of line to indicate it's been truncated
-					# (avoiding ellipsis character so as not to introduce more encoding issues)
-					line << "...\n"					
-				end
-				output << line
-			end
-			output.string
-    	end
+      StringIO.open("", "w") do |output|
+      input = StringIO.new(text)
+      input.each_line "\n" do |line|
+        if line.length > MAX_LINE_LENGTH && MAX_LINE_LENGTH >= 9
+          # Truncate the line
+          line.slice!(MAX_LINE_LENGTH-3..-1)
+
+          # Ruby < 1.9 doesn't know how to slice between
+          # characters, so deal specially with that case
+          # so that we don't truncate in the middle of a UTF8 sequence,
+          # which would be invalid.
+          if !line.respond_to?(:force_encoding)
+            # If the last remaining character is part of a UTF8 multibyte character,
+            # keep truncating until we go past the start of a UTF8 character.
+            # This assumes that this is a UTF8 string, which may be a false assumption
+            # unless somebody has taken care to check the encoding of the source file.
+            # We truncate at most 6 additional bytes, which is the length of the longest
+            # UTF8 sequence
+            6.times do
+              c = line[-1, 1].to_i
+              break if (c & 0x80) == 0    # Last character is plain ASCII: don't truncate
+              line.slice!(-1, 1)        # Truncate character
+              break if (c & 0xc0) == 0xc0   # Last character was the start of a UTF8 sequence, so we can stop now
+            end
+          end
+
+          # Append three dots to the end of line to indicate it's been truncated
+          # (avoiding ellipsis character so as not to introduce more encoding issues)
+          line << "...\n"
+        end
+        output << line
+      end
+      output.string
+      end
     end
 
     def diff_for_commit(commit)
