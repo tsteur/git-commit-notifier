@@ -431,7 +431,10 @@ module GitCommitNotifier
 
     def truncate_long_lines(text)
       StringIO.open("", "w") do |output|
-        input = StringIO.new(text)
+        # Match encoding of output string to that of input string
+        output.string.force_encoding(text.encoding) if output.string.respond_to?(:force_encoding)
+
+        input = StringIO.new(text, "r")
         input.each_line "\n" do |line|
           if line.length > MAX_LINE_LENGTH && MAX_LINE_LENGTH >= 9
             # Truncate the line
