@@ -453,7 +453,7 @@ module GitCommitNotifier
 							c = line[-1, 1].to_i
 							break if (c & 0x80) == 0		# Last character is plain ASCII: don't truncate
 							line.slice!(-1, 1)				# Truncate character
-							break if (c & 0xe0) == 0xc0		# Last character was the start of a UTF8 sequence, so we can stop now
+							break if (c & 0xc0) == 0xc0		# Last character was the start of a UTF8 sequence, so we can stop now
 						end
 					end
 					
