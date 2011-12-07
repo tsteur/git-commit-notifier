@@ -144,7 +144,8 @@ module GitCommitNotifier
             :html_message => html.join("<hr /><br />"),
             :old_rev => rev1,
             :new_rev => rev2,
-            :ref_name => ref_name
+            :ref_name => ref_name,
+            :repo_name => repo_name
           )
           emailer.send
         else
@@ -162,7 +163,7 @@ module GitCommitNotifier
             })
             subject_template = config['subject'] || "[${prefix}${branch_name}][${commit_number}] ${message}"
             subject = subject_template.gsub(/\$\{(\w+)\}/) { |m| revised_subject_words[$1.intern] }
-
+            
             emailer = Emailer.new(config,
               :project_path => project_path,
               :recipient => recipient,
@@ -173,7 +174,8 @@ module GitCommitNotifier
               :html_message => result[:html_content],
               :old_rev => rev1,
               :new_rev => rev2,
-              :ref_name => ref_name
+              :ref_name => ref_name,
+              :repo_name => repo_name
             )
             emailer.send
             commit_number += 1
