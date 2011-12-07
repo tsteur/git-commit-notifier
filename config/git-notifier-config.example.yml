@@ -14,6 +14,11 @@ too_many_files: 50
 # but consumes much more space and more cpu. Defaults to true
 # expand_css: true
 
+# Determine whether to add plaintext alternative section to generated email.
+# This allows text-only readers an option, but greatly increase the size
+# of generated emails. Defaults to true
+# add_plaintext: true
+
 # defines what branches to email for (defaults to all)
 # include_branches: ['master', 'some_other_branch']
 # include_branches: 'master, some_other_branch'

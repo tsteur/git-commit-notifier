@@ -116,6 +116,12 @@ class GitCommitNotifier::Emailer
     to_tag = config['delivery_method'] == 'nntp' ? 'Newsgroups' : 'To'
     quoted_from_alias = quote_if_necessary("#{@from_alias}",'utf-8')
     from = @from_alias.empty? ? @from_address : "#{quoted_from_alias} <#{@from_address}>"
+    
+    plaintext = if config['add_plaintext'].nil? || config['add_plaintext']
+      @text_message
+    else
+      "Plain text part omitted. Consider setting add_plaintext in configuration."
+    end
 
     content = [
         "From: #{from}",
@@ -131,7 +137,7 @@ class GitCommitNotifier::Emailer
         "Content-Type: text/plain; charset=utf-8",
         "Content-Transfer-Encoding: quoted-printable",
         "Content-Disposition: inline\n\n\n",
-        encode_quoted_printable_message(@text_message),
+        encode_quoted_printable_message(plaintext),
         "\n--#{boundary}",
         "Content-Type: text/html; charset=utf-8",
         "Content-Transfer-Encoding: quoted-printable",
