@@ -87,7 +87,7 @@ class GitCommitNotifier::Emailer
       smtp.open_message_stream(@from_address, recipients) do |f|
         content.each do |line|
           line.force_encoding('ASCII-8BIT') if line.respond_to?(:force_encoding)
-          f.puts line
+          f.print(line, "\r\n")
         end
       end
     end
@@ -100,7 +100,9 @@ class GitCommitNotifier::Emailer
     }.merge(options || {})
     command = "#{sendmail_settings['location']} #{sendmail_settings['arguments']}"
     IO.popen(command, "w+") do |f|
-      f.write(content.join("\n"))
+      content.each do |line|
+          f.print(line, "\r\n")
+      end
       f.flush
     end
   end
@@ -132,16 +134,19 @@ class GitCommitNotifier::Emailer
         "X-Git-Oldrev: #{@old_rev}",
         "X-Git-Newrev: #{@new_rev}",
         "Mime-Version: 1.0",
-        "Content-Type: multipart/alternative; boundary=#{boundary}\n\n\n",
+        "Content-Type: multipart/alternative; boundary=#{boundary}",
+        "",
         "--#{boundary}",
         "Content-Type: text/plain; charset=utf-8",
         "Content-Transfer-Encoding: quoted-printable",
-        "Content-Disposition: inline\n\n\n",
+        "Content-Disposition: inline",
+        "",
         encode_quoted_printable_message(plaintext),
-        "\n--#{boundary}",
+        "--#{boundary}",
         "Content-Type: text/html; charset=utf-8",
         "Content-Transfer-Encoding: quoted-printable",
-        "Content-Disposition: inline\n\n\n",
+        "Content-Disposition: inline",
+        "",
         encode_quoted_printable_message(mail_html_message),
         "--#{boundary}--"]
 
