@@ -4,11 +4,11 @@ ignore_merge: false
 # Optional parameter for the subject-line of the mail 
 # emailprefix: GIT
 
-# Limit lines per diff
-# lines_per_diff: 300
+# Set limit on maximum number of lines per file diff
+lines_per_diff: 300
 
 # Show file list only when too many files
-# too_many_files: 1000
+too_many_files: 50
 
 # Whether to expand css inline. May be compatible with more mail readers
 # but consumes much more space and more cpu. Defaults to true
