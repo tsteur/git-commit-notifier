@@ -156,7 +156,8 @@ module GitCommitNotifier
       end
 
       file_name = @current_file_name
-
+      
+      # TODO: these filenames, etc, should likely be properly html escaped
       if config['link_files']
         file_name = if config["link_files"] == "gitweb" && config["gitweb"]
           "<a href='#{config['gitweb']['path']}?p=#{Git.repo_name}.git;f=#{file_name};h=#{@current_sha};hb=#{@current_commit}'>#{file_name}</a>"
@@ -166,10 +167,12 @@ module GitCommitNotifier
           "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/tree/#{file_name}'>#{file_name}</a>"
         elsif config["link_files"] == "gitlabhq" && config["gitlabhq"]
           "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/tree/#{@current_commit}/#{file_name}'>#{file_name}</a>"
+        elsif config["link_files"] == "redmine" && config["redmine"]
+          "<a href='#{config['redmine']['path']}/projects/#{config['redmine']['project'] || Git.repo_name}/repository/revisions/#{@current_commit}/entry/#{file_name}'>#{file_name}</a>"
         else
           file_name
         end
-    end
+      end
 
       header = "#{op} #{binary}file #{file_name}"
       "<h2>#{header}</h2>\n"
@@ -503,6 +506,8 @@ module GitCommitNotifier
           "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/commit/?id=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
         elsif config["link_files"] == "gitlabhq" && config["gitlabhq"]
           "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/commits/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
+        elsif config["link_files"] == "redmine" && config["redmine"]
+          "<a href='#{config['redmine']['path']}/projects/#{config['redmine']['project'] || Git.repo_name}/repository/revisions/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
         else
           " #{commit_info[:commit]}"
         end
