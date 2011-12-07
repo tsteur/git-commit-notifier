@@ -104,7 +104,9 @@ gitlabhq:
 # instance
 redmine:
   path: http://redmine.example.com
-# project: project-name # (defaults to git repository name)
+# project: project-name
+# keywords: [refs, fixes]
+# project defaults to git repository name, keywords defaults to refs, fixes (for use with message_integration)
 
 
 # commit message URL map

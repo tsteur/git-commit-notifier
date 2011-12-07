@@ -10,17 +10,23 @@ module GitCommitNotifier
 
     INTEGRATION_MAP = {
       :mediawiki => { :search_for => /\[\[([^\[\]]+)\]\]/, :replace_with => '#{url}/\1' },
-      :redmine => { :search_for => /\b(?:refs|fixes)([\s&,]+\#\d+)+/i, :replace_with => lambda do |m, url|
-        # we can provide Proc that gets matched string and configuration url.
-        # result should be in form of:
-        # { :phrase => 'phrase started with', :links => [ { :title => 'title of url', :url => 'target url' }, ... ] }
-        match = m.match(/^(refs|fixes)(.*)$/i)
-        return m unless match
-        r = { :phrase => match[1] }
-        captures = match[2].split(/[\s\&\,]+/).map { |m| (m =~ /(\d+)/) ? $1 : m }.reject { |c| c.empty? }
-        r[:links] = captures.map { |mn| { :title => "##{mn}", :url => "#{url}/issues/show/#{mn}" } }
-        r
-      end },
+      :redmine => {
+        :search_for => lambda do |config|
+          keywords = config['redmine']['keywords'] || ["refs", "fixes"]
+          /\b(?:#{keywords.join('\b|')})([\s&,]+\#\d+)+/i
+        end,
+        :replace_with => lambda do |m, url, config|
+          # we can provide Proc that gets matched string and configuration url.
+          # result should be in form of:
+          # { :phrase => 'phrase started with', :links => [ { :title => 'title of url', :url => 'target url' }, ... ] }
+          keywords = config['redmine']['keywords'] || ['refs', 'fixes']
+          match = m.match(/^(#{keywords.join('\b|')})(.*)$/i)
+          return m unless match
+          r = { :phrase => match[1] }
+          captures = match[2].split(/[\s\&\,]+/).map { |m| (m =~ /(\d+)/) ? $1 : m }.reject { |c| c.empty? }
+          r[:links] = captures.map { |mn| { :title => "##{mn}", :url => "#{url}/issues/show/#{mn}" } }
+          r
+        end },
       :bugzilla => { :search_for => /\bBUG\s*(\d+)/i, :replace_with => '#{url}/show_bug.cgi?id=\1' },
       :fogbugz => { :search_for => /\bbugzid:\s*(\d+)/i, :replace_with => '#{url}\1' }
     }.freeze
@@ -590,9 +596,11 @@ module GitCommitNotifier
       return message unless config['message_integration'].respond_to?(:each_pair)
       config['message_integration'].each_pair do |pm, url|
         pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
+        search_for = pm_def[:search_for]
+        search_for = search_for.kind_of?(Proc) ? search_for.call(@config) : search_for
         replace_with = pm_def[:replace_with]
-        replace_with = replace_with.kind_of?(Proc) ? lambda { |m| pm_def[:replace_with].call(m, url) } : replace_with.gsub('#{url}', url)
-        message_replace!(message, pm_def[:search_for], replace_with)
+        replace_with = replace_with.kind_of?(Proc) ? lambda { |m| pm_def[:replace_with].call(m, url, @config) } : replace_with.gsub('#{url}', url)
+        message_replace!(message, search_for, replace_with)
       end
       message
     end
