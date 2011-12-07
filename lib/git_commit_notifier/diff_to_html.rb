@@ -71,15 +71,11 @@ module GitCommitNotifier
     end
 
     def lines_per_diff
-      config['lines_per_diff']
+      @config['lines_per_diff']
     end
 
     def ignore_whitespaces?
       @config['ignore_whitespace'].nil? || @config['ignore_whitespace']
-    end
-
-    def skip_lines?
-      lines_per_diff && (@lines_added >= lines_per_diff)
     end
 
     def add_separator
@@ -91,7 +87,6 @@ module GitCommitNotifier
     end
 
     def add_line_to_result(line, escape)
-      @lines_added += 1
       klass = line_class(line)
       content = (escape == :escape) ? escape_content(line[:content]) : line[:content]
       padding = '&nbsp;' if klass != ''
@@ -196,19 +191,26 @@ module GitCommitNotifier
 
     def add_changes_to_result
       return if @current_file_name.nil?
+      
+      @lines_added = 0
       @diff_result << operation_description
       if !@diff_lines.empty? && !@too_many_files
         @diff_result << '<table>'
         removals = []
         additions = []
-        @diff_lines.each_with_index do |line, index|
-          if skip_lines?
-            add_skip_notification
-            break
-          end
+        
+        lines = if lines_per_diff.nil?
+          line_budget = nil
+          @diff_lines
+        else
+          line_budget = lines_per_diff - @lines_added
+          @diff_lines.slice(0, line_budget)
+        end
+        
+        lines.each_with_index do |line, index|
           removals << line if line[:op] == :removal
           additions << line if line[:op] == :addition
-          if line[:op] == :unchanged || index == @diff_lines.size - 1 # unchanged line or end of block, add prev lines to result
+          if line[:op] == :unchanged || index == lines.size - 1 # unchanged line or end of block, add prev lines to result
             if removals.size > 0 && additions.size > 0 # block of removed and added lines - perform intelligent diff
               add_block_to_results(lcs_diff(removals, additions), :dont_escape)
             else # some lines removed or added - no need to perform intelligent diff
@@ -216,14 +218,17 @@ module GitCommitNotifier
             end
             removals = []
             additions = []
-            if index > 0 && index != @diff_lines.size - 1
-              prev_line = @diff_lines[index - 1]
+            if index > 0 && index != lines.size - 1
+              prev_line = lines[index - 1]
               add_separator unless lines_are_sequential?(prev_line, line)
             end
             add_line_to_result(line, :escape) if line[:op] == :unchanged
           end
-
+          @lines_added += 1
         end
+        
+        add_skip_notification if !line_budget.nil? && line_budget < @diff_lines.size
+
         @diff_result << '</table>'
         @diff_lines = []
       end
@@ -567,7 +572,6 @@ module GitCommitNotifier
       commits = check_handled_commits(commits)
 
       commits.each do |commit|
-        @lines_added = 0  unless config["group_email_by_push"]
         begin
           commit_result = diff_for_commit(commit)
           next  if commit_result.nil?
