@@ -12,14 +12,14 @@ module GitCommitNotifier
       :mediawiki => { :search_for => /\[\[([^\[\]]+)\]\]/, :replace_with => '#{url}/\1' },
       :redmine => {
         :search_for => lambda do |config|
-          keywords = config['redmine']['keywords'] || ["refs", "fixes"]
+          keywords = (config['redmine'] && config['redmine']['keywords']) || ["refs", "fixes"]
           /\b(?:#{keywords.join('\b|')})([\s&,]+\#\d+)+/i
         end,
         :replace_with => lambda do |m, url, config|
           # we can provide Proc that gets matched string and configuration url.
           # result should be in form of:
           # { :phrase => 'phrase started with', :links => [ { :title => 'title of url', :url => 'target url' }, ... ] }
-          keywords = config['redmine']['keywords'] || ['refs', 'fixes']
+          keywords = (config['redmine'] && config['redmine']['keywords']) || ["refs", "fixes"]
           match = m.match(/^(#{keywords.join('\b|')})(.*)$/i)
           return m unless match
           r = { :phrase => match[1] }
