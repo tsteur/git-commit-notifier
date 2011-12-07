@@ -10,6 +10,10 @@ ignore_merge: false
 # Show file list only when too many files
 # too_many_files: 1000
 
+# Whether to expand css inline. May be compatible with more mail readers
+# but consumes much more space and more cpu. Defaults to true
+# expand_css: true
+
 # defines what branches to email for (defaults to all)
 # include_branches: ['master', 'some_other_branch']
 # include_branches: 'master, some_other_branch'

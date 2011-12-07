@@ -43,8 +43,11 @@ class GitCommitNotifier::Emailer
 
   def mail_html_message
     html = GitCommitNotifier::Emailer.template.result(binding)
-    premailer = Premailer.new(html, :with_html_string => true, :adapter => :nokogiri)
-    premailer.to_inline_css
+    if config['expand_css'].nil? || config['expand_css']
+      premailer = Premailer.new(html, :with_html_string => true, :adapter => :nokogiri)
+      html = premailer.to_inline_css
+    end
+    html
   end
 
   def boundary
