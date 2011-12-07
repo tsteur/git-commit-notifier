@@ -15,7 +15,7 @@ too_many_files: 50
 # expand_css: true
 
 # Determine whether to add plaintext alternative section to generated email.
-# This allows text-only readers an option, but greatly increase the size
+# This allows text-only readers an option, but greatly increases the size
 # of generated emails. Defaults to true
 # add_plaintext: true
 
