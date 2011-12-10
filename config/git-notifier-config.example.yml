@@ -130,7 +130,8 @@ trac:
 # instance
 gitlabhq:
   path: http://gitlabhq.example.com
-  
+  version: 1.2
+
 # If link_files is set to "redmine", you need to configure the path to your redmine
 # instance
 redmine:

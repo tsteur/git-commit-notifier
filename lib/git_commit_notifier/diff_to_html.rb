@@ -167,7 +167,11 @@ module GitCommitNotifier
         elsif config["link_files"] == "cgit" && config["cgit"]
           "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/tree/#{file_name}'>#{file_name}</a>"
         elsif config["link_files"] == "gitlabhq" && config["gitlabhq"]
-          "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/tree/#{@current_commit}/#{file_name}'>#{file_name}</a>"
+          if config["gitlabhq"]["version"] && config["gitlabhq"]["version"] < 1.2
+            "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/tree/#{@current_commit}/#{file_name}'>#{file_name}</a>"
+          else
+            "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/#{@current_commit}/tree/#{file_name}'>#{file_name}</a>"
+          end
         elsif config["link_files"] == "redmine" && config["redmine"]
           "<a href='#{config['redmine']['path']}/projects/#{config['redmine']['project'] || Git.repo_name}/repository/revisions/#{@current_commit}/entry/#{file_name}'>#{file_name}</a>"
         else
