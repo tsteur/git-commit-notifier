@@ -55,6 +55,8 @@ module GitCommitNotifier
         else
           ref_name.split("/").last
         end
+        slash_branch_name = "/#{branch_name}"
+        slash_branch_name = "" if !config["show_master_branch_name"] && slash_branch_name == '/master'
 
 		# Identify email recipients
         recipient = config["mailinglist"] || Git.mailing_list_address
@@ -72,6 +74,7 @@ module GitCommitNotifier
         logger.debug("prefix: #{prefix}")
         logger.debug("repo_name: #{repo_name}")
         logger.debug("branch: #{branch_name}")
+        logger.debug("slash_branch: #{slash_branch_name}")
         logger.debug("ref_name: #{ref_name}")
         logger.debug("rev1: #{rev1}")
         logger.debug("rev2: #{rev2}")
@@ -82,27 +85,28 @@ module GitCommitNotifier
           return
         end
         
-        branch_name = "/#{branch_name}"
-        branch_name = "" if !config["show_master_branch_name"] && branch_name == '/master'
-        
         # Replacements for subject template
         #     prefix
         #     repo_name
         #     branch_name
+        #     slash_branch_name
         #     commit_id (hash)
         #     short_message
         #     commit_number
         #     commit_count
         #     commit_count_phrase (1 commit, 2 commits, etc)
+        #     commit_count_phrase2 (2 commits:, 3 commits:, etc, or "" if just one)
         subject_words = {
           :prefix => prefix,
           :repo_name => repo_name,
           :branch_name => branch_name,
+          :slash_branch_name => slash_branch_name,
           :commit_id => nil,
           :message => nil,
           :commit_number => nil,
           :commit_count => nil,
-          :commit_count_phrase => nil
+          :commit_count_phrase => nil,
+          :commit_count_phrase2 => nil
         }
         
         info("Sending mail...")
@@ -134,9 +138,10 @@ module GitCommitNotifier
             :message => result[:commit_info][:message],
             :commit_number => 1,
             :commit_count => diffresult.size,
-            :commit_count_phrase => diffresult.size == 1 ? "#{diffresult.size} commit" : "#{diffresult.size} commits"
+            :commit_count_phrase => diffresult.size == 1 ? "1 commit" : "#{diffresult.size} commits",
+            :commit_count_phrase2 => diffresult.size == 1 ? "" : "#{diffresult.size} commits: "
           })
-          subject_template = config['subject'] || "[${prefix}${branch_name}] ${commit_count_phrase}: ${message}"
+          subject_template = config['subject'] || "[${prefix}${slash_branch_name}] ${commit_count_phrase2}${message}"
           subject = subject_template.gsub(/\$\{(\w+)\}/) { |m| revised_subject_words[$1.intern] }
 
           emailer = Emailer.new(config,
@@ -164,9 +169,10 @@ module GitCommitNotifier
               :message => result[:commit_info][:message],
               :commit_number => commit_number,
               :commit_count => 1,
-              :commit_count_phrase => "1 commit"
+              :commit_count_phrase => "1 commit",
+              :commit_count_phrase2 => ""
             })
-            subject_template = config['subject'] || "[${prefix}${branch_name}][${commit_number}] ${message}"
+            subject_template = config['subject'] || "[${prefix}${slash_branch_name}][${commit_number}] ${message}"
             subject = subject_template.gsub(/\$\{(\w+)\}/) { |m| revised_subject_words[$1.intern] }
             
             emailer = Emailer.new(config,
