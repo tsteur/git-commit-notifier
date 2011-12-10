@@ -42,24 +42,11 @@ module GitCommitNotifier
       end
 
       def run(config_name, rev1, rev2, ref_name)
+      
+      	# Load the configuration
         @config = File.exists?(config_name) ? YAML::load_file(config_name) : {}
 
-        project_path = Dir.getwd
-        recipient = config["mailinglist"] || Git.mailing_list_address
-
-        # If no recipients specified, bail out gracefully. This is not an error, and might be intentional
-        if recipient.nil? || recipient.length == 0
-          info("bypassing commit notification; no recipients specified (consider setting git config hooks.mailinglist)")
-          return
-        end
-
-        logger.debug('----')
-        logger.debug("pwd: #{Dir.pwd}")
-        logger.debug("ref_name: #{ref_name}")
-        logger.debug("rev1: #{rev1}")
-        logger.debug("rev2: #{rev2}")
-        logger.debug("included branches: #{include_branches.join(', ')}") unless include_branches.nil?
-
+        project_path = Git.git_dir
         repo_name = Git.repo_name
         prefix = config["emailprefix"] || repo_name
         
@@ -69,8 +56,26 @@ module GitCommitNotifier
           ref_name.split("/").last
         end
 
+		# Identify email recipients
+        recipient = config["mailinglist"] || Git.mailing_list_address
+
+        # If no recipients specified, bail out gracefully. This is not an error, and might be intentional
+        if recipient.nil? || recipient.length == 0
+          info("bypassing commit notification; no recipients specified (consider setting git config hooks.mailinglist)")
+          return
+        end
+
+		# Debug information
+        logger.debug('----')
+        logger.debug("cwd: #{Dir.pwd}")
+        logger.debug("Git Directory: #{project_path}")
         logger.debug("prefix: #{prefix}")
+        logger.debug("repo_name: #{repo_name}")
         logger.debug("branch: #{branch_name}")
+        logger.debug("ref_name: #{ref_name}")
+        logger.debug("rev1: #{rev1}")
+        logger.debug("rev2: #{rev2}")
+        logger.debug("included branches: #{include_branches.join(', ')}") unless include_branches.nil?
 
         unless include_branches.nil? || include_branches.include?(branch_name)
           info("Supressing mail for branch #{branch_name}...")
