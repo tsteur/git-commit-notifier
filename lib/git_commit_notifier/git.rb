@@ -78,6 +78,12 @@ class GitCommitNotifier::Git
       from_shell("git rev-parse #{treeish}").strip
     end
 
+    def rev_type(rev)
+      from_shell("git cat-file -t '#{rev}' 2> /dev/null").strip
+    rescue ArgumentError
+      nil
+    end
+
     def repo_name
       git_prefix = begin
         from_shell("git config hooks.emailprefix").strip
