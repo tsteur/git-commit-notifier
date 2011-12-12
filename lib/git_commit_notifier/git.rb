@@ -1,5 +1,7 @@
 # -*- coding: utf-8; mode: ruby; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- vim:fenc=utf-8:filetype=ruby:et:sw=2:ts=2:sts=2
 
+require 'set'
+
 # Git methods
 class GitCommitNotifier::Git
   class << self
@@ -78,6 +80,31 @@ class GitCommitNotifier::Git
 
     def branch_head(treeish)
       from_shell("git rev-parse #{treeish}").strip
+    end
+    
+    def new_commits(oldrev, newrev, refname)
+      # We want to get the set of commits (^B1 ^B2 ... ^oldrev newrev)
+      # Where B1, B2, ..., are any other branch
+      
+      # Make a set of all branches, not'd
+      not_branches = from_shell("git rev-parse --not --branches")
+      s = not_branches.lines.map {|l| l.chomp}.to_set
+      
+      # Remove the current branch from that set
+      current_branch = rev_parse(refname)
+      s.delete("^#{current_branch}")
+      
+      # Add not'd oldrev
+      s.add("^#{oldrev}") unless oldrev =~ /^0+$/
+
+      # Add newrev
+      s.add(newrev)
+      
+      # We should now have ^B1... ^oldrev newrev
+      
+      # Get all the commits that match that specification
+      lines = from_shell("git rev-list #{s.to_a.join(' ')}")
+      commits = lines.lines.map {|l| l.chomp}
     end
 
     def rev_type(rev)

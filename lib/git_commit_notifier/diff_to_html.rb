@@ -437,14 +437,6 @@ module GitCommitNotifier
       File.rename(new_file_path, previous_file_path)
     end
 
-    def check_handled_commits(commits)
-      previous_list = get_previous_commits(previous_file_path)
-      commits.reject! {|c| (c.respond_to?(:lines) ? c.lines : c).find { |sha| previous_list.include?(sha) } }
-      save_handled_commits(previous_list, commits.flatten)
-
-      commits
-    end
-
     def branch_name
       ref_name.split('/').last
     end
@@ -656,16 +648,11 @@ module GitCommitNotifier
 
     def diff_for_branch(branch, rev, change_type)      
       commits = case change_type
-      when :create
-        rev
       when :delete
-        puts "ignoring branch delete for now"
-      when :update
-        log = Git.log(@oldrev, @newrev)
-        log.scan(/^commit\s([a-f0-9]+)/).map { |a| a.first }.reverse
+        puts "ignoring branch delete"
+      when :create, :update
+        Git.new_commits(oldrev, newrev, ref_name)
       end
-      
-      commits = check_handled_commits(commits)
       
       # Add each diff to @result
       commits.each do |commit|
