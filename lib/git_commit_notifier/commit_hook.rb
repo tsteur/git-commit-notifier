@@ -1,3 +1,5 @@
+# -*- coding: utf-8; mode: ruby; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- vim:fenc=utf-8:filetype=ruby:et:sw=2:ts=2:sts=2
+
 require 'yaml'
 require 'cgi'
 require 'net/smtp'
@@ -7,7 +9,7 @@ module GitCommitNotifier
   class CommitHook
 
     class << self
-      attr_reader :config
+      attr_reader :config    
 
       def show_error(message)
         $stderr.puts "************** GIT NOTIFIER PROBLEM *******************"
