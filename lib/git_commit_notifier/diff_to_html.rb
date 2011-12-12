@@ -529,7 +529,7 @@ module GitCommitNotifier
 
       title = "<div class=\"title\">"
       title += "<strong>Message:</strong> #{message_array_as_html(commit_info[:message])}<br />\n"
-      title += "<strong>Commit:</strong>#{markup_commit_for_html(commit_info[:commit])}<br />\n"
+      title += "<strong>Commit:</strong> #{markup_commit_for_html(commit_info[:commit])}<br />\n"
 
       title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}<br />\n" if branch_name
       title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}<br />\n"
