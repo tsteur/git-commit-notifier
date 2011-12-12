@@ -336,9 +336,11 @@ module GitCommitNotifier
     def extract_commit_info_from_git_show_output(content)
       result = { :message => [], :commit => '', :author => '', :date => '', :email => '',
       :committer => '', :commit_date => '', :committer_email => ''}
+      
+      message = []
       content.split("\n").each do |line|
-        if line =~ /^diff/ # end of commit info, return results
-          return result
+        if line =~ /^diff/ # end of commit info
+          break
         elsif line =~ /^commit /
           result[:commit] = line[7..-1]
         elsif line =~ /^Author:/
@@ -352,10 +354,19 @@ module GitCommitNotifier
         elsif line =~ /^Merge:/
           result[:merge] = line[7..-1]
         else
-          clean_line = line.strip
-          result[:message] << clean_line unless clean_line.empty?
+          message << line.strip
         end
       end
+      
+      # Strip blank lines off top and bottom of message
+      while !message.empty? && message.first.empty?
+        message.shift
+      end
+      while !message.empty? && message.last.empty?
+        message.pop
+      end
+      result[:message] = message
+      
       result
     end
 
