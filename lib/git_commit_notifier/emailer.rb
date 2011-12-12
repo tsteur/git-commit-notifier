@@ -116,7 +116,7 @@ class GitCommitNotifier::Emailer
 
   def send
     to_tag = config['delivery_method'] == 'nntp' ? 'Newsgroups' : 'To'
-    quoted_from_alias = @from_alias.nil? ? quote_if_necessary("#{@from_alias}",'utf-8') : nil
+    quoted_from_alias = !@from_alias.nil? ? quote_if_necessary("#{@from_alias}",'utf-8') : nil
     from = (@from_alias.nil? || @from_alias.empty?) ? @from_address : "#{quoted_from_alias} <#{@from_address}>"
     
     plaintext = if config['add_plaintext'].nil? || config['add_plaintext']
@@ -126,7 +126,7 @@ class GitCommitNotifier::Emailer
     end
     
     content = []
-    content << "From: #{from }" if !from.nil?
+    content << "From: #{from}" if !from.nil?
 
     content.concat [
         "#{to_tag}: #{quote_if_necessary(@recipient, 'utf-8')}",

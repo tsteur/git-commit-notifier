@@ -607,6 +607,10 @@ module GitCommitNotifier
 
     def diff_for_annotated_tag(tag, rev, change_type)
     
+      commit_info = {
+        :commit => rev
+      }
+      
       if change_type == :delete
         message = "Remove Annotated Tag #{tag}"
         
@@ -616,6 +620,7 @@ module GitCommitNotifier
         html += "</div>"
         
         text = message
+        commit_info[:message] = message
       else
         tag_info = Git.tag_info(ref_name)
 
@@ -635,12 +640,10 @@ module GitCommitNotifier
         text += "Commit: #{tag_info[:tagobject]}\n"
         text += "Message: #{tag_info[:contents]}\n"
         text += "Tagger: tag_info[:taggername] tag_info[:taggeremail]\n"
+        
+        commit_info[:message] = message
+        commit_info[:author], commit_info[:email] = author_name_and_email("#{tag_info[:taggername]} #{tag_info[:taggeremail]}")
       end
-      
-      commit_info = {
-        :commit => rev,
-        :message => message
-      }
       
       @result << {
         :commit_info => commit_info,
