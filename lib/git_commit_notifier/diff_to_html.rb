@@ -486,6 +486,28 @@ module GitCommitNotifier
       end
     end
     
+    def markup_commit_for_html(commit)
+      commit = if config["link_files"]
+        if config["link_files"] == "gitweb" && config["gitweb"]
+          "<a href='#{config['gitweb']['path']}?p=#{Git.repo_name}.git;a=commitdiff;h=#{commit}'>#{commit}</a>"
+        elsif config["link_files"] == "gitorious" && config["gitorious"]
+          "<a href='#{config['gitorious']['path']}/#{config['gitorious']['project']}/#{config['gitorious']['repository']}/commit/#{commit}'>#{commit}</a>"
+        elsif config["link_files"] == "trac" && config["trac"]
+          "<a href='#{config['trac']['path']}/#{commit}'>#{commit}</a>"
+        elsif config["link_files"] == "cgit" && config["cgit"]
+          "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/commit/?id=#{commit}'>#{commit}</a>"
+        elsif config["link_files"] == "gitlabhq" && config["gitlabhq"]
+          "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/commits/#{commit}'>#{commit}</a>"
+        elsif config["link_files"] == "redmine" && config["redmine"]
+          "<a href='#{config['redmine']['path']}/projects/#{config['redmine']['project'] || Git.repo_name}/repository/revisions/#{commit}'>#{commit}</a>"
+        else
+          "#{commit}"
+        end
+      else
+        "#{commit}"
+      end
+    end
+    
     def diff_for_commit(commit)
       @current_commit = commit
       raw_diff = truncate_long_lines(Git.show(commit, :ignore_whitespaces => ignore_whitespaces?))
@@ -507,34 +529,13 @@ module GitCommitNotifier
 
       title = "<div class=\"title\">"
       title += "<strong>Message:</strong> #{message_array_as_html(commit_info[:message])}<br />\n"
-      title += "<strong>Commit:</strong> "
+      title += "<strong>Commit:</strong>#{markup_commit_for_html(commit_info[:commit])}<br />\n"
 
-      title += if config["link_files"]
-        if config["link_files"] == "gitweb" && config["gitweb"]
-          "<a href='#{config['gitweb']['path']}?p=#{Git.repo_name}.git;a=commitdiff;h=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif config["link_files"] == "gitorious" && config["gitorious"]
-          "<a href='#{config['gitorious']['path']}/#{config['gitorious']['project']}/#{config['gitorious']['repository']}/commit/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif config["link_files"] == "trac" && config["trac"]
-          "<a href='#{config['trac']['path']}/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif config["link_files"] == "cgit" && config["cgit"]
-          "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/commit/?id=#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif config["link_files"] == "gitlabhq" && config["gitlabhq"]
-          "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/commits/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        elsif config["link_files"] == "redmine" && config["redmine"]
-          "<a href='#{config['redmine']['path']}/projects/#{config['redmine']['project'] || Git.repo_name}/repository/revisions/#{commit_info[:commit]}'>#{commit_info[:commit]}</a>"
-        else
-          " #{commit_info[:commit]}"
-        end
-      else
-        " #{commit_info[:commit]}"
-      end
-
-      title += "<br />\n"
-
-      title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}\n<br />" if branch_name
-      title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}\n<br />"
-      title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;\n<br />"
-      title += "<strong>Committer:</strong> #{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;\n</div>"
+      title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}<br />\n" if branch_name
+      title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}<br />\n"
+      title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;<br />\n"
+      title += "<strong>Committer:</strong> #{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;\n"
+      title += "</div>"
 
       text = "#{raw_diff}"
       text += "#{changed_files}\n\n\n"
@@ -552,21 +553,92 @@ module GitCommitNotifier
       }
     end
 
-    def clear_result
-      @result = []
-    end
-
-    def diff_for_unannotated_tag(tag, rev, change_type)
-      puts "diff_for_unannotated_tag #{tag}, #{rev}, #{change_type}"
+    def diff_for_lightweight_tag(tag, rev, change_type)
+    
+      if change_type == :delete
+        message = "Remove Lightweight Tag #{tag}"
+        
+        html = "<div class='title'>"
+        html += "<strong>Remove Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
+        html += "<strong>Type:</strong> lightweight<br />\n"
+        html += "<strong>Commit:</strong> #{markup_commit_for_html(rev)}<br />\n"
+        html += "</div>"
+        
+        text = "Remove Tag:</strong> #{tag}\n"
+        text += "Type: lightweight\n"
+        text += "Commit: #{rev}\n"
+      else
+        operation = change_type == :create ? "Add" : "Update"
+        message = "#{operation} Lightweight Tag #{tag}"
+        
+        html = "<div class='title'>"
+        html += "<strong>#{operation} Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
+        html += "<strong>Type:</strong> lightweight<br />\n"
+        html += "<strong>Commit:</strong> #{markup_commit_for_html(rev)}<br />\n"
+        html += "</div>"
+        
+        text = "#{operation} Tag: #{tag} (lightweight)\n"
+        text += "Type: lightweight\n"
+        text += "Commit: #{rev}\n"
+      end
+      
+      commit_info = {
+        :commit => rev,
+        :message => message
+      }
+      
+      @result << {
+        :commit_info => commit_info,
+        :html_content => html,
+        :text_content => text
+      }
     end
 
     def diff_for_annotated_tag(tag, rev, change_type)
-      puts "diff_for_annotated_tag #{tag}, #{rev}, #{change_type}"
+    
+      if change_type == :delete
+        message = "Remove Annotated Tag #{tag}"
+        
+        html = "<div class='title'>"
+        html += "<strong>Remove Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
+        html += "<strong>Type:</strong> annotated<br />\n"
+        html += "</div>"
+        
+        text = message
+      else
+        tag_info = Git.tag_info(ref_name)
+
+        operation = change_type == :create ? "Add" : "Update"
+        message = tag_info[:subject] || "#{operation} Annotated Tag #{tag}"
+        
+        html = "<div class='title'>"
+        html += "<strong>#{operation} Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
+        html += "<strong>Type:</strong> annotated<br />\n"
+        html += "<strong>Commit:</strong> #{markup_commit_for_html(tag_info[:tagobject])}<br />\n"
+        html += "<strong>Message:</strong> #{message_array_as_html(tag_info[:contents])}<br />\n"
+        html += "<strong>Tagger:</strong> #{CGI.escapeHTML(tag_info[:taggername])} #{CGI.escapeHTML(tag_info[:taggeremail])}<br />\n"
+        html += "</div>"
+        
+        text = "#{operation} Tag:</strong> #{tag}\n"
+        text += "Type: annotated\n"
+        text += "Commit: #{tag_info[:tagobject]}\n"
+        text += "Message: #{tag_info[:contents]}\n"
+        text += "Tagger: tag_info[:taggername] tag_info[:taggeremail]\n"
+      end
+      
+      commit_info = {
+        :commit => rev,
+        :message => message
+      }
+      
+      @result << {
+        :commit_info => commit_info,
+        :html_content => html,
+        :text_content => text
+      }
     end
 
-    def diff_for_branch(branch, rev, change_type)
-#      puts "diff_for_branch #{branch}, #{rev}, #{change_type}"
-      
+    def diff_for_branch(branch, rev, change_type)      
       commits = case change_type
       when :create
         rev
@@ -587,12 +659,16 @@ module GitCommitNotifier
       end
     end
 
-    def diff_between_revisions(rev1, rev2, repo, ref_name)
+    def clear_result
       @result = []
+    end
+
+    def diff_between_revisions(rev1, rev2, repo, ref_name)
+      clear_result
       
       # Cleanup revs
-      @oldrev = Git.revparse(rev1)
-      @newrev = Git.revparse(rev2)
+      @oldrev = Git.rev_parse(rev1)
+      @newrev = Git.rev_parse(rev2)
       @ref_name = ref_name
 
       # Establish the type of change
@@ -605,21 +681,21 @@ module GitCommitNotifier
       end
       
       # Establish type of the revs
-      oldrev_type = Git.rev_type(@oldrev)
-      newrev_type = Git.rev_type(@newrev)
+      @oldrev_type = Git.rev_type(@oldrev)
+      @newrev_type = Git.rev_type(@newrev)
       if newrev =~ /^0+$/
-        rev_type = oldrev_type
+        @rev_type = @oldrev_type
         @rev = @oldrev
       else
-        rev_type = newrev_type
+        @rev_type = @newrev_type
         @rev = @newrev
       end
       
       # Determine what to do based on the ref_name and the rev_type
-      case "#{@ref_name},#{rev_type}"
+      case "#{@ref_name},#{@rev_type}"
       when %r!^refs/tags/(.+),commit$!
         # Change to an unannotated tag
-        diff_for_unannotated_tag($1, @rev, change_type)
+        diff_for_lightweight_tag($1, @rev, change_type)
       when %r!^refs/tags/(.+),tag$!
         # Change to a annotated tag
         diff_for_annotated_tag($1, @rev, change_type)
@@ -631,7 +707,7 @@ module GitCommitNotifier
         puts "Ignoring #{change_type} on remote branch #{$1}"
       else
         # Something we don't understand
-        puts "Unknown commit type #{ref_name},#{rev_type}"
+        puts "Unknown change type #{ref_name},#{@rev_type}"
       end
       
       # If a block was given, pass it the results, in turn

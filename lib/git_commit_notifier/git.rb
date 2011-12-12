@@ -70,7 +70,7 @@ class GitCommitNotifier::Git
       from_shell("git rev-parse --git-dir").strip
     end
 
-    def revparse(param)
+    def rev_parse(param)
       from_shell("git rev-parse '#{param}'").strip
     end
 
@@ -82,6 +82,20 @@ class GitCommitNotifier::Git
       from_shell("git cat-file -t '#{rev}' 2> /dev/null").strip
     rescue ArgumentError
       nil
+    end
+    
+    def tag_info(refname)
+      fields = [
+        ':tagobject => %(*objectname)',
+        ':tagtype => %(*objecttype)',
+        ':taggername => %(taggername)',
+        ':taggeremail => %(taggeremail)',
+        ':subject => %(subject)',
+        ':contents => %(contents)'
+      ]
+      joined_fields = fields.join(",")
+      hash_script = from_shell("git for-each-ref --shell --format='{ #{joined_fields} }' #{refname}")
+      eval(hash_script)
     end
 
     def repo_name
