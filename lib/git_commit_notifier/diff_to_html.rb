@@ -650,6 +650,7 @@ module GitCommitNotifier
       commits = case change_type
       when :delete
         puts "ignoring branch delete"
+        []
       when :create, :update
         Git.new_commits(oldrev, newrev, ref_name)
       end
