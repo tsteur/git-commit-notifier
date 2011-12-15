@@ -652,7 +652,11 @@ module GitCommitNotifier
         puts "ignoring branch delete"
         []
       when :create, :update
-        Git.new_commits(oldrev, newrev, ref_name)
+        # Note that "unique_commits_per_branch" really means "consider commits
+        # on this branch without regard to whether they occur on other branches"
+        # The flag unique_to_current_branch passed to new_commits means the 
+        # opposite: "consider only commits that are unique to this branch"
+        Git.new_commits(oldrev, newrev, ref_name, !unique_commits_per_branch?)
       end
       
       # Add each diff to @result
