@@ -492,8 +492,14 @@ module GitCommitNotifier
 
       title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}<br />\n" if branch_name
       title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}<br />\n"
+      
       title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;<br />\n"
-      title += "<strong>Committer:</strong> #{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;\n"
+      
+      # Show separate committer name/email only if it differs from author
+      if commit_info[:author] != commit_info[:committer] || commit_info[:email] != commit_info[:commit_email]
+        title += "<strong>Committer:</strong> #{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;\n"
+      end
+      
       title += "</div>"
 
       text = "#{raw_diff}"
