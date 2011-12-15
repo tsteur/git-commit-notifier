@@ -7,23 +7,6 @@ require 'git_commit_notifier'
 
 describe GitCommitNotifier::DiffToHtml do
 
-  describe :new_file_rights do
-    before(:all) do
-      @diff_to_html = GitCommitNotifier::DiffToHtml.new
-    end
-
-    it "should be DEFAULT_NEW_FILE_RIGHTS unless get stats of git config file" do
-      mock(File).stat(File.expand_path(GitCommitNotifier::DiffToHtml::GIT_CONFIG_FILE, '.')) { raise Errno::ENOENT.new('') }
-      @diff_to_html.new_file_rights.should == GitCommitNotifier::DiffToHtml::DEFAULT_NEW_FILE_RIGHTS
-    end
-
-    it "should be rights of git config file if exists" do
-      stats = mock!.mode { 0444 }.subject
-      mock(File).stat(File.expand_path(GitCommitNotifier::DiffToHtml::GIT_CONFIG_FILE, '.')) { stats }
-      @diff_to_html.new_file_rights.should == 0444
-    end
-  end
-
   describe :chmod do
     it "should not raise anything and set mode from stats mode" do
       file = Tempfile.new('stattest')
