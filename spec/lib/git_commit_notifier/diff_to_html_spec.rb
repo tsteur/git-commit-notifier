@@ -102,28 +102,18 @@ describe GitCommitNotifier::DiffToHtml do
 
   describe :unique_commits_per_branch? do
     it "should be false unless specified in config" do
-      diff = GitCommitNotifier::DiffToHtml.new(nil, {})
+      diff = GitCommitNotifier::DiffToHtml.new
       diff.should_not be_unique_commits_per_branch
     end
 
     it "should be false if specified as false in config" do
-      diff = GitCommitNotifier::DiffToHtml.new(nil, { 'unique_commits_per_branch' => false })
+      diff = GitCommitNotifier::DiffToHtml.new({ 'unique_commits_per_branch' => false })
       diff.should_not be_unique_commits_per_branch
     end
 
     it "should be true if specified as true in config" do
-      diff = GitCommitNotifier::DiffToHtml.new(nil, { 'unique_commits_per_branch' => true })
+      diff = GitCommitNotifier::DiffToHtml.new({ 'unique_commits_per_branch' => true })
       diff.should be_unique_commits_per_branch
-    end
-  end
-
-  describe :get_previous_commits do
-    it "should read and parse previous file if it exists" do
-      fn = GitCommitNotifier::DiffToHtml::HANDLED_COMMITS_FILE
-      diff = GitCommitNotifier::DiffToHtml.new
-      mock(File).exists?(fn) { true }
-      mock(IO).read(fn) { "a\nb" }
-      diff.get_previous_commits(fn).should == %w[a b]
     end
   end
 
@@ -219,7 +209,7 @@ describe GitCommitNotifier::DiffToHtml do
   describe :do_message_integration do
     before(:each) do
       @config = Hash.new
-      @diff = GitCommitNotifier::DiffToHtml.new(nil, @config)
+      @diff = GitCommitNotifier::DiffToHtml.new(@config)
     end
 
     it "should do nothing unless message_integration config section exists" do
@@ -239,7 +229,7 @@ describe GitCommitNotifier::DiffToHtml do
   describe :old_commit? do
     before(:each) do
       @config = Hash.new
-      @diff_to_html = GitCommitNotifier::DiffToHtml.new(nil, @config)
+      @diff_to_html = GitCommitNotifier::DiffToHtml.new(@config)
     end
 
     it "should be false unless skip_commits_older_than set" do
