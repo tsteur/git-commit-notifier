@@ -486,21 +486,23 @@ module GitCommitNotifier
         changed_files = "Changed files:\n\n#{changed_file_list.uniq.join()}\n"
       end
 
-      title = "<div class=\"title\">"
-      title += "<strong>Message:</strong> #{message_array_as_html(commit_info[:message])}<br />\n"
-      title += "<strong>Commit:</strong> #{markup_commit_for_html(commit_info[:commit])}<br />\n"
-
-      title += "<strong>Branch:</strong> #{CGI.escapeHTML(branch_name)}<br />\n" if branch_name
-      title += "<strong>Date:</strong> #{CGI.escapeHTML commit_info[:date]}<br />\n"
+      title = "<dl class=\"title\">"
+      title += "<dt>Commit</dt><dd>#{markup_commit_for_html(commit_info[:commit])}</dd>\n"
+      title += "<dt>Branch</dt><dd>#{CGI.escapeHTML(branch_name)}</dd>\n" if branch_name
       
-      title += "<strong>Author:</strong> #{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;<br />\n"
+      title += "<dt>Author</dt><dd>#{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;</dd>\n"
       
       # Show separate committer name/email only if it differs from author
       if commit_info[:author] != commit_info[:committer] || commit_info[:email] != commit_info[:commit_email]
-        title += "<strong>Committer:</strong> #{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;\n"
+        title += "<dt>Committer</dt><dd>#{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;</dd>\n"
       end
+
+      title += "<dt>Date</dt><dd>#{CGI.escapeHTML commit_info[:date]}</dd>\n"
       
-      title += "</div>"
+      multi_line_message = commit_info[:message].count > 1
+      title += "<dt>Message</dt><dd class='#{multi_line_message ? "multi-line" : ""}'>#{message_array_as_html(commit_info[:message])}</dd>\n"
+      
+      title += "</dl>"
 
       text = "#{raw_diff}"
       text += "#{changed_files}\n\n\n"
@@ -523,26 +525,25 @@ module GitCommitNotifier
       if change_type == :delete
         message = "Remove Lightweight Tag #{tag}"
         
-        html = "<div class='title'>"
-        html += "<strong>Remove Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
-        html += "<strong>Type:</strong> lightweight<br />\n"
-        html += "<strong>Commit:</strong> #{markup_commit_for_html(rev)}<br />\n"
-        html += "</div>"
+        html = "<dl class='title'>"
+        html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (removed)</dd>\n"
+        html += "<dt>Type</dt><dd>lightweight</dd>\n"
+        html += "<dt>Commit</dt><dd>#{markup_commit_for_html(rev)}</dd>\n"
+        html += "</dl>"
         
-        text = "Remove Tag:</strong> #{tag}\n"
+        text = "Remove Tag: #{tag}\n"
         text += "Type: lightweight\n"
         text += "Commit: #{rev}\n"
       else
-        operation = change_type == :create ? "Add" : "Update"
-        message = "#{operation} Lightweight Tag #{tag}"
+        message = "#{change_type == :create ? "Add" : "Update"} Lightweight Tag #{tag}"
         
-        html = "<div class='title'>"
-        html += "<strong>#{operation} Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
-        html += "<strong>Type:</strong> lightweight<br />\n"
-        html += "<strong>Commit:</strong> #{markup_commit_for_html(rev)}<br />\n"
-        html += "</div>"
+        html = "<dl class='title'>"
+        html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (#{change_type == :create ? "added" : "updated"})</dd>\n"
+        html += "<dt>Type</dt><dd>lightweight</dd>\n"
+        html += "<dt>Commit</dt><dd>#{markup_commit_for_html(rev)}</dd>\n"
+        html += "</dl>"
         
-        text = "#{operation} Tag: #{tag} (lightweight)\n"
+        text = "Tag: #{tag} (#{change_type == :create ? "added" : "updated"})\n"
         text += "Type: lightweight\n"
         text += "Commit: #{rev}\n"
       end
@@ -568,32 +569,34 @@ module GitCommitNotifier
       if change_type == :delete
         message = "Remove Annotated Tag #{tag}"
         
-        html = "<div class='title'>"
-        html += "<strong>Remove Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
-        html += "<strong>Type:</strong> annotated<br />\n"
-        html += "</div>"
+        html = "<dl class='title'>"
+        html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (removed)</dd>\n"
+        html += "<dt>Type</dt><dd>annotated</dd>\n"
+        html += "</dl>"
         
         text = message
         commit_info[:message] = message
       else
         tag_info = Git.tag_info(ref_name)
 
-        operation = change_type == :create ? "Add" : "Update"
-        message = tag_info[:subject] || "#{operation} Annotated Tag #{tag}"
+        message = tag_info[:subject] || "#{change_type == :create ? "Add" : "Update"} Annotated Tag #{tag}"
         
-        html = "<div class='title'>"
-        html += "<strong>#{operation} Tag:</strong> #{CGI.escapeHTML(tag)}<br />\n"
-        html += "<strong>Type:</strong> annotated<br />\n"
-        html += "<strong>Commit:</strong> #{markup_commit_for_html(tag_info[:tagobject])}<br />\n"
-        html += "<strong>Message:</strong> #{message_array_as_html(tag_info[:contents])}<br />\n"
-        html += "<strong>Tagger:</strong> #{CGI.escapeHTML(tag_info[:taggername])} #{CGI.escapeHTML(tag_info[:taggeremail])}<br />\n"
-        html += "</div>"
+        html = "<dl class='title'>"
+        html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (#{change_type == :create ? "added" : "updated"})</dd>\n"
+        html += "<dt>Type</dt><dd>annotated</dd>\n"
+        html += "<dt>Commit</dt><dd>#{markup_commit_for_html(tag_info[:tagobject])}</dd>\n"
+        html += "<dt>Tagger</dt><dd>#{CGI.escapeHTML(tag_info[:taggername])} #{CGI.escapeHTML(tag_info[:taggeremail])}</dd>\n"
+
+        message_array = tag_info[:contents].split("\n")
+        multi_line_message = message_array.count > 1
+        html += "<dt>Message</dt><dd class='#{multi_line_message ? "multi-line" : ""}'>#{message_array_as_html(message_array)}</dd>\n"
+        html += "</dl>"
         
-        text = "#{operation} Tag:</strong> #{tag}\n"
+        text = "Tag:</strong> #{tag} (#{change_type == :create ? "added" : "updated"})\n"
         text += "Type: annotated\n"
         text += "Commit: #{tag_info[:tagobject]}\n"
-        text += "Message: #{tag_info[:contents]}\n"
         text += "Tagger: tag_info[:taggername] tag_info[:taggeremail]\n"
+        text += "Message: #{tag_info[:contents]}\n"
         
         commit_info[:message] = message
         commit_info[:author], commit_info[:email] = author_name_and_email("#{tag_info[:taggername]} #{tag_info[:taggeremail]}")
