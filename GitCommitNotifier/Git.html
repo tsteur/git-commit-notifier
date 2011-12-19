@@ -6,7 +6,7 @@
 <title>
   Class: GitCommitNotifier::Git
   
-    &mdash; 'git-commit-notifier 0.10.5
+    &mdash; 'git-commit-notifier 0.11.0
 '
   
 </title>
@@ -226,6 +226,27 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#git_dir-class_method" title="git_dir (class method)">+ (Object) <strong>git_dir</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#log-class_method" title="log (class method)">+ (String) <strong>log</strong>(rev1, rev2) </a>
     
 
@@ -269,7 +290,70 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#new_commits-class_method" title="new_commits (class method)">+ (Object) <strong>new_commits</strong>(oldrev, newrev, refname, unique_to_current_branch) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#repo_name-class_method" title="repo_name (class method)">+ (Object) <strong>repo_name</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rev_parse-class_method" title="rev_parse (class method)">+ (Object) <strong>rev_parse</strong>(param) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rev_type-class_method" title="rev_type (class method)">+ (Object) <strong>rev_type</strong>(rev) </a>
     
 
     
@@ -309,6 +393,27 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#tag_info-class_method" title="tag_info (class method)">+ (Object) <strong>tag_info</strong>(refname) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -331,25 +436,25 @@
       <pre class="lines">
 
 
-54
-55
-56
-57
 58
 59
 60
-61</pre>
+61
+62
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 58</span>
 
-<span class='kw'>def</span> <span class='id branch_commits'>branch_commits</span><span class='lparen'>(</span><span class='id treeish'>treeish</span><span class='rparen'>)</span>
-  <span class='id args'>args</span> <span class='op'>=</span> <span class='id branch_heads'>branch_heads</span> <span class='op'>-</span> <span class='lbracket'>[</span> <span class='id branch_head'>branch_head</span><span class='lparen'>(</span><span class='id treeish'>treeish</span><span class='rparen'>)</span> <span class='rbracket'>]</span>
-  <span class='id args'>args</span><span class='period'>.</span><span class='id map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id tree'>tree</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>^</span><span class='embexpr_beg'>#{</span><span class='id tree'>tree</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
-  <span class='id args'>args</span> <span class='op'>&lt;&lt;</span> <span class='id treeish'>treeish</span>
-  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-list </span><span class='embexpr_beg'>#{</span><span class='id args'>args</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id lines'>lines</span> <span class='kw'>if</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span>
-  <span class='id lines'>lines</span><span class='period'>.</span><span class='id to_a'>to_a</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id commit'>commit</span><span class='op'>|</span> <span class='id commit'>commit</span><span class='period'>.</span><span class='id chomp'>chomp</span> <span class='rbrace'>}</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_branch_commits'>branch_commits</span><span class='lparen'>(</span><span class='id identifier rubyid_treeish'>treeish</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_args'>args</span> <span class='op'>=</span> <span class='id identifier rubyid_branch_heads'>branch_heads</span> <span class='op'>-</span> <span class='lbracket'>[</span> <span class='id identifier rubyid_branch_head'>branch_head</span><span class='lparen'>(</span><span class='id identifier rubyid_treeish'>treeish</span><span class='rparen'>)</span> <span class='rbracket'>]</span>
+  <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_tree'>tree</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>^</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_tree'>tree</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_args'>args</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_treeish'>treeish</span>
+  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-list </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_lines'>lines</span> <span class='kw'>if</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_commit'>commit</span><span class='op'>|</span> <span class='id identifier rubyid_commit'>commit</span><span class='period'>.</span><span class='id identifier rubyid_chomp'>chomp</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -369,15 +474,15 @@
       <pre class="lines">
 
 
-69
-70
-71</pre>
+81
+82
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 69</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 81</span>
 
-<span class='kw'>def</span> <span class='id branch_head'>branch_head</span><span class='lparen'>(</span><span class='id treeish'>treeish</span><span class='rparen'>)</span>
-  <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-parse </span><span class='embexpr_beg'>#{</span><span class='id treeish'>treeish</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id strip'>strip</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_branch_head'>branch_head</span><span class='lparen'>(</span><span class='id identifier rubyid_treeish'>treeish</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-parse </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_treeish'>treeish</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -397,19 +502,19 @@
       <pre class="lines">
 
 
-63
-64
-65
-66
-67</pre>
+67
+68
+69
+70
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 67</span>
 
-<span class='kw'>def</span> <span class='id branch_heads'>branch_heads</span>
-  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-parse --branches</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id lines'>lines</span> <span class='kw'>if</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span>
-  <span class='id lines'>lines</span><span class='period'>.</span><span class='id to_a'>to_a</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id head'>head</span><span class='op'>|</span> <span class='id head'>head</span><span class='period'>.</span><span class='id chomp'>chomp</span> <span class='rbrace'>}</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_branch_heads'>branch_heads</span>
+  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-parse --branches</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_lines'>lines</span> <span class='kw'>if</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_head'>head</span><span class='op'>|</span> <span class='id identifier rubyid_head'>head</span><span class='period'>.</span><span class='id identifier rubyid_chomp'>chomp</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -504,23 +609,23 @@
       <pre class="lines">
 
 
-46
-47
-48
-49
 50
 51
-52</pre>
+52
+53
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 50</span>
 
-<span class='kw'>def</span> <span class='id changed_files'>changed_files</span><span class='lparen'>(</span><span class='id rev1'>rev1</span><span class='comma'>,</span> <span class='id rev2'>rev2</span><span class='rparen'>)</span>
-  <span class='id output'>output</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git log </span><span class='embexpr_beg'>#{</span><span class='id rev1'>rev1</span><span class='rbrace'>}</span><span class='tstring_content'>..</span><span class='embexpr_beg'>#{</span><span class='id rev2'>rev2</span><span class='rbrace'>}</span><span class='tstring_content'> --name-status --pretty=oneline</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id lines'>lines</span> <span class='kw'>if</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span>
-  <span class='id lines'>lines</span> <span class='op'>=</span> <span class='id lines'>lines</span><span class='period'>.</span><span class='id select'>select</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id line'>line</span><span class='op'>|</span> <span class='id line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\w{1}\s+\w+</span><span class='regexp_end'>/</span></span><span class='rbrace'>}</span> <span class='comment'># grep out only filenames
-</span>  <span class='id lines'>lines</span><span class='period'>.</span><span class='id uniq'>uniq</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_changed_files'>changed_files</span><span class='lparen'>(</span><span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_output'>output</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git log </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rev1'>rev1</span><span class='rbrace'>}</span><span class='tstring_content'>..</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rev2'>rev2</span><span class='rbrace'>}</span><span class='tstring_content'> --name-status --pretty=oneline</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_lines'>lines</span> <span class='kw'>if</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:lines</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_line'>line</span><span class='op'>|</span> <span class='id identifier rubyid_line'>line</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\w{1}\s+\w+</span><span class='regexp_end'>/</span></span><span class='rbrace'>}</span> <span class='comment'># grep out only filenames
+</span>  <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -584,21 +689,49 @@
       <pre class="lines">
 
 
-7
-8
-9
-10
 11
-12</pre>
+12
+13
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 11</span>
 
-<span class='kw'>def</span> <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='id cmd'>cmd</span><span class='rparen'>)</span>
-  <span class='id r'>r</span> <span class='op'>=</span> <span class='backtick'>`</span><span class='embexpr_beg'>#{</span><span class='id cmd'>cmd</span><span class='rbrace'>}</span><span class='tstring_end'>`</span></span>
-  <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id cmd'>cmd</span><span class='rbrace'>}</span><span class='tstring_content'> failed</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='gvar'>$?</span><span class='period'>.</span><span class='id exitstatus'>exitstatus</span><span class='period'>.</span><span class='id zero?'>zero?</span>
-  <span class='id r'>r</span><span class='period'>.</span><span class='id force_encoding'>force_encoding</span><span class='lparen'>(</span><span class='const'>Encoding</span><span class='op'>::</span><span class='const'>UTF_8</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id r'>r</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:force_encoding</span><span class='rparen'>)</span>
-  <span class='id r'>r</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='id identifier rubyid_cmd'>cmd</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_r'>r</span> <span class='op'>=</span> <span class='backtick'>`</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cmd'>cmd</span><span class='rbrace'>}</span><span class='tstring_end'>`</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cmd'>cmd</span><span class='rbrace'>}</span><span class='tstring_content'> failed</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='gvar'>$?</span><span class='period'>.</span><span class='id identifier rubyid_exitstatus'>exitstatus</span><span class='period'>.</span><span class='id identifier rubyid_zero?'>zero?</span>
+  <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_force_encoding'>force_encoding</span><span class='lparen'>(</span><span class='const'>Encoding</span><span class='op'>::</span><span class='const'>UTF_8</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_r'>r</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:force_encoding</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_r'>r</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="git_dir-class_method">
+  
+    + (<tt>Object</tt>) <strong>git_dir</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+73
+74
+75</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 73</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_git_dir'>git_dir</span><span class='lparen'>(</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-parse --git-dir</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -693,17 +826,17 @@
       <pre class="lines">
 
 
-35
-36
-37
-38</pre>
+39
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 39</span>
 
-<span class='kw'>def</span> <span class='id log'>log</span><span class='lparen'>(</span><span class='id rev1'>rev1</span><span class='comma'>,</span> <span class='id rev2'>rev2</span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git log --pretty=fuller </span><span class='embexpr_beg'>#{</span><span class='id rev1'>rev1</span><span class='rbrace'>}</span><span class='tstring_content'>..</span><span class='embexpr_beg'>#{</span><span class='id rev2'>rev2</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id strip'>strip</span>
-  <span class='id data'>data</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git log --pretty=fuller </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rev1'>rev1</span><span class='rbrace'>}</span><span class='tstring_content'>..</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rev2'>rev2</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
+  <span class='id identifier rubyid_data'>data</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -723,15 +856,103 @@
       <pre class="lines">
 
 
-83
-84
-85</pre>
+147
+148
+149
+150
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 147</span>
 
-<span class='kw'>def</span> <span class='id mailing_list_address'>mailing_list_address</span>
-  <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git config hooks.mailinglist</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id strip'>strip</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_mailing_list_address'>mailing_list_address</span>
+  <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git config hooks.mailinglist</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
+<span class='kw'>rescue</span> <span class='const'>ArgumentError</span>
+  <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="new_commits-class_method">
+  
+    + (<tt>Object</tt>) <strong>new_commits</strong>(oldrev, newrev, refname, unique_to_current_branch) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 85</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_new_commits'>new_commits</span><span class='lparen'>(</span><span class='id identifier rubyid_oldrev'>oldrev</span><span class='comma'>,</span> <span class='id identifier rubyid_newrev'>newrev</span><span class='comma'>,</span> <span class='id identifier rubyid_refname'>refname</span><span class='comma'>,</span> <span class='id identifier rubyid_unique_to_current_branch'>unique_to_current_branch</span><span class='rparen'>)</span>
+  <span class='comment'># We want to get the set of commits (^B1 ^B2 ... ^oldrev newrev)
+</span>  <span class='comment'># Where B1, B2, ..., are any other branch
+</span>
+  <span class='id identifier rubyid_s'>s</span> <span class='op'>=</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  
+  <span class='comment'># If we want to include only those commits that are
+</span>  <span class='comment'># unique to this branch, then exclude commits that occur on
+</span>  <span class='comment'># other branches
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_unique_to_current_branch'>unique_to_current_branch</span>
+    <span class='comment'># Make a set of all branches, not'd (^BCURRENT ^B1 ^B2...)
+</span>    <span class='id identifier rubyid_not_branches'>not_branches</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-parse --not --branches</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_not_branches'>not_branches</span><span class='period'>.</span><span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_l'>l</span><span class='op'>|</span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_chomp'>chomp</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span><span class='rparen'>)</span>
+  
+    <span class='comment'># Remove the current branch (^BCURRENT) from the set
+</span>    <span class='id identifier rubyid_current_branch'>current_branch</span> <span class='op'>=</span> <span class='id identifier rubyid_rev_parse'>rev_parse</span><span class='lparen'>(</span><span class='id identifier rubyid_refname'>refname</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>^</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_current_branch'>current_branch</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  
+  <span class='comment'># Add not'd oldrev (^oldrev)
+</span>  <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>^</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_oldrev'>oldrev</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_oldrev'>oldrev</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^0+$</span><span class='regexp_end'>/</span></span>
+
+  <span class='comment'># Add newrev
+</span>  <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='id identifier rubyid_newrev'>newrev</span><span class='rparen'>)</span>
+  
+  <span class='comment'># We should now have ^B1... ^oldrev newrev
+</span>
+  <span class='comment'># Get all the commits that match that specification
+</span>  <span class='id identifier rubyid_lines'>lines</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-list </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> </span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_commits'>commits</span> <span class='op'>=</span> <span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_lines'>lines</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_l'>l</span><span class='op'>|</span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_chomp'>chomp</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -751,27 +972,87 @@
       <pre class="lines">
 
 
-73
-74
-75
-76
-77
-78
-79
-80
-81</pre>
+137
+138
+139
+140
+141
+142
+143
+144
+145</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 137</span>
 
-<span class='kw'>def</span> <span class='id repo_name'>repo_name</span>
-  <span class='id git_prefix'>git_prefix</span> <span class='op'>=</span> <span class='kw'>begin</span>
-    <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git config hooks.emailprefix</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id strip'>strip</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_repo_name'>repo_name</span>
+  <span class='id identifier rubyid_git_prefix'>git_prefix</span> <span class='op'>=</span> <span class='kw'>begin</span>
+    <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git config hooks.emailprefix</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
   <span class='kw'>rescue</span> <span class='const'>ArgumentError</span>
     <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
   <span class='kw'>end</span>
-  <span class='kw'>return</span> <span class='id git_prefix'>git_prefix</span> <span class='kw'>unless</span> <span class='id git_prefix'>git_prefix</span><span class='period'>.</span><span class='id empty?'>empty?</span>
-  <span class='const'>Dir</span><span class='period'>.</span><span class='id pwd'>pwd</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id last'>last</span><span class='period'>.</span><span class='id sub'>sub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\.git$</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_git_prefix'>git_prefix</span> <span class='kw'>unless</span> <span class='id identifier rubyid_git_prefix'>git_prefix</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='id identifier rubyid_git_dir'>git_dir</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span><span class='period'>.</span><span class='id identifier rubyid_sub'>sub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\.git$</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="rev_parse-class_method">
+  
+    + (<tt>Object</tt>) <strong>rev_parse</strong>(param) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+77
+78
+79</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 77</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_rev_parse'>rev_parse</span><span class='lparen'>(</span><span class='id identifier rubyid_param'>param</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git rev-parse '</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_param'>param</span><span class='rbrace'>}</span><span class='tstring_content'>'</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="rev_type-class_method">
+  
+    + (<tt>Object</tt>) <strong>rev_type</strong>(rev) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+117
+118
+119
+120
+121</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 117</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_rev_type'>rev_type</span><span class='lparen'>(</span><span class='id identifier rubyid_rev'>rev</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git cat-file -t '</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rev'>rev</span><span class='rbrace'>}</span><span class='tstring_content'>' 2&gt; /dev/null</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
+<span class='kw'>rescue</span> <span class='const'>ArgumentError</span>
+  <span class='kw'>nil</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -889,23 +1170,71 @@
       <pre class="lines">
 
 
-21
-22
-23
-24
 25
 26
-27</pre>
+27
+28
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 25</span>
 
-<span class='kw'>def</span> <span class='id show'>show</span><span class='lparen'>(</span><span class='id rev'>rev</span><span class='comma'>,</span> <span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id gitopt'>gitopt</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id gitopt'>gitopt</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> --pretty=fuller</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id gitopt'>gitopt</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> -w</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:ignore_whitespaces</span><span class='rbracket'>]</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git show </span><span class='embexpr_beg'>#{</span><span class='id rev'>rev</span><span class='period'>.</span><span class='id strip'>strip</span><span class='rbrace'>}</span><span class='embexpr_beg'>#{</span><span class='id gitopt'>gitopt</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id data'>data</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_show'>show</span><span class='lparen'>(</span><span class='id identifier rubyid_rev'>rev</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_gitopt'>gitopt</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_gitopt'>gitopt</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> --pretty=fuller</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_gitopt'>gitopt</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> -w</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:ignore_whitespaces</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git show </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rev'>rev</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='rbrace'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_gitopt'>gitopt</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_data'>data</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="tag_info-class_method">
+  
+    + (<tt>Object</tt>) <strong>tag_info</strong>(refname) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/git.rb', line 123</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_tag_info'>tag_info</span><span class='lparen'>(</span><span class='id identifier rubyid_refname'>refname</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_fields'>fields</span> <span class='op'>=</span> <span class='lbracket'>[</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:tagobject =&gt; %(*objectname)</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:tagtype =&gt; %(*objecttype)</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:taggername =&gt; %(taggername)</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:taggeremail =&gt; %(taggeremail)</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:subject =&gt; %(subject)</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>:contents =&gt; %(contents)</span><span class='tstring_end'>'</span></span>
+  <span class='rbracket'>]</span>
+  <span class='id identifier rubyid_joined_fields'>joined_fields</span> <span class='op'>=</span> <span class='id identifier rubyid_fields'>fields</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>,</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_hash_script'>hash_script</span> <span class='op'>=</span> <span class='id identifier rubyid_from_shell'>from_shell</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>git for-each-ref --shell --format='{ </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_joined_fields'>joined_fields</span><span class='rbrace'>}</span><span class='tstring_content'> }' </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_refname'>refname</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_eval'>eval</span><span class='lparen'>(</span><span class='id identifier rubyid_hash_script'>hash_script</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -917,9 +1246,9 @@
 </div>
     
     <div id="footer">
-  Generated on Mon Nov  7 18:43:38 2011 by 
+  Generated on Mon Dec 19 18:40:41 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.3).
+  0.7.4 (ruby-1.9.3).
 </div>
 
   </body>

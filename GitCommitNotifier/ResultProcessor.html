@@ -6,7 +6,7 @@
 <title>
   Class: GitCommitNotifier::ResultProcessor
   
-    &mdash; 'git-commit-notifier 0.10.5
+    &mdash; 'git-commit-notifier 0.11.0
 '
   
 </title>
@@ -172,7 +172,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="EscapeHelper.html" title="GitCommitNotifier::EscapeHelper (module)">EscapeHelper</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="EscapeHelper.html#escape_content-instance_method" title="GitCommitNotifier::EscapeHelper#escape_content (method)">#escape_content</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="EscapeHelper.html#escape_content-instance_method" title="GitCommitNotifier::EscapeHelper#escape_content (method)">#escape_content</a></span>, <span class='object_link'><a href="EscapeHelper.html#expand_tabs-instance_method" title="GitCommitNotifier::EscapeHelper#expand_tabs (method)">#expand_tabs</a></span></p>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -192,22 +192,22 @@
       <pre class="lines">
 
 
-18
-19
 20
 21
 22
 23
-24</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/result_processor.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/result_processor.rb', line 20</span>
 
-<span class='kw'>def</span> <span class='id length_in_chars'>length_in_chars</span><span class='lparen'>(</span><span class='id diff'>diff</span><span class='rparen'>)</span>
-  <span class='id diff'>diff</span><span class='period'>.</span><span class='id inject'>inject</span><span class='lparen'>(</span><span class='int'>0</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id length'>length</span><span class='comma'>,</span> <span class='id s'>s</span><span class='op'>|</span>
-    <span class='id token'>token</span> <span class='op'>=</span> <span class='id s'>s</span><span class='lbracket'>[</span><span class='symbol'>:token</span><span class='rbracket'>]</span>
-    <span class='id token_length'>token_length</span> <span class='op'>=</span> <span class='id token'>token</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:jlength</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id token'>token</span><span class='period'>.</span><span class='id jlength'>jlength</span> <span class='op'>:</span> <span class='id token'>token</span><span class='period'>.</span><span class='id length'>length</span>
-    <span class='id length'>length</span> <span class='op'>+</span> <span class='id token_length'>token_length</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_length_in_chars'>length_in_chars</span><span class='lparen'>(</span><span class='id identifier rubyid_diff'>diff</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_diff'>diff</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='int'>0</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_length'>length</span><span class='comma'>,</span> <span class='id identifier rubyid_s'>s</span><span class='op'>|</span>
+    <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='id identifier rubyid_s'>s</span><span class='lbracket'>[</span><span class='symbol'>:token</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_token_length'>token_length</span> <span class='op'>=</span> <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:jlength</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jlength'>jlength</span> <span class='op'>:</span> <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
+    <span class='id identifier rubyid_length'>length</span> <span class='op'>+</span> <span class='id identifier rubyid_token_length'>token_length</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -238,17 +238,17 @@
       <pre class="lines">
 
 
-13
-14
 15
-16</pre>
+16
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/result_processor.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/result_processor.rb', line 15</span>
 
-<span class='kw'>def</span> <span class='id results'>results</span>
-  <span class='id close_tags'>close_tags</span> <span class='comment'># close last tag
-</span>  <span class='lbracket'>[</span><span class='id array_of_lines'>array_of_lines</span><span class='lparen'>(</span><span class='ivar'>@result</span><span class='lbracket'>[</span><span class='symbol'>:removal</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id array_of_lines'>array_of_lines</span><span class='lparen'>(</span><span class='ivar'>@result</span><span class='lbracket'>[</span><span class='symbol'>:addition</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_results'>results</span>
+  <span class='id identifier rubyid_close_tags'>close_tags</span> <span class='comment'># close last tag
+</span>  <span class='lbracket'>[</span><span class='id identifier rubyid_array_of_lines'>array_of_lines</span><span class='lparen'>(</span><span class='ivar'>@result</span><span class='lbracket'>[</span><span class='symbol'>:removal</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_array_of_lines'>array_of_lines</span><span class='lparen'>(</span><span class='ivar'>@result</span><span class='lbracket'>[</span><span class='symbol'>:addition</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -260,9 +260,9 @@
 </div>
     
     <div id="footer">
-  Generated on Mon Nov  7 18:43:38 2011 by 
+  Generated on Mon Dec 19 18:40:42 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.3).
+  0.7.4 (ruby-1.9.3).
 </div>
 
   </body>
