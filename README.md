@@ -88,10 +88,7 @@ More examples can be found in the config file.
 
 ## Logic of commits handling
 
-The commit notifier uses special files named *previously.txt* to track already
-handled commits to not send repeated messages about commits.
-
-By default all commits are tracked through the whole repository so after a merge 
+By default all commits are tracked through the whole repository so after a merge
 you should not receive messages about those commits already posted in other branches.
 
 This behaviour can be changed using unique\_commits\_per\_branch option. When it's true,
@@ -109,16 +106,6 @@ old commits in processes of forking, branching etc.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
-
-## Troubleshooting
-
-### Permission denied - /var/git/repo/previously.txt (Errno::EACCES)
-
-The file _previously.txt_ is created at the first commit. If you moved the file to the server, you have to check the rights to that file and fix them if needed. The git repo owner needs the right to write into that file. 
-
-### Empty html on ruby 1.8.7
-
-Check <code>gem list premailer</code>. Please remove premailer 1.7.2 if exists (<code>gem uninstall premailer -v 1.7.2; gem install premailer</code>), because 1.7.2 was broken.
 
 ## Credits
 
