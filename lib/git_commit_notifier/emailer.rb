@@ -89,7 +89,8 @@ class GitCommitNotifier::Emailer
       smtp.open_message_stream(@from_address, recipients) do |f|
         content.each do |line|
           line.force_encoding('ASCII-8BIT') if line.respond_to?(:force_encoding)
-          f.print(line, "\r\n")
+          f.print(line)
+          f.print("\r\n")
         end
       end
     end
