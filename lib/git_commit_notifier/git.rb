@@ -110,7 +110,7 @@ class GitCommitNotifier::Git
       # We should now have ^B1... ^oldrev newrev
 
       # Get all the commits that match that specification
-      lines = from_shell("git rev-list #{s.to_a.join(' ')}")
+      lines = from_shell("git rev-list --reverse #{s.to_a.join(' ')}")
       commits = lines.lines.map {|l| l.chomp}
     end
 
