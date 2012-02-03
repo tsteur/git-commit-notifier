@@ -16,18 +16,18 @@ describe GitCommitNotifier::Git do
   describe :show do
     it "should get data from shell: git show without whitespaces" do
       expected = 'some data from git show'
-      mock(GitCommitNotifier::Git).from_shell("git show #{SAMPLE_REV} --pretty=fuller -w") { expected }
+      mock(GitCommitNotifier::Git).from_shell("git show #{SAMPLE_REV} --date=rfc2822 --pretty=fuller -w") { expected }
       GitCommitNotifier::Git.show(SAMPLE_REV, :ignore_whitespaces => true).should == expected
     end
 
     it "should get data from shell: git show with whitespaces" do
       expected = 'some data from git show'
-      mock(GitCommitNotifier::Git).from_shell("git show #{SAMPLE_REV} --pretty=fuller") { expected }
+      mock(GitCommitNotifier::Git).from_shell("git show #{SAMPLE_REV} --date=rfc2822 --pretty=fuller") { expected }
       GitCommitNotifier::Git.show(SAMPLE_REV, :ignore_whitespaces => false).should == expected
     end
 
     it "should strip given revision" do
-      mock(GitCommitNotifier::Git).from_shell("git show #{SAMPLE_REV} --pretty=fuller -w")
+      mock(GitCommitNotifier::Git).from_shell("git show #{SAMPLE_REV} --date=rfc2822 --pretty=fuller -w")
       GitCommitNotifier::Git.show("#{SAMPLE_REV}\n", :ignore_whitespaces => true)
     end
   end
