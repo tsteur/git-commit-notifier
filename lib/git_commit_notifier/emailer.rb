@@ -2,11 +2,17 @@
 
 require 'premailer'
 
+# Represents email sender.
 class GitCommitNotifier::Emailer
+  # Default CSS stylesheet file path
   DEFAULT_STYLESHEET_PATH = File.join(File.dirname(__FILE__), '/../../template/styles.css').freeze
+  # Default ERB template file path
   TEMPLATE = File.join(File.dirname(__FILE__), '/../../template/email.html.erb').freeze
+  # Instance variable names
   PARAMETERS = %w[project_path recipient from_address from_alias date subject text_message html_message repo_name ref_name old_rev new_rev].freeze
 
+  # Gets config
+  # @return [Hash] configuration
   def config
     @@config
   end
@@ -19,15 +25,21 @@ class GitCommitNotifier::Emailer
   end
 
   class << self
+    # Resets compiled template
+    # @note Useful for tests
     def reset_template
       @template = nil
     end
 
+    # Reads template source code from file system
     def template_source
       template_file = @@config['custom_template'] || TEMPLATE
       IO.read(template_file)
     end
 
+    # Gets or reads compiled template.
+    # @return [Object] Compiled template.
+    # @note Erubis used as template engine if present; ERB otherwise.
     def template
       unless @template
         source = template_source
@@ -52,6 +64,7 @@ class GitCommitNotifier::Emailer
     html
   end
 
+  # Gets or creates email part boundary
   def boundary
     return @boundary if @boundary
     srand
@@ -59,17 +72,20 @@ class GitCommitNotifier::Emailer
     @boundary = Digest::SHA1.hexdigest(seed)
   end
 
+  # Reads CSS stylesheet source code.
   def stylesheet_string
     stylesheet = config['stylesheet'] || DEFAULT_STYLESHEET_PATH
     IO.read(stylesheet)
   end
 
+  # Performs email delivery in debug mode (to STDOUT).
   def perform_delivery_debug(content)
     content.each do |line|
       puts line
     end
   end
 
+  # Performs email delivery through SMTP.
   def perform_delivery_smtp(content, smtp_settings)
     settings = { }
     %w(address port domain user_name password authentication enable_tls).each do |key|
@@ -96,6 +112,7 @@ class GitCommitNotifier::Emailer
     end
   end
 
+  # Performs email delivery through Sendmail.
   def perform_delivery_sendmail(content, options = nil)
     sendmail_settings = {
       'location' => "/usr/sbin/sendmail",
@@ -110,6 +127,7 @@ class GitCommitNotifier::Emailer
     end
   end
 
+  # Performs email delivery through NNTP.
   def perform_delivery_nntp(content, nntp_settings)
     require 'nntp'
     Net::NNTP.start(nntp_settings['address'], nntp_settings['port']) do |nntp|
@@ -117,20 +135,21 @@ class GitCommitNotifier::Emailer
     end
   end
 
+  # Creates email message and sends it using configured delivery method.
   def send
     to_tag = config['delivery_method'] == 'nntp' ? 'Newsgroups' : 'To'
     quoted_from_alias = !@from_alias.nil? ? quote_if_necessary("#{@from_alias}",'utf-8') : nil
     from = (@from_alias.nil? || @from_alias.empty?) ? @from_address : "#{quoted_from_alias} <#{@from_address}>"
-    
+
     plaintext = if config['add_plaintext'].nil? || config['add_plaintext']
       @text_message
     else
       "Plain text part omitted. Consider setting add_plaintext in configuration."
     end
-    
+
     content = []
-    content << "From: #{from}" if !from.nil?
-    
+    content << "From: #{from}"  unless from.nil?
+
     # Setting the email date from the commit date is undesired by those
     # who sort their email by send date instead of receive date
     #content << "Date: #{@date}" if !@date.nil?
@@ -184,7 +203,7 @@ class GitCommitNotifier::Emailer
     StringIO.open("", "w") do |output|
       # Character encoding of output string can be plain US-ASCII since quoted-printable is plain ASCII
       output.string.force_encoding("US-ASCII") if output.string.respond_to?(:force_encoding)
-      
+
       line_max = 76
       line_len = 0
 
