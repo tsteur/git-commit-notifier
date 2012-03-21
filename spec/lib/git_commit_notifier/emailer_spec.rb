@@ -29,6 +29,10 @@ describe GitCommitNotifier::Emailer do
   end
 
   describe :stylesheet_string do
+    before(:each) do
+      GitCommitNotifier::Emailer.reset_stylesheet
+    end
+
     it "should return default stylesheet if custom is not provided" do
       emailer = GitCommitNotifier::Emailer.new({})
       mock(IO).read(GitCommitNotifier::Emailer::DEFAULT_STYLESHEET_PATH) { 'ok' }
