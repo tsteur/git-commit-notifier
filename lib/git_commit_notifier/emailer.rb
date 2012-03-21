@@ -14,7 +14,7 @@ class GitCommitNotifier::Emailer
   # Gets config
   # @return [Hash] configuration
   # @note Helper that represents class method in instance scope.
-  # @see #GitCommitNotifier::Emailer.config
+  # @see GitCommitNotifier::Emailer.config
   def config
     GitCommitNotifier::Emailer.config
   end
@@ -87,7 +87,7 @@ class GitCommitNotifier::Emailer
 
   # Gets stylesheet string.
   # @note This is helper to provide data from class context.
-  # @see #GitCommitNotifier::Emailer.stylesheet
+  # @see GitCommitNotifier::Emailer.stylesheet
   def stylesheet_string
     GitCommitNotifier::Emailer.stylesheet
   end
