@@ -27,16 +27,18 @@ class GitCommitNotifier::Emailer
   end
 
   class << self
-    # Gets or sets config
+    # [Hash] Gets or sets config.
     attr_accessor :config
 
-    # Resets compiled template
-    # @note Useful for tests
+    # Resets compiled template.
+    # @note Useful for tests.
+    # @return nil
     def reset_template
       @template = nil
     end
 
-    # Reads template source code from file system
+    # Reads template source code from file system.
+    # @return [String] Template source code.
     def template_source
       template_file = config['custom_template'] || TEMPLATE
       IO.read(template_file)
@@ -60,22 +62,28 @@ class GitCommitNotifier::Emailer
     end
 
     # Resets CSS stylesheet source.
+    # @note Useful for tests.
+    # @return nil
     def reset_stylesheet
       @stylesheet = nil
     end
 
     # Reads CSS stylesheet source code.
+    # @return [String] Stylesheet source code.
     def stylesheet_source
       stylesheet = config['stylesheet'] || DEFAULT_STYLESHEET_PATH
       IO.read(stylesheet)
     end
 
     # Gets or reads CSS stylesheet.
+    # @return [String] Stylesheet source code.
     def stylesheet
       @stylesheet ||= stylesheet_source
     end
   end
 
+  # Gets HTML-formatted message.
+  # @return [String] HTML-formatted message.
   def mail_html_message
     html = GitCommitNotifier::Emailer.template.result(binding)
     if config['expand_css'].nil? || config['expand_css']
@@ -88,11 +96,13 @@ class GitCommitNotifier::Emailer
   # Gets stylesheet string.
   # @note This is helper to provide data from class context.
   # @see GitCommitNotifier::Emailer.stylesheet
+    # @return [String] Stylesheet source code.
   def stylesheet_string
     GitCommitNotifier::Emailer.stylesheet
   end
 
   # Gets or creates email part boundary
+  # @return [String] Email part boundary.
   def boundary
     return @boundary if @boundary
     srand
@@ -101,13 +111,16 @@ class GitCommitNotifier::Emailer
   end
 
   # Performs email delivery in debug mode (to STDOUT).
+  # @return nil
   def perform_delivery_debug(content)
     content.each do |line|
       puts line
     end
+    nil
   end
 
   # Performs email delivery through SMTP.
+  # @return nil
   def perform_delivery_smtp(content, smtp_settings)
     settings = { }
     %w(address port domain user_name password authentication enable_tls).each do |key|
@@ -132,9 +145,11 @@ class GitCommitNotifier::Emailer
         end
       end
     end
+    nil
   end
 
   # Performs email delivery through Sendmail.
+  # @return nil
   def perform_delivery_sendmail(content, options = nil)
     sendmail_settings = {
       'location' => "/usr/sbin/sendmail",
@@ -147,17 +162,21 @@ class GitCommitNotifier::Emailer
       end
       f.flush
     end
+    nil
   end
 
   # Performs email delivery through NNTP.
+  # @return nil
   def perform_delivery_nntp(content, nntp_settings)
     require 'nntp'
     Net::NNTP.start(nntp_settings['address'], nntp_settings['port']) do |nntp|
         nntp.post content
     end
+    nil
   end
 
   # Creates email message and sends it using configured delivery method.
+  # @return nil
   def send
     to_tag = config['delivery_method'] == 'nntp' ? 'Newsgroups' : 'To'
     quoted_from_alias = !@from_alias.nil? ? quote_if_necessary("#{@from_alias}",'utf-8') : nil
@@ -213,6 +232,7 @@ class GitCommitNotifier::Emailer
     else # sendmail
       perform_delivery_sendmail(content, config['sendmail_options'])
     end
+    nil
   end
 
   # Convert a message into quoted printable encoding,
