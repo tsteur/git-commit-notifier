@@ -13,18 +13,23 @@ class GitCommitNotifier::Emailer
 
   # Gets config
   # @return [Hash] configuration
+  # @note Helper that represents class method in instance scope.
+  # @see #GitCommitNotifier::Emailer.config
   def config
-    @@config
+    GitCommitNotifier::Emailer.config
   end
 
   def initialize(config, options = {})
-    @@config = config || {}
+    GitCommitNotifier::Emailer.config = config || {}
     PARAMETERS.each do |name|
       instance_variable_set("@#{name}".to_sym, options[name.to_sym])
     end
   end
 
   class << self
+    # Gets or sets config
+    attr_accessor :config
+
     # Resets compiled template
     # @note Useful for tests
     def reset_template
@@ -33,7 +38,7 @@ class GitCommitNotifier::Emailer
 
     # Reads template source code from file system
     def template_source
-      template_file = @@config['custom_template'] || TEMPLATE
+      template_file = config['custom_template'] || TEMPLATE
       IO.read(template_file)
     end
 
@@ -53,6 +58,22 @@ class GitCommitNotifier::Emailer
       end
       @template
     end
+
+    # Resets CSS stylesheet source.
+    def reset_stylesheet
+      @stylesheet = nil
+    end
+
+    # Reads CSS stylesheet source code.
+    def stylesheet_source
+      stylesheet = config['stylesheet'] || DEFAULT_STYLESHEET_PATH
+      IO.read(stylesheet)
+    end
+
+    # Gets or reads CSS stylesheet.
+    def stylesheet
+      @stylesheet ||= stylesheet_source
+    end
   end
 
   def mail_html_message
@@ -64,18 +85,19 @@ class GitCommitNotifier::Emailer
     html
   end
 
+  # Gets stylesheet string.
+  # @note This is helper to provide data from class context.
+  # @see #GitCommitNotifier::Emailer.stylesheet
+  def stylesheet_string
+    GitCommitNotifier::Emailer.stylesheet
+  end
+
   # Gets or creates email part boundary
   def boundary
     return @boundary if @boundary
     srand
     seed = "#{rand(10000)}#{Time.now}"
     @boundary = Digest::SHA1.hexdigest(seed)
-  end
-
-  # Reads CSS stylesheet source code.
-  def stylesheet_string
-    stylesheet = config['stylesheet'] || DEFAULT_STYLESHEET_PATH
-    IO.read(stylesheet)
   end
 
   # Performs email delivery in debug mode (to STDOUT).
@@ -194,7 +216,7 @@ class GitCommitNotifier::Emailer
   end
 
   # Convert a message into quoted printable encoding,
-  # limiting line length to 76 characters per spec
+  # limiting line length to 76 characters per spec.
   # Encoding messages in this way ensures that they
   # won't violate rules for maximum line length, which
   # can result in the MTA breaking lines at inconvenient points,
