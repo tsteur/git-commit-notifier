@@ -1,7 +1,11 @@
 # -*- coding: utf-8; mode: ruby; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- vim:fenc=utf-8:filetype=ruby:et:sw=2:ts=2:sts=2
 
+# Provides content escaping helpers.
 module GitCommitNotifier::EscapeHelper
-		
+  # Expand tabs into spaces.
+  # @param [String] s Text to be expanded.
+  # @param [FixNum] tabWidth One tab indentation (in count of spaces).
+  # @return [String] Expanded text.
   def expand_tabs(s, tabWidth)
     delta = 0
     s.gsub(/\t/) do |m|
@@ -11,6 +15,10 @@ module GitCommitNotifier::EscapeHelper
     end
   end
 
+  # Escapes expanded content using CGI.escapeHTML and {#expand_tabs}.
+  # @param [String] s Text to be expanded and extended.
+  # @return [String] Escaped and expanded text.
+  # @see #expand_tabs
   def escape_content(s)
     CGI.escapeHTML(expand_tabs(s, 4)).gsub(" ", "&nbsp;")
   end
