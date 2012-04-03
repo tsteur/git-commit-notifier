@@ -21,7 +21,7 @@ module GitCommitNotifier
           GitCommitNotifier::CommitHook.show_error("No data given on standard input")
           return
         end
-        
+
         # Note that there may be multiple lines on stdin, such
         # as in the case of multiple tags being pushed
         $stdin.each_line do |line|

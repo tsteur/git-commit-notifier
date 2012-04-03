@@ -101,15 +101,15 @@ describe GitCommitNotifier::DiffToHtml do
   end
 
   it "multiple commits" do
-  
+
     mock(GitCommitNotifier::Git).changed_files('7e4f6b4', '4f13525') { [] }
     mock(GitCommitNotifier::Git).rev_type(REVISIONS.first) { "commit" }
     mock(GitCommitNotifier::Git).rev_type(REVISIONS.last) { "commit" }
-    mock(GitCommitNotifier::Git).new_commits(anything, anything, anything, anything) { REVISIONS.reverse }    
+    mock(GitCommitNotifier::Git).new_commits(anything, anything, anything, anything) { REVISIONS.reverse }
     REVISIONS.each do |rev|
       mock(GitCommitNotifier::Git).show(rev, :ignore_whitespaces => true) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end
-    
+
     diff = GitCommitNotifier::DiffToHtml.new
     diff.diff_between_revisions REVISIONS.first, REVISIONS.last, 'testproject', 'refs/heads/master'
 
@@ -118,7 +118,7 @@ describe GitCommitNotifier::DiffToHtml do
     diff.result.each do |html|
       html.should_not be_include('@@') # diff correctly processed
     end
-    
+
     # second commit - 51b986619d88f7ba98be7d271188785cbbb541a0
     hp = Nokogiri::HTML diff.result[1][:html_content]
     (hp/"table").should have(3).tables # 3 files updated
@@ -159,7 +159,7 @@ describe GitCommitNotifier::DiffToHtml do
     first_rev, last_rev = %w[ 0000000000000000000000000000000000000000 ff037a73fc1094455e7bbf506171a3f3cf873ae6 ]
     mock(GitCommitNotifier::Git).rev_type(first_rev) { "commit" }
     mock(GitCommitNotifier::Git).rev_type(last_rev) { "commit" }
-    mock(GitCommitNotifier::Git).new_commits(anything, anything, anything, anything) { [ 'ff037a73fc1094455e7bbf506171a3f3cf873ae6' ] }    
+    mock(GitCommitNotifier::Git).new_commits(anything, anything, anything, anything) { [ 'ff037a73fc1094455e7bbf506171a3f3cf873ae6' ] }
     %w[ ff037a73fc1094455e7bbf506171a3f3cf873ae6 ].each do |rev|
       mock(GitCommitNotifier::Git).show(rev, :ignore_whitespaces => true) { IO.read(FIXTURES_PATH + 'git_show_' + rev) }
     end

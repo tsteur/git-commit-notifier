@@ -157,7 +157,7 @@ module GitCommitNotifier
       end
 
       file_name = @current_file_name
-      
+
       # TODO: these filenames, etc, should likely be properly html escaped
       if config['link_files']
         file_name = if config["link_files"] == "gitweb" && config["gitweb"]
@@ -195,14 +195,14 @@ module GitCommitNotifier
 
     def add_changes_to_result
       return if @current_file_name.nil?
-      
+
       @lines_added = 0
       @diff_result << operation_description
       if !@diff_lines.empty? && !@too_many_files
         @diff_result << '<table>'
         removals = []
         additions = []
-        
+
         lines = if lines_per_diff.nil?
           line_budget = nil
           @diff_lines
@@ -210,7 +210,7 @@ module GitCommitNotifier
           line_budget = lines_per_diff - @lines_added
           @diff_lines.slice(0, line_budget)
         end
-        
+
         lines.each_with_index do |line, index|
           removals << line if line[:op] == :removal
           additions << line if line[:op] == :addition
@@ -230,7 +230,7 @@ module GitCommitNotifier
           end
           @lines_added += 1
         end
-        
+
         add_skip_notification if !line_budget.nil? && line_budget < @diff_lines.size
 
         @diff_result << '</table>'
@@ -336,7 +336,7 @@ module GitCommitNotifier
     def extract_commit_info_from_git_show_output(content)
       result = { :message => [], :commit => '', :author => '', :date => '', :email => '',
       :committer => '', :commit_date => '', :committer_email => ''}
-      
+
       message = []
       content.split("\n").each do |line|
         if line =~ /^diff/ # end of commit info
@@ -357,7 +357,7 @@ module GitCommitNotifier
           message << line.strip
         end
       end
-      
+
       # Strip blank lines off top and bottom of message
       while !message.empty? && message.first.empty?
         message.shift
@@ -366,7 +366,7 @@ module GitCommitNotifier
         message.pop
       end
       result[:message] = message
-      
+
       result
     end
 
@@ -404,7 +404,7 @@ module GitCommitNotifier
     def merge_commit?(commit_info)
       ! commit_info[:merge].nil?
     end
-    
+
     def truncate_long_lines(text)
       StringIO.open("", "w") do |output|
         # Match encoding of output string to that of input string
@@ -444,7 +444,7 @@ module GitCommitNotifier
         output.string
       end
     end
-    
+
     def markup_commit_for_html(commit)
       commit = if config["link_files"]
         if config["link_files"] == "gitweb" && config["gitweb"]
@@ -466,7 +466,7 @@ module GitCommitNotifier
         "#{commit}"
       end
     end
-    
+
     def diff_for_commit(commit)
       @current_commit = commit
       raw_diff = truncate_long_lines(Git.show(commit, :ignore_whitespaces => ignore_whitespaces?))
@@ -489,19 +489,19 @@ module GitCommitNotifier
       title = "<dl class=\"title\">"
       title += "<dt>Commit</dt><dd>#{markup_commit_for_html(commit_info[:commit])}</dd>\n"
       title += "<dt>Branch</dt><dd>#{CGI.escapeHTML(branch_name)}</dd>\n" if branch_name
-      
+
       title += "<dt>Author</dt><dd>#{CGI.escapeHTML(commit_info[:author])} &lt;#{commit_info[:email]}&gt;</dd>\n"
-      
+
       # Show separate committer name/email only if it differs from author
       if commit_info[:author] != commit_info[:committer] || commit_info[:email] != commit_info[:commit_email]
         title += "<dt>Committer</dt><dd>#{CGI.escapeHTML(commit_info[:committer])} &lt;#{commit_info[:commit_email]}&gt;</dd>\n"
       end
 
       title += "<dt>Date</dt><dd>#{CGI.escapeHTML commit_info[:date]}</dd>\n"
-      
+
       multi_line_message = commit_info[:message].count > 1
       title += "<dt>Message</dt><dd class='#{multi_line_message ? "multi-line" : ""}'>#{message_array_as_html(commit_info[:message])}</dd>\n"
-      
+
       title += "</dl>"
 
       text = "#{raw_diff}"
@@ -521,38 +521,38 @@ module GitCommitNotifier
     end
 
     def diff_for_lightweight_tag(tag, rev, change_type)
-    
+
       if change_type == :delete
         message = "Remove Lightweight Tag #{tag}"
-        
+
         html = "<dl class='title'>"
         html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (removed)</dd>\n"
         html += "<dt>Type</dt><dd>lightweight</dd>\n"
         html += "<dt>Commit</dt><dd>#{markup_commit_for_html(rev)}</dd>\n"
         html += "</dl>"
-        
+
         text = "Remove Tag: #{tag}\n"
         text += "Type: lightweight\n"
         text += "Commit: #{rev}\n"
       else
         message = "#{change_type == :create ? "Add" : "Update"} Lightweight Tag #{tag}"
-        
+
         html = "<dl class='title'>"
         html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (#{change_type == :create ? "added" : "updated"})</dd>\n"
         html += "<dt>Type</dt><dd>lightweight</dd>\n"
         html += "<dt>Commit</dt><dd>#{markup_commit_for_html(rev)}</dd>\n"
         html += "</dl>"
-        
+
         text = "Tag: #{tag} (#{change_type == :create ? "added" : "updated"})\n"
         text += "Type: lightweight\n"
         text += "Commit: #{rev}\n"
       end
-      
+
       commit_info = {
         :commit => rev,
         :message => message
       }
-      
+
       @result << {
         :commit_info => commit_info,
         :html_content => html,
@@ -561,26 +561,26 @@ module GitCommitNotifier
     end
 
     def diff_for_annotated_tag(tag, rev, change_type)
-    
+
       commit_info = {
         :commit => rev
       }
-      
+
       if change_type == :delete
         message = "Remove Annotated Tag #{tag}"
-        
+
         html = "<dl class='title'>"
         html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (removed)</dd>\n"
         html += "<dt>Type</dt><dd>annotated</dd>\n"
         html += "</dl>"
-        
+
         text = message
         commit_info[:message] = message
       else
         tag_info = Git.tag_info(ref_name)
 
         message = tag_info[:subject] || "#{change_type == :create ? "Add" : "Update"} Annotated Tag #{tag}"
-        
+
         html = "<dl class='title'>"
         html += "<dt>Tag</dt><dd>#{CGI.escapeHTML(tag)} (#{change_type == :create ? "added" : "updated"})</dd>\n"
         html += "<dt>Type</dt><dd>annotated</dd>\n"
@@ -591,17 +591,17 @@ module GitCommitNotifier
         multi_line_message = message_array.count > 1
         html += "<dt>Message</dt><dd class='#{multi_line_message ? "multi-line" : ""}'>#{message_array_as_html(message_array)}</dd>\n"
         html += "</dl>"
-        
+
         text = "Tag:</strong> #{tag} (#{change_type == :create ? "added" : "updated"})\n"
         text += "Type: annotated\n"
         text += "Commit: #{tag_info[:tagobject]}\n"
         text += "Tagger: tag_info[:taggername] tag_info[:taggeremail]\n"
         text += "Message: #{tag_info[:contents]}\n"
-        
+
         commit_info[:message] = message
         commit_info[:author], commit_info[:email] = author_name_and_email("#{tag_info[:taggername]} #{tag_info[:taggeremail]}")
       end
-      
+
       @result << {
         :commit_info => commit_info,
         :html_content => html,
@@ -609,7 +609,7 @@ module GitCommitNotifier
       }
     end
 
-    def diff_for_branch(branch, rev, change_type)      
+    def diff_for_branch(branch, rev, change_type)
       commits = case change_type
       when :delete
         puts "ignoring branch delete"
@@ -617,11 +617,11 @@ module GitCommitNotifier
       when :create, :update
         # Note that "unique_commits_per_branch" really means "consider commits
         # on this branch without regard to whether they occur on other branches"
-        # The flag unique_to_current_branch passed to new_commits means the 
+        # The flag unique_to_current_branch passed to new_commits means the
         # opposite: "consider only commits that are unique to this branch"
         Git.new_commits(oldrev, newrev, ref_name, !unique_commits_per_branch?)
       end
-      
+
       # Add each diff to @result
       commits.each do |commit|
           commit_result = diff_for_commit(commit)
@@ -636,7 +636,7 @@ module GitCommitNotifier
 
     def diff_between_revisions(rev1, rev2, repo, ref_name)
       clear_result
-      
+
       # Cleanup revs
       @oldrev = Git.rev_parse(rev1)
       @newrev = Git.rev_parse(rev2)
@@ -650,7 +650,7 @@ module GitCommitNotifier
       else
         :update
       end
-      
+
       # Establish type of the revs
       @oldrev_type = Git.rev_type(@oldrev)
       @newrev_type = Git.rev_type(@newrev)
@@ -661,7 +661,7 @@ module GitCommitNotifier
         @rev_type = @newrev_type
         @rev = @newrev
       end
-      
+
       # Determine what to do based on the ref_name and the rev_type
       case "#{@ref_name},#{@rev_type}"
       when %r!^refs/tags/(.+),commit$!
@@ -680,7 +680,7 @@ module GitCommitNotifier
         # Something we don't understand
         puts "Unknown change type #{ref_name},#{@rev_type}"
       end
-      
+
       # If a block was given, pass it the results, in turn
       @result.each { |result| yield result }  if block_given?
     end
