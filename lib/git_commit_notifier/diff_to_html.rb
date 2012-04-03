@@ -7,9 +7,11 @@ require 'time'
 require 'git_commit_notifier/escape_helper'
 
 module GitCommitNotifier
+  # Translates Git diff to HTML format
   class DiffToHtml
     include EscapeHelper
 
+    # Integration map for commit message keywords to third-party links.
     INTEGRATION_MAP = {
       :mediawiki => { :search_for => /\[\[([^\[\]]+)\]\]/, :replace_with => '#{url}/\1' },
       :redmine => {
@@ -32,11 +34,11 @@ module GitCommitNotifier
       :bugzilla => { :search_for => /\bBUG\s*(\d+)/i, :replace_with => '#{url}/show_bug.cgi?id=\1' },
       :fogbugz => { :search_for => /\bbugzid:\s*(\d+)/i, :replace_with => '#{url}\1' }
     }.freeze
+    # Maximum email line length in characters.
     MAX_LINE_LENGTH = 512
-    MAX_COMMITS_PER_ACTION = 10000
-    HANDLED_COMMITS_FILE = 'previously.txt'.freeze
-    NEW_HANDLED_COMMITS_FILE = 'previously_new.txt'.freeze
+    # Relative location of Git repository configuration.
     GIT_CONFIG_FILE = File.join('.git', 'config').freeze
+    # Number of seconds per day.
     SECS_PER_DAY = 24 * 60 * 60
 
     attr_accessor :file_prefix, :current_file_name
