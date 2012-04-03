@@ -11,8 +11,8 @@ class GitCommitNotifier::Emailer
   # Instance variable names
   PARAMETERS = %w[project_path recipient from_address from_alias date subject text_message html_message repo_name ref_name old_rev new_rev].freeze
 
-  # Gets config
-  # @return [Hash] configuration
+  # Gets config.
+  # @return [Hash] Configuration
   # @note Helper that represents class method in instance scope.
   # @see GitCommitNotifier::Emailer.config
   def config
@@ -32,7 +32,7 @@ class GitCommitNotifier::Emailer
 
     # Resets compiled template.
     # @note Useful for tests.
-    # @return nil
+    # @return [NilClass] nil
     def reset_template
       @template = nil
     end
@@ -63,7 +63,7 @@ class GitCommitNotifier::Emailer
 
     # Resets CSS stylesheet source.
     # @note Useful for tests.
-    # @return nil
+    # @return [NilClass] nil
     def reset_stylesheet
       @stylesheet = nil
     end
@@ -96,7 +96,7 @@ class GitCommitNotifier::Emailer
   # Gets stylesheet string.
   # @note This is helper to provide data from class context.
   # @see GitCommitNotifier::Emailer.stylesheet
-    # @return [String] Stylesheet source code.
+  # @return [String] Stylesheet source code.
   def stylesheet_string
     GitCommitNotifier::Emailer.stylesheet
   end
@@ -111,7 +111,7 @@ class GitCommitNotifier::Emailer
   end
 
   # Performs email delivery in debug mode (to STDOUT).
-  # @return nil
+  # @return [NilClass] nil
   def perform_delivery_debug(content)
     content.each do |line|
       puts line
@@ -120,7 +120,7 @@ class GitCommitNotifier::Emailer
   end
 
   # Performs email delivery through SMTP.
-  # @return nil
+  # @return [NilClass] nil
   def perform_delivery_smtp(content, smtp_settings)
     settings = { }
     %w(address port domain user_name password authentication enable_tls).each do |key|
@@ -149,7 +149,7 @@ class GitCommitNotifier::Emailer
   end
 
   # Performs email delivery through Sendmail.
-  # @return nil
+  # @return [NilClass] nil
   def perform_delivery_sendmail(content, options = nil)
     sendmail_settings = {
       'location' => "/usr/sbin/sendmail",
@@ -166,7 +166,7 @@ class GitCommitNotifier::Emailer
   end
 
   # Performs email delivery through NNTP.
-  # @return nil
+  # @return [NilClass] nil
   def perform_delivery_nntp(content, nntp_settings)
     require 'nntp'
     Net::NNTP.start(nntp_settings['address'], nntp_settings['port']) do |nntp|
@@ -176,7 +176,7 @@ class GitCommitNotifier::Emailer
   end
 
   # Creates email message and sends it using configured delivery method.
-  # @return nil
+  # @return [NilClass] nil
   def send
     to_tag = config['delivery_method'] == 'nntp' ? 'Newsgroups' : 'To'
     quoted_from_alias = !@from_alias.nil? ? quote_if_necessary("#{@from_alias}",'utf-8') : nil
@@ -303,4 +303,6 @@ class GitCommitNotifier::Emailer
       text
   end
 end
+
+
 

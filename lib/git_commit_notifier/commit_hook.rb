@@ -10,11 +10,12 @@ module GitCommitNotifier
 
     class << self
       # Configuration that read from YAML file.
+      # @return [Hash] Configuration.
       attr_reader :config
 
       # Prints error message to $stderr.
       # @param [String] message Message to be printed to $stderr.
-      # @return nil
+      # @return [NilClass] nil
       def show_error(message)
         $stderr.puts "************** GIT NOTIFIER PROBLEM *******************"
         $stderr.puts "\n"
@@ -26,7 +27,7 @@ module GitCommitNotifier
 
       # Prints informational message to $stdout.
       # @param [String] message Message to be printed to $stdout.
-      # @return nil
+      # @return [NilClass] nil
       def info(message)
         $stdout.puts message
         $stdout.flush

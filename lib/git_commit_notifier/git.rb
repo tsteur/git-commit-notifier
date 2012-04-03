@@ -10,7 +10,7 @@ class GitCommitNotifier::Git
     # @raise [ArgumentError] when command exits with nonzero status.
     def from_shell(cmd)
       r = `#{cmd}`
-      raise ArgumentError.new("#{cmd} failed") unless $?.exitstatus.zero?
+      raise ArgumentError.new("#{cmd} failed")  unless $?.exitstatus.zero?
       r.force_encoding(Encoding::UTF_8) if r.respond_to?(:force_encoding)
       r
     end
@@ -134,16 +134,23 @@ class GitCommitNotifier::Git
       eval(hash_script)
     end
 
+    # Gets repository name.
+    # @note Tries to gets human readable repository name through `git config hooks.emailprefix` call.
+    #       If it's not specified then returns directory name (except '.git' suffix if exists).
+    # @return [String] Human readable repository name.
     def repo_name
       git_prefix = begin
         from_shell("git config hooks.emailprefix").strip
       rescue ArgumentError
         ''
       end
-      return git_prefix unless git_prefix.empty?
+      return git_prefix  unless git_prefix.empty?
       File.expand_path(git_dir).split("/").last.sub(/\.git$/, '')
     end
 
+    # Gets mailing list address.
+    # @note mailing list address retrieved through `git config hooks.mailinglist` call.
+    # @return [String] Mailing list address if exists; otherwise nil.
     def mailing_list_address
       from_shell("git config hooks.mailinglist").strip
     rescue ArgumentError
