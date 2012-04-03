@@ -36,8 +36,6 @@ module GitCommitNotifier
     }.freeze
     # Maximum email line length in characters.
     MAX_LINE_LENGTH = 512
-    # Relative location of Git repository configuration.
-    GIT_CONFIG_FILE = File.join('.git', 'config').freeze
     # Number of seconds per day.
     SECS_PER_DAY = 24 * 60 * 60
 
