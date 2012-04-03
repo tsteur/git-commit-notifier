@@ -5,7 +5,7 @@ require 'set'
 # Git methods
 class GitCommitNotifier::Git
   class << self
-    # Runs specified command.
+    # Runs specified command and gets its output.
     # @return (String) Shell command STDOUT (forced to UTF-8)
     # @raise [ArgumentError] when command exits with nonzero status.
     def from_shell(cmd)
@@ -15,7 +15,18 @@ class GitCommitNotifier::Git
       r
     end
 
-    # runs `git show`
+    # Runs specified command and gets its output as array of lines.
+    # @return (Enumerable(String)) Shell command STDOUT (forced to UTF-8) as enumerable lines.
+    # @raise [ArgumentError] when command exits with nonzero status.
+    # @see from_shell
+    def lines_from_shell(cmd)
+      lines = from_shell(cmd)
+      # Ruby 1.9 tweak.
+      lines = lines.lines  if lines.respond_to?(:lines)
+      lines
+    end
+
+    # Runs `git show`
     # @note uses "--pretty=fuller" option.
     # @return [String] Its output
     # @see from_shell
@@ -26,31 +37,27 @@ class GitCommitNotifier::Git
       gitopt = " --date=rfc2822"
       gitopt += " --pretty=fuller"
       gitopt += " -w" if opts[:ignore_whitespaces]
-      data = from_shell("git show #{rev.strip}#{gitopt}")
-      data
+      from_shell("git show #{rev.strip}#{gitopt}")
     end
 
-    # runs `git log`
+    # Runs `git log`
     # @note uses "--pretty=fuller" option.
     # @return [String] Its output
     # @see from_shell
     # @param [String] rev1 First revision
     # @param [String] rev2 Second revision
     def log(rev1, rev2)
-      data = from_shell("git log --pretty=fuller #{rev1}..#{rev2}").strip
-      data
+      from_shell("git log --pretty=fuller #{rev1}..#{rev2}").strip
     end
 
-    # runs `git log` and extract filenames only
+    # Runs `git log` and extract filenames only
     # @note uses "--pretty=fuller" and "--name-status" options.
     # @return [Array(String)] File names
-    # @see from_shell
+    # @see lines_from_shell
     # @param [String] rev1 First revision
     # @param [String] rev2 Second revision
     def changed_files(rev1, rev2)
-      output = ""
-      lines = from_shell("git log #{rev1}..#{rev2} --name-status --pretty=oneline")
-      lines = lines.lines if lines.respond_to?(:lines)
+      lines = lines_from_shell("git log #{rev1}..#{rev2} --name-status --pretty=oneline")
       lines = lines.select {|line| line =~ /^\w{1}\s+\w+/} # grep out only filenames
       lines.uniq
     end
@@ -59,18 +66,16 @@ class GitCommitNotifier::Git
       args = branch_heads - [ branch_head(treeish) ]
       args.map! { |tree| "^#{tree}" }
       args << treeish
-      lines = from_shell("git rev-list #{args.join(' ')}")
-      lines = lines.lines if lines.respond_to?(:lines)
+      lines = lines_from_shell("git rev-list #{args.join(' ')}")
       lines.to_a.map { |commit| commit.chomp }
     end
 
     def branch_heads
-      lines = from_shell("git rev-parse --branches")
-      lines = lines.lines if lines.respond_to?(:lines)
+      lines = lines_from_shell("git rev-parse --branches")
       lines.to_a.map { |head| head.chomp }
     end
 
-    def git_dir()
+    def git_dir
       from_shell("git rev-parse --git-dir").strip
     end
 
@@ -85,7 +90,6 @@ class GitCommitNotifier::Git
     def new_commits(oldrev, newrev, refname, unique_to_current_branch)
       # We want to get the set of commits (^B1 ^B2 ... ^oldrev newrev)
       # Where B1, B2, ..., are any other branch
-
       s = Set.new
 
       # If we want to include only those commits that are
@@ -93,8 +97,8 @@ class GitCommitNotifier::Git
       # other branches
       if unique_to_current_branch
         # Make a set of all branches, not'd (^BCURRENT ^B1 ^B2...)
-        not_branches = from_shell("git rev-parse --not --branches")
-        s.merge(not_branches.lines.map {|l| l.chomp}.to_set)
+        not_branches = lines_from_shell("git rev-parse --not --branches")
+        s.merge(not_branches.to_a.map { |l| l.chomp }.to_set)
 
         # Remove the current branch (^BCURRENT) from the set
         current_branch = rev_parse(refname)
@@ -102,7 +106,7 @@ class GitCommitNotifier::Git
       end
 
       # Add not'd oldrev (^oldrev)
-      s.add("^#{oldrev}") unless oldrev =~ /^0+$/
+      s.add("^#{oldrev}")  unless oldrev =~ /^0+$/
 
       # Add newrev
       s.add(newrev)
@@ -110,8 +114,8 @@ class GitCommitNotifier::Git
       # We should now have ^B1... ^oldrev newrev
 
       # Get all the commits that match that specification
-      lines = from_shell("git rev-list --reverse #{s.to_a.join(' ')}")
-      commits = lines.lines.map {|l| l.chomp}
+      lines = lines_from_shell("git rev-list --reverse #{s.to_a.join(' ')}")
+      commits = lines.to_a.map { |l| l.chomp }
     end
 
     def rev_type(rev)
