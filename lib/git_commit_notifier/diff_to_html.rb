@@ -461,26 +461,26 @@ module GitCommitNotifier
       end
     end
 
+    # Commit to link mapping.
+    COMMIT_LINK_MAP = {
+      :gitweb    => lambda { |config, commit| "<a href='#{config['gitweb']['path']}?p=#{config['gitweb']['project'] || "#{Git.repo_name}.git"};a=commitdiff;h=#{commit}'>#{commit}</a>" },
+      :gitorious => lambda { |config, commit| "<a href='#{config['gitorious']['path']}/#{config['gitorious']['project']}/#{config['gitorious']['repository']}/commit/#{commit}'>#{commit}</a>" },
+      :trac      => lambda { |config, commit| "<a href='#{config['trac']['path']}/#{commit}'>#{commit}</a>" },
+      :cgit      => lambda { |config, commit| "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/commit/?id=#{commit}'>#{commit}</a>" },
+      :gitlabhq  => lambda { |config, commit| "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/commits/#{commit}'>#{commit}</a>" },
+      :redmine   => lambda { |config, commit| "<a href='#{config['redmine']['path']}/projects/#{config['redmine']['project'] || Git.repo_name}/repository/revisions/#{commit}'>#{commit}</a>" },
+      :default   => lambda { |config, commit| commit.to_s }
+    }.freeze
+
+    # Gets HTML markup for specified commit.
+    # @param [String] commit Unique identifier of commit.
+    # @return [String] HTML markup for specified commit.
+    # @see COMMIT_LINK_MAP
     def markup_commit_for_html(commit)
-      commit = if config["link_files"]
-        if config["link_files"] == "gitweb" && config["gitweb"]
-          "<a href='#{config['gitweb']['path']}?p=#{config['gitweb']['project'] || "#{Git.repo_name}.git"};a=commitdiff;h=#{commit}'>#{commit}</a>"
-        elsif config["link_files"] == "gitorious" && config["gitorious"]
-          "<a href='#{config['gitorious']['path']}/#{config['gitorious']['project']}/#{config['gitorious']['repository']}/commit/#{commit}'>#{commit}</a>"
-        elsif config["link_files"] == "trac" && config["trac"]
-          "<a href='#{config['trac']['path']}/#{commit}'>#{commit}</a>"
-        elsif config["link_files"] == "cgit" && config["cgit"]
-          "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/commit/?id=#{commit}'>#{commit}</a>"
-        elsif config["link_files"] == "gitlabhq" && config["gitlabhq"]
-          "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/commits/#{commit}'>#{commit}</a>"
-        elsif config["link_files"] == "redmine" && config["redmine"]
-          "<a href='#{config['redmine']['path']}/projects/#{config['redmine']['project'] || Git.repo_name}/repository/revisions/#{commit}'>#{commit}</a>"
-        else
-          "#{commit}"
-        end
-      else
-        "#{commit}"
-      end
+      mode = (config["link_files"] || "default").to_sym
+      mode = :default  unless config.has_key?(mode)
+      mode = :default  unless COMMIT_LINK_MAP.has_key?(mode)
+      COMMIT_LINK_MAP[mode].call(config, commit)
     end
 
     def diff_for_commit(commit)
