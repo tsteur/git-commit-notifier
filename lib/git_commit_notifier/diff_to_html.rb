@@ -55,11 +55,13 @@ module GitCommitNotifier
       matches[1..2].map { |m| m.split(',')[0].to_i }
     end
 
+    # Gets HTML class for specified diff line data.
+    # @param [Hash] line Diff line data
     def line_class(line)
       case line[:op]
-      when :removal  then ' class="r"'
-      when :addition then ' class="a"'
-      else                ''
+      when :removal;  ' class="r"'
+      when :addition; ' class="a"'
+      else            ''
       end
     end
 
@@ -70,20 +72,29 @@ module GitCommitNotifier
       end
     end
 
+    # Gets lines_per_diff setting from {#config}.
     def lines_per_diff
       @config['lines_per_diff']
     end
 
+    # Gets ignore_whitespace setting from {#config}.
+    # @return [Boolean] true if whitespaces should be ignored in diff; otherwise false.
     def ignore_whitespaces?
       @config['ignore_whitespace'].nil? || @config['ignore_whitespace']
     end
 
+    # Adds separator between diff blocks to @diff_result.
+    # @return [NilClass] nil
     def add_separator
       @diff_result << '<tr class="sep"><td class="sep" colspan="3" title="Unchanged content skipped between diff. blocks">&hellip;</td></tr>'
+      nil
     end
 
+    # Adds notification to @diff_result about skipping of diff tail due to its large size.
+    # @return [NilClass] nil
     def add_skip_notification
       @diff_result << '<tr><td colspan="3">Diff too large and stripped&hellip;</td></tr>'
+      nil
     end
 
     def add_line_to_result(line, escape)
@@ -127,6 +138,9 @@ module GitCommitNotifier
       result
     end
 
+    # Gets array of tokens from specified str.
+    # @param [String] str Text to be splitted into tokens.
+    # @return [Array(String)] Array of tokens.
     def tokenize_string(str)
       # tokenize by non-word characters
       tokens = []
@@ -183,6 +197,8 @@ module GitCommitNotifier
       "<h2>#{header}</h2>\n"
     end
 
+    # Determines are two lines are sequentially placed in diff (no skipped lines between).
+    # @return [Boolean] true if lines are sequential; otherwise false.
     def lines_are_sequential?(first, second)
       result = false
       [:added, :removed].each do |side|
@@ -698,7 +714,7 @@ module GitCommitNotifier
     end
 
     def do_message_integration(message)
-      return message unless config['message_integration'].respond_to?(:each_pair)
+      return message  unless config['message_integration'].respond_to?(:each_pair)
       config['message_integration'].each_pair do |pm, url|
         pm_def = DiffToHtml::INTEGRATION_MAP[pm.to_sym] or next
         search_for = pm_def[:search_for]
@@ -711,7 +727,7 @@ module GitCommitNotifier
     end
 
     def do_message_map(message)
-      return message unless config['message_map'].respond_to?(:each_pair)
+      return message  unless config['message_map'].respond_to?(:each_pair)
       config['message_map'].each_pair do |search_for, replace_with|
         message_replace!(message, Regexp.new(search_for), replace_with)
       end
