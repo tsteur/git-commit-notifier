@@ -2,11 +2,11 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>
   File: README
   
-    &mdash; 'git-commit-notifier 0.11.0
+    &mdash; 'git-commit-notifier 0.11.2
 '
   
 </title>
@@ -71,16 +71,16 @@ as the author, project and branch name. </p>
 
 <p>For example:</p>
 
-<pre class="code">[rails][branch] Fix Brasilia timezone. [#1180 state:resolved]
-</pre>
+<pre class="code ruby"><code>[rails][branch] Fix Brasilia timezone. [#1180 state:resolved]
+</code></pre>
 
 <p>A reply-to header is added containing the author of the commit. This makes 
 follow up really simple. If multiple commits are pushed at once, emails are 
 numbered in chronological order:</p>
 
-<pre class="code">[rails][branch][0] Added deprecated warning messages to Float#months and Float#years deprications.
+<pre class="code ruby"><code>[rails][branch][0] Added deprecated warning messages to Float#months and Float#years deprications.
 [rails][branch][1] Enhance testing for fractional days and weeks. Update changelog.
-</pre>
+</code></pre>
 
 <p>Example email:</p>
 
@@ -101,15 +101,15 @@ numbered in chronological order:</p>
 
 <p>Install the gem:</p>
 
-<pre class="code bash">gem install git-commit-notifier
-</pre>
+<pre class="code bash"><code>gem install git-commit-notifier
+</code></pre>
 
 <p>After you installed the gem, you need to configure your git repository. Add a file called 
 &quot;post-receive&quot; to the &quot;hooks&quot; directory of your git repository with this content:</p>
 
-<pre class="code bash">#!/bin/sh
+<pre class="code bash"><code>#!/bin/sh
 git-commit-notifier path_to_config.yml
-</pre>
+</code></pre>
 
 <p>(Don't forget to make that file executable.)</p>
 
@@ -117,9 +117,9 @@ git-commit-notifier path_to_config.yml
 
 <p>If you want to send mails on each commit instead on each push, you should add a file called &quot;post-commit&quot; with this content:</p>
 
-<pre class="code bash">#!/bin/sh
+<pre class="code bash"><code>#!/bin/sh
 echo &quot;HEAD^1 HEAD refs/heads/master&quot; | git-commit-notifier path_to_config.yml
-</pre>
+</code></pre>
 
 <h2>Integration with Redmine, Bugzilla, MediaWiki</h2>
 
@@ -140,8 +140,8 @@ Every matched group (that defined by round brackets in regular expression) will 
 
 <p>For example, when we need to expand &quot;follow 23&quot; to <a href="http://example.com/answer/23">http://example.com/answer/23</a>, simply type this:</p>
 
-<pre class="code yaml">  '\bfollow\s+(\d+)': 'http://example.com/answer/\1'
-</pre>
+<pre class="code yaml"><code>  '\bfollow\s+(\d+)': 'http://example.com/answer/\1'
+</code></pre>
 
 <p>Key and value are each enclosed in single quotes. \b means that &quot;follow&quot; must not be preceded by other word chars, so &quot;befollow&quot; will not match but &quot;be follow&quot; will match. After &quot;follow&quot; we expect one or more spaces followed by group of one or more digits. The \1 in the result url will be replaced with the matched group.</p>
 
@@ -180,9 +180,9 @@ future version unintentionally.</li>
 </div></div>
     
     <div id="footer">
-  Generated on Mon Dec 19 18:40:41 2011 by 
+  Generated on Mon Apr 16 19:38:29 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.3).
+  0.7.5 (ruby-1.8.7).
 </div>
 
   </body>

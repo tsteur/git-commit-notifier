@@ -6,7 +6,7 @@
 <title>
   Module: GitCommitNotifier::EscapeHelper
   
-    &mdash; 'git-commit-notifier 0.11.0
+    &mdash; 'git-commit-notifier 0.11.2
 '
   
 </title>
@@ -82,6 +82,18 @@
 </dl>
 <div class="clear"></div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>Provides content escaping helpers.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+
 
 
 
@@ -98,7 +110,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#escape_content-instance_method" title="#escape_content (instance method)">- (Object) <strong>escape_content</strong>(s) </a>
+      <a href="#escape_content-instance_method" title="#escape_content (instance method)">- (String) <strong>escape_content</strong>(s) </a>
     
 
     
@@ -111,7 +123,8 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>Escapes expanded content using CGI.escapeHTML and <span class='object_link'><a href="#expand_tabs-instance_method" title="GitCommitNotifier::EscapeHelper#expand_tabs (method)">#expand_tabs</a></span>.</p>
+</div></span>
   
 </li>
 
@@ -119,7 +132,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#expand_tabs-instance_method" title="#expand_tabs (instance method)">- (Object) <strong>expand_tabs</strong>(s, tabWidth) </a>
+      <a href="#expand_tabs-instance_method" title="#expand_tabs (instance method)">- (String) <strong>expand_tabs</strong>(s, tabWidth) </a>
     
 
     
@@ -132,7 +145,8 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>Expand tabs into spaces.</p>
+</div></span>
   
 </li>
 
@@ -149,25 +163,78 @@
       <div class="method_details first">
   <p class="signature first" id="escape_content-instance_method">
   
-    - (<tt>Object</tt>) <strong>escape_content</strong>(s) 
+    - (<tt>String</tt>) <strong>escape_content</strong>(s) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Escapes expanded content using CGI.escapeHTML and <span class='object_link'><a href="#expand_tabs-instance_method" title="GitCommitNotifier::EscapeHelper#expand_tabs (method)">#expand_tabs</a></span>.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>s</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Text to be expanded and extended.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Escaped and expanded text.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+  <h3>See Also:</h3>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#expand_tabs-instance_method" title="GitCommitNotifier::EscapeHelper#expand_tabs (method)">#expand_tabs</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-14
-15
-16</pre>
+23
+24
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/escape_helper.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/escape_helper.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_escape_content'>escape_content</span><span class='lparen'>(</span><span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_expand_tabs'>expand_tabs</span><span class='lparen'>(</span><span class='const'>CGI</span><span class='period'>.</span><span class='id identifier rubyid_escapeHTML'>escapeHTML</span><span class='lparen'>(</span><span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='int'>4</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&amp;nbsp;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='const'>CGI</span><span class='period'>.</span><span class='id identifier rubyid_escapeHTML'>escapeHTML</span><span class='lparen'>(</span><span class='id identifier rubyid_expand_tabs'>expand_tabs</span><span class='lparen'>(</span><span class='id identifier rubyid_s'>s</span><span class='comma'>,</span> <span class='int'>4</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&amp;nbsp;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -177,27 +244,88 @@
       <div class="method_details ">
   <p class="signature " id="expand_tabs-instance_method">
   
-    - (<tt>Object</tt>) <strong>expand_tabs</strong>(s, tabWidth) 
+    - (<tt>String</tt>) <strong>expand_tabs</strong>(s, tabWidth) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Expand tabs into spaces.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>s</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Text to be expanded.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>tabWidth</span>
+      
+      
+        <span class='type'>(<tt>FixNum</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>One tab indentation (in count of spaces).</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Expanded text.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-5
-6
-7
-8
-9
 10
 11
-12</pre>
+12
+13
+14
+15
+16
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/escape_helper.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/escape_helper.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_expand_tabs'>expand_tabs</span><span class='lparen'>(</span><span class='id identifier rubyid_s'>s</span><span class='comma'>,</span> <span class='id identifier rubyid_tabWidth'>tabWidth</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delta'>delta</span> <span class='op'>=</span> <span class='int'>0</span>
@@ -217,9 +345,9 @@
 </div>
     
     <div id="footer">
-  Generated on Mon Dec 19 18:40:42 2011 by 
+  Generated on Mon Apr 16 19:38:31 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.3).
+  0.7.5 (ruby-1.8.7).
 </div>
 
   </body>
