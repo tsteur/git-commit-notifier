@@ -739,3 +739,4 @@ module GitCommitNotifier
     end
   end
 end
+

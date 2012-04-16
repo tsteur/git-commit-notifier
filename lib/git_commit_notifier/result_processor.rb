@@ -4,19 +4,21 @@ require 'cgi'
 require 'git_commit_notifier/escape_helper'
 
 module GitCommitNotifier
+  # Processes diff result
+  # input (loaded in @diff) is an array having Hash elements:
+  # { :action => action, :token => string }
+  # action can be :discard_a, :discard_b or :match
+  # output: two formatted html strings, one for the removals and one for the additions
   class ResultProcessor
     include EscapeHelper
-    # input (loaded in @diff) is an array having Hash elements:
-    # { :action => action, :token => string }
-    # action can be :discard_a, :discard_b or :match
-
-    # output: two formatted html strings, one for the removals and one for the additions
 
     def results
       close_tags # close last tag
       [array_of_lines(@result[:removal]), array_of_lines(@result[:addition])]
     end
 
+    # Gets length of tokenized diff in characters.
+    # @return [FixNum] Length of the tokenized diff in characters.
     def length_in_chars(diff)
       diff.inject(0) do |length, s|
         token = s[:token]

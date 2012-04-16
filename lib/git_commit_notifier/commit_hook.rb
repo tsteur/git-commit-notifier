@@ -6,6 +6,7 @@ require 'net/smtp'
 require 'digest/sha1'
 
 module GitCommitNotifier
+  # Represents Git commit hook handler.
   class CommitHook
 
     class << self
@@ -39,6 +40,9 @@ module GitCommitNotifier
         @logger ||= Logger.new(config)
       end
 
+      # Gets list of branches from {config} to include into notifications.
+      # @note All branches will be notified about if returned list is nil; otherwise only specified branches will be notifified about.
+      # @return [Array(String), NilClass] Array of branches to include into notifications or nil.
       def include_branches
         include_branches = config["include_branches"]
         unless include_branches.nil?
@@ -50,10 +54,19 @@ module GitCommitNotifier
         include_branches
       end
 
-      def merge_commit?(result)
-        ! result[:commit_info][:merge].nil?
+      # Is merge commit?
+      # @param [Hash] commit_info Information about commit.
+      def merge_commit?(commit_info)
+        ! commit_info[:commit_info][:merge].nil?
       end
 
+      # Runs comit hook handler using specified arguments.
+      # @param [String] config_name Path to the application configuration file in YAML format.
+      # @param [String] rev1 First specified revision.
+      # @param [String] rev2 Second specified revision.
+      # @param [String] ref_name Git reference (usually in "refs/heads/branch" format).
+      # @return [NilClass] nil
+      # @see config
       def run(config_name, rev1, rev2, ref_name)
 
         # Load the configuration
@@ -95,7 +108,7 @@ module GitCommitNotifier
 
         unless include_branches.nil? || include_branches.include?(branch_name)
           info("Supressing mail for branch #{branch_name}...")
-          return
+          return nil
         end
 
         # Replacements for subject template
@@ -207,11 +220,16 @@ module GitCommitNotifier
             commit_number += 1
           end
         end
+        nil
       end
 
+      # Gets human readable commit number.
+      # @param [Fixnum] i Commit index.
+      # @return [String] Human readable commit number.
       def number(i)
         "[#{i + 1}]"
       end
     end
   end
 end
+
