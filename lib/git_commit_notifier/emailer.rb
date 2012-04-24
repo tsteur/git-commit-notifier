@@ -304,5 +304,3 @@ class GitCommitNotifier::Emailer
   end
 end
 
-
-

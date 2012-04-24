@@ -143,12 +143,6 @@ module GitCommitNotifier
           diffresult = diff2html.result
           diff2html.clear_result
 
-          if config["ignore_merge"]
-            diffresult.reject! do |result|
-              merge_commit?(result)
-            end
-          end
-
           text, html = [], []
           result = diffresult.first
           return if result.nil? || !result[:commit_info]
@@ -187,19 +181,17 @@ module GitCommitNotifier
           emailer.send
         else
           commit_number = 1
-          diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name) do |result|
-            next  if config["ignore_merge"] && merge_commit?(result)
-
+          diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name) do |count, result|
             # Form the subject from template
             revised_subject_words = subject_words.merge({
               :commit_id => result[:commit_info][:commit],
               :message => result[:commit_info][:message],
               :commit_number => commit_number,
-              :commit_count => 1,
-              :commit_count_phrase => "1 commit",
-              :commit_count_phrase2 => ""
+              :commit_count => count,
+              :commit_count_phrase => count == 1 ? "1 commit" : "#{count} commits",
+              :commit_count_phrase2 => count == 1 ? "" : "#{count} commits: "
             })
-            subject_template = config['subject'] || "[${prefix}${slash_branch_name}][${commit_number}] ${message}"
+            subject_template = config['subject'] || "[${prefix}${slash_branch_name}][${commit_number}/${commit_count}] ${message}"
             subject = subject_template.gsub(/\$\{(\w+)\}/) { |m| revised_subject_words[$1.intern] }
 
             emailer = Emailer.new(config,
@@ -225,9 +217,10 @@ module GitCommitNotifier
 
       # Gets human readable commit number.
       # @param [Fixnum] i Commit index.
+      # @param [Fixnum] n Commits count.
       # @return [String] Human readable commit number.
-      def number(i)
-        "[#{i + 1}]"
+      def number(i, n)
+        "[#{i + 1}/#{n}]"
       end
     end
   end

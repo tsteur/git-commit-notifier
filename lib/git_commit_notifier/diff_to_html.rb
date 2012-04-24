@@ -73,14 +73,20 @@ module GitCommitNotifier
     end
 
     # Gets lines_per_diff setting from {#config}.
+    # @return [Fixnum, NilClass] Limes per diff limit.
     def lines_per_diff
-      @config['lines_per_diff']
+      config['lines_per_diff']
+    end
+
+    # Gets ignore_merge setting from {#config}.
+    def ignore_merge?
+      config['ignore_merge']
     end
 
     # Gets ignore_whitespace setting from {#config}.
     # @return [Boolean] true if whitespaces should be ignored in diff; otherwise false.
     def ignore_whitespaces?
-      @config['ignore_whitespace'].nil? || @config['ignore_whitespace']
+      config['ignore_whitespace'].nil? || config['ignore_whitespace']
     end
 
     # Adds separator between diff blocks to @diff_result.
@@ -697,8 +703,13 @@ module GitCommitNotifier
         puts "Unknown change type #{ref_name},#{@rev_type}"
       end
 
+      # Remove merge commits if required
+      if ignore_merge?
+        @result.reject! { |commit| merge_commit?(commit[:commit_info]) }
+      end
+
       # If a block was given, pass it the results, in turn
-      @result.each { |result| yield result }  if block_given?
+      @result.each { |commit| yield @result.size, commit }  if block_given?
     end
 
     def message_replace!(message, search_for, replace_with)
