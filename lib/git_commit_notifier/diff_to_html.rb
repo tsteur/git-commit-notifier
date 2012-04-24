@@ -73,7 +73,7 @@ module GitCommitNotifier
     end
 
     # Gets lines_per_diff setting from {#config}.
-    # @return [Fixnum, NilClass] Limes per diff limit.
+    # @return [Fixnum, NilClass] Lines per diff limit.
     def lines_per_diff
       config['lines_per_diff']
     end
