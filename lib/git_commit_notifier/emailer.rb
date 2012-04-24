@@ -242,10 +242,10 @@ class GitCommitNotifier::Emailer
   # can result in the MTA breaking lines at inconvenient points,
   # such as in the middle of UTF8 characters.
   def encode_quoted_printable_message(text)
-    StringIO.open("", "w") do |output|
-      # Character encoding of output string can be plain US-ASCII since quoted-printable is plain ASCII
-      output.string.force_encoding("ASCII-8BIT") if output.string.respond_to?(:force_encoding)
-
+    str = ''
+    # Character encoding of output string can be plain US-ASCII since quoted-printable is plain ASCII
+    str.force_encoding("US-ASCII")  if str.respond_to?(:force_encoding)
+    StringIO.open(str, "w") do |output|
       line_max = 76
       line_len = 0
 

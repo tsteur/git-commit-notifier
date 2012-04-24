@@ -428,10 +428,10 @@ module GitCommitNotifier
     end
 
     def truncate_long_lines(text)
-      StringIO.open("", "w") do |output|
-        # Match encoding of output string to that of input string
-        output.string.force_encoding(text.encoding) if output.string.respond_to?(:force_encoding)
-
+      str = ""
+      # Match encoding of output string to that of input string
+      str.force_encoding(text.encoding)  if str.respond_to?(:force_encoding)
+      StringIO.open(str, "w") do |output|
         input = StringIO.new(text, "r")
         input.each_line "\n" do |line|
           if line.length > MAX_LINE_LENGTH && MAX_LINE_LENGTH >= 9
@@ -442,7 +442,7 @@ module GitCommitNotifier
             # characters, so deal specially with that case
             # so that we don't truncate in the middle of a UTF8 sequence,
             # which would be invalid.
-            if !line.respond_to?(:force_encoding)
+            unless line.respond_to?(:force_encoding)
               # If the last remaining character is part of a UTF8 multibyte character,
               # keep truncating until we go past the start of a UTF8 character.
               # This assumes that this is a UTF8 string, which may be a false assumption
