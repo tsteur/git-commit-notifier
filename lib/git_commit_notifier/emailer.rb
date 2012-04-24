@@ -244,7 +244,7 @@ class GitCommitNotifier::Emailer
   def encode_quoted_printable_message(text)
     StringIO.open("", "w") do |output|
       # Character encoding of output string can be plain US-ASCII since quoted-printable is plain ASCII
-      output.string.force_encoding("US-ASCII") if output.string.respond_to?(:force_encoding)
+      output.string.force_encoding("ASCII-8BIT") if output.string.respond_to?(:force_encoding)
 
       line_max = 76
       line_len = 0
