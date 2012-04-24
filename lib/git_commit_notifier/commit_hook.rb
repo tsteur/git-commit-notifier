@@ -214,14 +214,6 @@ module GitCommitNotifier
         end
         nil
       end
-
-      # Gets human readable commit number.
-      # @param [Fixnum] i Commit index.
-      # @param [Fixnum] n Commits count.
-      # @return [String] Human readable commit number.
-      def number(i, n)
-        "[#{i + 1}/#{n}]"
-      end
     end
   end
 end
