@@ -34,8 +34,8 @@ describe GitCommitNotifier::Git do
 
   describe :describe do
     it "should strip given description" do
-      expected = 'some description\n'
-      mock(GitCommitNotifier::Git).from_shell("git describe --always #{SAMPLE_REV}") { expected }
+      expected = 'some descriptio'
+      mock(GitCommitNotifier::Git).from_shell("git describe --always #{SAMPLE_REV}") { "#{expected}\n" }
       GitCommitNotifier::Git.describe(SAMPLE_REV).should == expected
     end
   end
