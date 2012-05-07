@@ -60,6 +60,21 @@ module GitCommitNotifier
         ! commit_info[:commit_info][:merge].nil?
       end
 
+      # Gets message subject.
+      # @param [Hash] commit_info Commit info.
+      # @param [String] template Subject template.
+      # @param [Hash] subject_map Map of subject substitutions.
+      # @return [String] Message subject.
+      def get_subject(commit_info, template, subject_map)
+        template.gsub(/\$\{(\w+)\}/) do |m|
+          res = subject_map[$1.intern]
+          if res.kind_of?(Proc)
+            res = res.call(commit_info)
+          end
+          res
+        end
+      end
+
       # Runs comit hook handler using specified arguments.
       # @param [String] config_name Path to the application configuration file in YAML format.
       # @param [String] rev1 First specified revision.
@@ -164,13 +179,7 @@ module GitCommitNotifier
             :commit_count_phrase2 => diffresult.size == 1 ? "" : "#{diffresult.size} commits: "
           })
           subject_template = config['subject'] || "[${prefix}${slash_branch_name}] ${commit_count_phrase2}${message}"
-          subject = subject_template.gsub(/\$\{(\w+)\}/) do |m|
-            res = revised_subject_words[$1.intern]
-            if res.kind_of?(Proc)
-              res = res.call(result[:commit_info])
-            end
-            res
-          end
+          subject = get_subject(result[:commit_info], subject_template, revised_subject_words)
 
           emailer = Emailer.new(config,
             :project_path => project_path,
@@ -200,13 +209,7 @@ module GitCommitNotifier
               :commit_count_phrase2 => count == 1 ? "" : "#{count} commits: "
             })
             subject_template = config['subject'] || "[${prefix}${slash_branch_name}][${commit_number}/${commit_count}] ${message}"
-            subject = subject_template.gsub(/\$\{(\w+)\}/) do |m|
-              res = revised_subject_words[$1.intern]
-              if res.kind_of?(Proc)
-                res = res.call(result[:commit_info])
-              end
-              res
-            end
+            subject = get_subject(result[:commit_info], subject_template, revised_subject_words)
 
             emailer = Emailer.new(config,
               :project_path => project_path,
