@@ -129,7 +129,7 @@ module GitCommitNotifier
           :branch_name => branch_name,
           :slash_branch_name => slash_branch_name,
           :commit_id => nil,
-          :description => nil,
+          :description => lambda { |commit_info| Git.describe(commit_info[:commit]) },
           :message => nil,
           :commit_number => nil,
           :commit_count => nil,
@@ -158,14 +158,19 @@ module GitCommitNotifier
           revised_subject_words = subject_words.merge({
             :commit_id => result[:commit_info][:commit],
             :message => result[:commit_info][:message],
-            :description => result[:commit_info][:description],
             :commit_number => 1,
             :commit_count => diffresult.size,
             :commit_count_phrase => diffresult.size == 1 ? "1 commit" : "#{diffresult.size} commits",
             :commit_count_phrase2 => diffresult.size == 1 ? "" : "#{diffresult.size} commits: "
           })
           subject_template = config['subject'] || "[${prefix}${slash_branch_name}] ${commit_count_phrase2}${message}"
-          subject = subject_template.gsub(/\$\{(\w+)\}/) { |m| revised_subject_words[$1.intern] }
+          subject = subject_template.gsub(/\$\{(\w+)\}/) do |m|
+            res = revised_subject_words[$1.intern]
+            if res.kind_of?(Proc)
+              res = res.call(result[:commit_info])
+            end
+            res
+          end
 
           emailer = Emailer.new(config,
             :project_path => project_path,
@@ -189,14 +194,19 @@ module GitCommitNotifier
             revised_subject_words = subject_words.merge({
               :commit_id => result[:commit_info][:commit],
               :message => result[:commit_info][:message],
-              :description => result[:commit_info][:description],
               :commit_number => commit_number,
               :commit_count => count,
               :commit_count_phrase => count == 1 ? "1 commit" : "#{count} commits",
               :commit_count_phrase2 => count == 1 ? "" : "#{count} commits: "
             })
             subject_template = config['subject'] || "[${prefix}${slash_branch_name}][${commit_number}/${commit_count}] ${message}"
-            subject = subject_template.gsub(/\$\{(\w+)\}/) { |m| revised_subject_words[$1.intern] }
+            subject = subject_template.gsub(/\$\{(\w+)\}/) do |m|
+              res = revised_subject_words[$1.intern]
+              if res.kind_of?(Proc)
+                res = res.call(result[:commit_info])
+              end
+              res
+            end
 
             emailer = Emailer.new(config,
               :project_path => project_path,
@@ -221,4 +231,3 @@ module GitCommitNotifier
     end
   end
 end
-

@@ -356,24 +356,33 @@ module GitCommitNotifier
     end
 
     def extract_commit_info_from_git_show_output(content)
-      result = { :message => [], :commit => '', :author => '', :date => '', :email => '',
-      :committer => '', :commit_date => '', :committer_email => ''}
+      result = {
+        :message => [],
+        :commit => '',
+        :author => '',
+        :date => '',
+        :email => '',
+        :committer => '',
+        :commit_date => '',
+        :committer_email => ''
+      }
 
       message = []
       content.split("\n").each do |line|
-        if line =~ /^diff/ # end of commit info
-          break
-        elsif line =~ /^commit /
+        break  if line =~ /^diff/ # end of commit info
+
+        case line
+        when /^commit /
           result[:commit] = line[7..-1]
-        elsif line =~ /^Author:/
+        when /^Author:/
           result[:author], result[:email] = author_name_and_email(line[12..-1])
-        elsif line =~ /^AuthorDate:/
+        when /^AuthorDate:/
           result[:date] = line[12..-1]
-        elsif line =~ /^Commit:/
+        when /^Commit:/
           result[:committer], result[:commit_email] = author_name_and_email(line[12..-1])
-        elsif line =~ /^CommitDate:/
+        when /^CommitDate:/
           result[:commit_date] = line[12..-1]
-        elsif line =~ /^Merge:/
+        when /^Merge:/
           result[:merge] = line[7..-1]
         else
           message << line.strip
@@ -398,7 +407,7 @@ module GitCommitNotifier
 
     def author_name_and_email(info)
       # input string format: "autor name <author@email.net>"
-      return [$1, $2] if info =~ /^([^\<]+)\s+\<\s*(.*)\s*\>\s*$/ # normal operation
+      return [$1, $2]  if info =~ /^([^\<]+)\s+\<\s*(.*)\s*\>\s*$/ # normal operation
       # incomplete author info - return it as author name
       [info, '']
     end
@@ -535,8 +544,6 @@ module GitCommitNotifier
       html += "<br /><br />"
       commit_info[:message] = first_sentence(commit_info[:message])
 
-      # Append the 'git describe' information
-      commit_info[:description] = Git.describe(commit)
       {
         :commit_info  => commit_info,
         :html_content => html,
@@ -752,4 +759,3 @@ module GitCommitNotifier
     end
   end
 end
-
