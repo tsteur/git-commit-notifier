@@ -134,7 +134,17 @@ describe GitCommitNotifier::CommitHook do
       mock(GitCommitNotifier::CommitHook).config { { 'include_branches' => 'test, me, yourself'  } }
       GitCommitNotifier::CommitHook.include_branches.should == %w(test me yourself)
     end
+  end
 
+  describe :get_subject do
+    it "should run lambda if specified in mapping" do
+      mock(GitCommitNotifier::Git).describe("commit_id") { "yo" }
+      GitCommitNotifier::CommitHook.get_subject(
+        { :commit => "commit_id" },
+        "{description}",
+        { :description => lambda { |commit_info| GitCommitNotifier::Git.describe(commit_info[:commit]) } }
+      ).should == "yo"
+    end
   end
 
 end
