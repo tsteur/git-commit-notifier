@@ -141,7 +141,7 @@ describe GitCommitNotifier::CommitHook do
       mock(GitCommitNotifier::Git).describe("commit_id") { "yo" }
       GitCommitNotifier::CommitHook.get_subject(
         { :commit => "commit_id" },
-        "{description}",
+        "${description}",
         { :description => lambda { |commit_info| GitCommitNotifier::Git.describe(commit_info[:commit]) } }
       ).should == "yo"
     end
