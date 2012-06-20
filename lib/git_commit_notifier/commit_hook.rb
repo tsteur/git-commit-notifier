@@ -196,6 +196,16 @@ module GitCommitNotifier
             :repo_name => repo_name
           )
           emailer.send
+
+          # WEBHOOK patch
+          webhook = Webhook.new(config,
+            :subject => subject,
+            :old_rev => rev1,
+            :new_rev => rev2,
+            :ref_name => ref_name,
+            :repo_name => repo_name
+          )
+          webhook.send
         else
           commit_number = 1
           diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name) do |count, result|
@@ -226,6 +236,17 @@ module GitCommitNotifier
               :repo_name => repo_name
             )
             emailer.send
+
+            # WEBHOOK patch
+            webhook = Webhook.new(config,
+              :subject => subject,
+              :old_rev => rev1,
+              :new_rev => rev2,
+              :ref_name => ref_name,
+              :repo_name => repo_name
+            )
+            webhook.send
+
             commit_number += 1
           end
         end
