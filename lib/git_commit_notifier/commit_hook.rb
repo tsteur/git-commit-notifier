@@ -199,7 +199,10 @@ module GitCommitNotifier
 
           # WEBHOOK patch
           webhook = Webhook.new(config,
+            :commiter => result[:commit_info][:author],
+            :message => result[:commit_info][:message],
             :subject => subject,
+            :changed => Git.changed_files(rev1,rev2)
             :old_rev => rev1,
             :new_rev => rev2,
             :ref_name => ref_name,
@@ -239,7 +242,10 @@ module GitCommitNotifier
 
             # WEBHOOK patch
             webhook = Webhook.new(config,
+              :commiter => result[:commit_info][:author],
+              :message => result[:commit_info][:message],
               :subject => subject,
+              :changed => Git.changed_files(rev1,rev2)
               :old_rev => rev1,
               :new_rev => rev2,
               :ref_name => ref_name,
