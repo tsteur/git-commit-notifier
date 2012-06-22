@@ -175,8 +175,8 @@ show_master_branch_name: false
 ignore_whitespace: true
 
 # adding parameters to send webhooks
-webooks:
-  url: http://example.com:8081/commits
+# webooks:
+#  url: http://example.com:8081/commits
 
 # This is developer debugging options. Do not uncomment it if You aren't Jedi
 # debug:
