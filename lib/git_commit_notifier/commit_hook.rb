@@ -198,17 +198,19 @@ module GitCommitNotifier
           emailer.send
 
           # WEBHOOK patch
-          webhook = Webhook.new(config,
-            :commiter => result[:commit_info][:author],
-            :message => result[:commit_info][:message],
-            :subject => subject,
-            :changed => Git.changed_files(rev1,rev2)
-            :old_rev => rev1,
-            :new_rev => rev2,
-            :ref_name => ref_name,
-            :repo_name => repo_name
-          )
-          webhook.send
+          unless config['webook'].nil?
+            webhook = Webhook.new(config,
+              :commiter => result[:commit_info][:author],
+              :message => result[:commit_info][:message],
+              :subject => subject,
+              :changed => Git.changed_files(rev1,rev2).map { |o| o.gsub(/([MAD])\t/,"").gsub(/[\s\n]/,'') },
+              :old_rev => rev1,
+              :new_rev => rev2,
+              :ref_name => ref_name,
+              :repo_name => repo_name
+            )
+            webhook.send
+          end
         else
           commit_number = 1
           diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name) do |count, result|
@@ -241,17 +243,20 @@ module GitCommitNotifier
             emailer.send
 
             # WEBHOOK patch
-            webhook = Webhook.new(config,
-              :commiter => result[:commit_info][:author],
-              :message => result[:commit_info][:message],
-              :subject => subject,
-              :changed => Git.changed_files(rev1,rev2)
-              :old_rev => rev1,
-              :new_rev => rev2,
-              :ref_name => ref_name,
-              :repo_name => repo_name
-            )
-            webhook.send
+            unless config['webhook'].nil?
+              info repo_name.inspect
+              webhook = Webhook.new(config,
+                :commiter => result[:commit_info][:author],
+                :message => result[:commit_info][:message],
+                :subject => subject,
+                :changed => Git.split_status(Git.changed_files(rev1,rev2)),
+                :old_rev => rev1,
+                :new_rev => rev2,
+                :ref_name => ref_name,
+                :repo_name => repo_name
+              )
+              webhook.send
+            end
 
             commit_number += 1
           end
