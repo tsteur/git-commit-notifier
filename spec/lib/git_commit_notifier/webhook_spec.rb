@@ -37,7 +37,7 @@ describe GitCommitNotifier::Emailer do
       options[:changed] = { a: [], m: [], d: [] }
       options[:committer] = "tester"
       webhook = GitCommitNotifier::Webhook.new({}, options)
-      payload = JSON.parse(webhook.payload)
+      payload = Yajl::Parser.parse(webhook.payload)
       payload['commits'][0]['committer']['name'].should == "tester"
     end
   end
