@@ -34,7 +34,7 @@ describe GitCommitNotifier::Emailer do
       GitCommitNotifier::Webhook::PARAMETERS.each do |name|
         options[name.to_sym] = Faker::Lorem.sentence
       end
-      options[:changed] = { a: [], m: [], d: [] }
+      options[:changed] = { :a => [], :m => [], :d => [] }
       options[:committer] = "tester"
       webhook = GitCommitNotifier::Webhook.new({}, options)
       payload = Yajl::Parser.parse(webhook.payload)
