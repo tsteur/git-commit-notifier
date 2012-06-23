@@ -200,10 +200,11 @@ module GitCommitNotifier
           # WEBHOOK patch
           unless config['webook'].nil?
             webhook = Webhook.new(config,
-              :commiter => result[:commit_info][:author],
+              :committer => result[:commit_info][:author],
+              :email => result[:commit_info][:email],
               :message => result[:commit_info][:message],
               :subject => subject,
-              :changed => Git.changed_files(rev1,rev2).map { |o| o.gsub(/([MAD])\t/,"").gsub(/[\s\n]/,'') },
+              :changed => Git.split_status(rev1,rev2),
               :old_rev => rev1,
               :new_rev => rev2,
               :ref_name => ref_name,
@@ -244,12 +245,12 @@ module GitCommitNotifier
 
             # WEBHOOK patch
             unless config['webhook'].nil?
-              info repo_name.inspect
               webhook = Webhook.new(config,
-                :commiter => result[:commit_info][:author],
+                :committer => result[:commit_info][:author],
+                :email => result[:commit_info][:email],
                 :message => result[:commit_info][:message],
                 :subject => subject,
-                :changed => Git.split_status(Git.changed_files(rev1,rev2)),
+                :changed => Git.split_status(rev1,rev2),
                 :old_rev => rev1,
                 :new_rev => rev2,
                 :ref_name => ref_name,

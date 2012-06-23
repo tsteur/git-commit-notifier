@@ -72,7 +72,8 @@ class GitCommitNotifier::Git
     # @return [Hash(Array)] file names sorted by status
     # @see changed_files
     # @param [Array(String)] lines
-    def split_status(lines)
+    def split_status(rev1, rev2)
+      lines = changed_files(rev1, rev2)
       modified = lines.map { |l| l.gsub(/M\s/,'').strip if l[0,1] == 'M' }.select { |l| !l.nil? }
       added = lines.map { |l| l.gsub(/A\s/,'').strip if l[0,1] == 'A' }.select { |l| !l.nil? }
       deleted = lines.map { |l| l.gsub(/D\s/,'').strip if l[0,1] == 'D' }.select { |l| !l.nil? }
