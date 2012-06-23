@@ -7,11 +7,12 @@ require "net/http"
 
 class GitCommitNotifier::Webhook
 
+  PARAMETERS = %w(committer email message subject changed old_rev new_rev ref_name repo_name)
   attr_accessor :config
 
   def initialize(config, options = {})
     @config = config || {}
-    %w(committer email message subject changed old_rev new_rev ref_name repo_name).each do |name|
+    PARAMETERS.each do |name|
       instance_variable_set("@#{name}".to_sym, options[name.to_sym])
     end
   end
