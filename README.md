@@ -69,9 +69,12 @@ Git-commit-notifier supports easy integration with Redmine, Bugzilla and MediaWi
 * "refs #123" and "fixes #123" sentences in commit message will be replaced with link to issue in Redmine.
 * "[[SomePage]]" sentence in commit message will be replaced with link to page in MediaWiki.
 
-### Github-flavored Webhooks
+## Github-flavored Webhooks
 
 Git-commit-notifier can send a webhook just after sending a mail, This webook will be sent in a POST request to a server specified in the configuration (webhook / url), under JSON format following the same syntax as Github webhooks.
+
+* [Cogbot](https://github.com/mose/cogbot) is the irc bot for which that feature was originaly designed for. Only a subset of the Github json file was required for that one so maybe it won't work on all Github webhook recievers.
+* [Github webhooks](https://help.github.com/articles/post-receive-hooks) describes the json format expected and some hints on how to design a webhook reciever.
 
 ## Integration of links to other websites
 
