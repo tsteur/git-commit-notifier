@@ -77,7 +77,7 @@ class GitCommitNotifier::Git
       modified = lines.map { |l| l.gsub(/M\s/,'').strip if l[0,1] == 'M' }.select { |l| !l.nil? }
       added = lines.map { |l| l.gsub(/A\s/,'').strip if l[0,1] == 'A' }.select { |l| !l.nil? }
       deleted = lines.map { |l| l.gsub(/D\s/,'').strip if l[0,1] == 'D' }.select { |l| !l.nil? }
-      return { m: modified, a: added, d: deleted }
+      return { :m => modified, :a => added, :d => deleted }
     end
 
     def branch_commits(treeish)
