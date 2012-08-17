@@ -4,8 +4,8 @@
 
 __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)__
 
-Sends email commit messages splitting commits that were pushed in one step.
-Email is delivered as text or HTML with changes refined per word. Emails
+This gem sends email commit messages splitting commits that were pushed in one step.
+The Email is delivered as text or HTML with changes refined per word. Emails
 have a scannable subject containing the first sentence of the commit as well
 as the author, project and branch name.
 
