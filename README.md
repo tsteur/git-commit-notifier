@@ -52,7 +52,7 @@ git-commit-notifier path_to_config.yml
 
 (Don't forget to make that file executable.)
 
-An example for the config file can be found in [config/git-notifier-config.example.yml](http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.example.yml).
+An example for the config file can be found in [config/git-notifier-config.example.yml](http://github.com/git-commit-notifier/git-commit-notifier/blob/master/config/git-notifier-config.example.yml).
 
 If you want to send mails on each commit instead on each push, you should add a file called "post-commit" with this content:
 
@@ -106,7 +106,7 @@ old commits in processes of forking, branching etc.
 
 ## Note on Patches/Pull Requests
 
-* Fork [the project](https://github.com/bitboxer/git-commit-notifier).
+* Fork [the project](https://github.com/git-commit-notifier/git-commit-notifier).
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
   future version unintentionally.
