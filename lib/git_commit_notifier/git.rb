@@ -97,6 +97,10 @@ class GitCommitNotifier::Git
       from_shell("git rev-parse --git-dir").strip
     end
 
+    def toplevel_dir
+      from_shell("git rev-parse --show-toplevel").strip
+    end
+
     def rev_parse(param)
       from_shell("git rev-parse '#{param}'").strip
     end
@@ -167,7 +171,7 @@ class GitCommitNotifier::Git
         ''
       end
       return git_prefix  unless git_prefix.empty?
-      File.expand_path(git_dir).split("/").last.sub(/\.git$/, '')
+      File.expand_path(toplevel_dir).split("/").last.sub(/\.git$/, '')
     end
 
     # Gets mailing list address.
