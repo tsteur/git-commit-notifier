@@ -77,7 +77,8 @@ Git-commit-notifier can send a webhook just after sending a mail, This webook wi
 * [Github webhooks](https://help.github.com/articles/post-receive-hooks) describes the json format expected and some hints on how to design a webhook reciever.  Be sure to extract the 'ref' from the json.  For example,
 an example Sinatra server to use git-commit-notifier might look like:
 
-```require 'rubygems'
+```ruby
+require 'rubygems'
 require 'json'
 require 'sinatra'
 
@@ -90,11 +91,20 @@ post '/' do
     ref = push['ref']
     repo = push['repository']['name']
 
-    # Assume repository exists in directory and user has pull access
-    cd /repository/${repo}
-    git pull
-    system("echo #{before_id} #{after_id} #{ref} | /usr/local/bin/git-commit-notifier myconfig.yml")
+    system("/usr/local/bin/change-notify.sh #{repo} #{before_id} #{after_id} #{ref} #{config}")
+  end
 end
+```
+
+change-notify.sh might look like:
+
+```sh
+#!/bin/sh
+
+# Assume repository exists in directory and user has pull access
+cd /repository/${repo}
+git pull
+echo #{before_id} #{after_id} #{ref} | /usr/local/bin/git-commit-notifier myconfig.yml
 ```
 
 ## Integration of links to other websites
