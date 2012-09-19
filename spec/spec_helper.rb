@@ -11,15 +11,6 @@ if RUBY_VERSION >= '1.9'
   Encoding.default_internal = "utf-8"
 end
 
-# Faker ruby 1.8 compatibility issue #157
-unless Symbol.respond_to?(:downcase)
-  Symbol.class_eval do
-    def downcase
-      to_s.downcase.intern
-    end
-  end
-end
-
 require 'rubygems'
 require 'faker'
 require 'rspec/core'
