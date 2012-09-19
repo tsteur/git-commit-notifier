@@ -91,7 +91,7 @@ post '/' do
     ref = push['ref']
     repo = push['repository']['name']
 
-    system("/usr/local/bin/change-notify.sh #{repo} #{before_id} #{after_id} #{ref} #{config}")
+    system("/usr/local/bin/change-notify.sh #{repo} #{before_id} #{after_id} #{ref}")
   end
 end
 ```
@@ -101,10 +101,27 @@ change-notify.sh might look like:
 ```sh
 #!/bin/sh
 
+set -e
+
+EXPECTED_ARGS=5
+E_BADARGS=65
+
+if [ $# -ne $EXPECTED_ARGS ]
+then
+    echo "Usage: `basename $0` {repo} {before commit ID} {after commit ID} {ref} {config file}"
+    exit $E_BADARGS
+fi
+
+REPO=$1
+BEFORE=$2
+AFTER=$3
+REF=$4
+CONFIG=myconfig.yml
+
 # Assume repository exists in directory and user has pull access
 cd /repository/${repo}
 git pull
-echo #{before_id} #{after_id} #{ref} | /usr/local/bin/git-commit-notifier myconfig.yml
+echo $BEFORE $AFTER $REF | /usr/local/bin/git-commit-notifier $CONFIG
 ```
 
 ## Integration of links to other websites
