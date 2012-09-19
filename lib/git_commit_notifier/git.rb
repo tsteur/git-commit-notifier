@@ -171,7 +171,7 @@ class GitCommitNotifier::Git
         ''
       end
       return git_prefix  unless git_prefix.empty?
-      git_path = toplevel_dir.strip
+      git_path = toplevel_dir
       # In a bare repository, toplevel directory is empty.  Revert to git_dir instead.
       if git_path.empty?
         git_path = git_dir

@@ -82,7 +82,7 @@ describe GitCommitNotifier::Git do
 
     it "should return folder name if no emailprefix and toplevel dir and directory not ended with .git" do
       mock(GitCommitNotifier::Git).from_shell("git config hooks.emailprefix") { " " }
-      stub(GitCommitNotifier::Git).toplevel_dir { " " }
+      stub(GitCommitNotifier::Git).toplevel_dir { "" }
       stub(GitCommitNotifier::Git).git_dir { "/home/someuser/repositories/myrepo.git" }
       GitCommitNotifier::Git.repo_name.should == "myrepo"
     end
