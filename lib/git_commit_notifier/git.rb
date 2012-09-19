@@ -114,6 +114,10 @@ class GitCommitNotifier::Git
       # Where B1, B2, ..., are any other branch
       a = Array.new
 
+      # Zero revision comes in the form:
+      # "0000000000000000000000000000000000000000"
+      zero_rev = (oldrev =~ /^0+$/)
+
       # If we want to include only those commits that are
       # unique to this branch, then exclude commits that occur on
       # other branches
@@ -126,7 +130,6 @@ class GitCommitNotifier::Git
         # 0.  In this case, this is a new branch or an empty repository and we
         # will want to keep it excluded, otherwise we will process every
         # commit prior to the creation of this branch.  Fixes issue #159.
-        zero_rev = (oldrev =~ /^0+$/)
         if zero_rev.nil?
           current_branch = rev_parse(refname)
           a.delete_at a.index("^#{current_branch}") unless a.index("^#{current_branch}").nil?
@@ -134,7 +137,7 @@ class GitCommitNotifier::Git
       end
 
       # Add not'd oldrev (^oldrev)
-      a.push("^#{oldrev}")  unless oldrev =~ /^0+$/
+      a.push("^#{oldrev}")  unless zero_rev
 
       # Add newrev
       a.push(newrev)
