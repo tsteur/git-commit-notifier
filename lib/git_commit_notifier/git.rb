@@ -122,9 +122,15 @@ class GitCommitNotifier::Git
         not_branches = lines_from_shell("git rev-parse --not --branches")
         a = not_branches.map { |l| l.chomp }
 
-        # Remove the current branch (^BCURRENT) from the set
-        current_branch = rev_parse(refname)
-        a.delete_at a.index("^#{current_branch}") unless a.index("^#{current_branch}").nil?
+        # Remove the current branch (^BCURRENT) from the set, unless oldrev is
+        # 0.  In this case, this is a new branch or an empty repository and we
+        # will want to keep it excluded, otherwise we will process every
+        # commit prior to the creation of this branch.  Fixes issue #159.
+        zero_rev = (oldrev =~ /^0+$/)
+        if zero_rev.nil?
+          current_branch = rev_parse(refname)
+          a.delete_at a.index("^#{current_branch}") unless a.index("^#{current_branch}").nil?
+        end
       end
 
       # Add not'd oldrev (^oldrev)
