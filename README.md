@@ -86,10 +86,10 @@ post '/' do
   if params[:payload]
     push = JSON.parse(params[:payload])
 
+    repo = push['repository']['name']
     before_id = push['before']
     after_id = push['after']
     ref = push['ref']
-    repo = push['repository']['name']
 
     system("/usr/local/bin/change-notify.sh #{repo} #{before_id} #{after_id} #{ref}")
   end
@@ -103,12 +103,12 @@ change-notify.sh might look like:
 
 set -e
 
-EXPECTED_ARGS=5
+EXPECTED_ARGS=4
 E_BADARGS=65
 
 if [ $# -ne $EXPECTED_ARGS ]
 then
-    echo "Usage: `basename $0` {repo} {before commit ID} {after commit ID} {ref} {config file}"
+    echo "Usage: `basename $0` {repo} {before commit ID} {after commit ID} {ref}"
     exit $E_BADARGS
 fi
 
