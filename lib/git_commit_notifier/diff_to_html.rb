@@ -193,7 +193,7 @@ module GitCommitNotifier
         elsif config["link_files"] == "trac" && config["trac"]
           "<a href='#{config['trac']['path']}/#{@current_commit}/#{file_name}'>#{file_name}</a>"
         elsif config["link_files"] == "cgit" && config["cgit"]
-          "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/tree/#{file_name}'>#{file_name}</a>"
+          "<a href='#{config['cgit']['path']}/#{config['cgit']['project']}/tree/#{file_name}?h=#{branch_name}'>#{file_name}</a>"
         elsif config["link_files"] == "gitlabhq" && config["gitlabhq"]
           if config["gitlabhq"]["version"] && config["gitlabhq"]["version"] < 1.2
             "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/tree/#{@current_commit}/#{file_name}'>#{file_name}</a>"
