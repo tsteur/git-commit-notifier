@@ -94,7 +94,7 @@ module GitCommitNotifier
     def ignore_whitespace
       return 'all' if config['ignore_whitespace'].nil?
       return 'none' if !config['ignore_whitespace']
-      return (['all', 'change', 'none'].include?(config['ignore_whitespace']) ? config['ignore_whitespace'] : 'all')
+      (['all', 'change', 'none'].include?(config['ignore_whitespace']) ? config['ignore_whitespace'] : 'all')
     end
 
     # Adds separator between diff blocks to @diff_result.
@@ -200,8 +200,8 @@ module GitCommitNotifier
           if config["gitlabhq"]["version"] && config["gitlabhq"]["version"] < 1.2
             "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/tree/#{@current_commit}/#{file_name}'>#{file_name}</a>"
           elsif config["gitlabhq"]["version"] && config["gitlabhq"]["version"] >= 4.0
-			"<a href='#{config['gitlabhq']['path']}/#{Git.repo_name_with_parent.gsub(".", "_")}/commit/#{@current_commit}'>#{file_name}</a>"
-		  else
+            "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name_with_parent.gsub(".", "_")}/commit/#{@current_commit}'>#{file_name}</a>"
+          else
             "<a href='#{config['gitlabhq']['path']}/#{Git.repo_name.gsub(".", "_")}/#{@current_commit}/tree/#{file_name}'>#{file_name}</a>"
           end
         elsif config["link_files"] == "redmine" && config["redmine"]
