@@ -189,8 +189,9 @@ module GitCommitNotifier
       text = "#{op} #{binary}file #{file_name}"
 
       # TODO: these filenames, etc, should likely be properly html escaped
+      file_link = file_name
       if config['link_files']
-        file_name = if config["link_files"] == "gitweb" && config["gitweb"]
+        file_link = if config["link_files"] == "gitweb" && config["gitweb"]
           "<a href='#{config['gitweb']['path']}?p=#{config['gitweb']['project'] || "#{Git.repo_name}.git"};f=#{file_name};h=#{@current_sha};hb=#{@current_commit}'>#{file_name}</a>"
         elsif config["link_files"] == "gitorious" && config["gitorious"]
           "<a href='#{config['gitorious']['path']}/#{config['gitorious']['project']}/#{config['gitorious']['repository']}/blobs/#{branch_name}/#{file_name}'>#{file_name}</a>"
@@ -213,17 +214,14 @@ module GitCommitNotifier
         end
       end
 
-      header = "#{op} #{binary}file #{file_name}"
-
       if show_summary?
         @file_changes << {
           :file_name => file_name, 
-          :html => header,
           :text => text,
         }
       end
 
-      "<h2 id=\"#{file_name}\">#{header}</h2>\n"
+      "<a name=\"#{file_name}\"></a><h2>#{op} #{binary}file #{file_link}</h2>\n"
     end
 
     # Determines are two lines are sequentially placed in diff (no skipped lines between).
@@ -567,7 +565,7 @@ module GitCommitNotifier
         title += "<ul>"
 
         @file_changes.each do |change|
-          title += "<li><a href=\"\##{change[:file_name]}\">#{change[:html]}</a></li>"
+          title += "<li><a href=\"\##{change[:file_name]}\">#{change[:text]}</a></li>"
           text += "#{change[:text]}\n"
         end
 
