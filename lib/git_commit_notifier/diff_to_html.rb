@@ -186,6 +186,8 @@ module GitCommitNotifier
 
       file_name = @current_file_name
 
+      text = "#{op} #{binary}file #{file_name}"
+
       # TODO: these filenames, etc, should likely be properly html escaped
       if config['link_files']
         file_name = if config["link_files"] == "gitweb" && config["gitweb"]
@@ -214,7 +216,11 @@ module GitCommitNotifier
       header = "#{op} #{binary}file #{file_name}"
 
       if show_summary?
-        @file_changes << [ file_name, header ]
+        @file_changes << {
+          :file_name => file_name, 
+          :html => header,
+          :text => text,
+        }
       end
 
       "<h2 id=\"#{file_name}\">#{header}</h2>\n"
@@ -557,12 +563,12 @@ module GitCommitNotifier
       html_diff = diff_for_revision(extract_diff_from_git_show_output(raw_diff))
       message_array = message_array_as_html(changed_files.split("\n"))
 
-      if show_summary? and @file_changes.respond_to?("each")
+      if show_summary?
         title += "<ul>"
 
-        @file_changes.each do |file_name, header|
-          title += "<li><a href=\"\##{file_name}\">#{header}</a></li>"
-          text += "#{header}\n"
+        @file_changes.each do |change|
+          title += "<li><a href=\"\##{change[:file_name]}\">#{change[:html]}</a></li>"
+          text += "#{change[:text]}\n"
         end
 
         title += "</ul>"
