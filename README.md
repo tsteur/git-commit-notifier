@@ -1,6 +1,6 @@
 # Git Commit Notifier
 
-[![Build Status](http://travis-ci.org/git-commit-notifier/git-commit-notifier.png)](http://travis-ci.org/git-commit-notifier/git-commit-notifier)
+[![Build Status](//travis-ci.org/git-commit-notifier/git-commit-notifier.png)](//travis-ci.org/git-commit-notifier/git-commit-notifier)
 
 __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)__
 
@@ -150,6 +150,25 @@ you should receive new message about commit when it's merged in other branch.
 
 Yet another option, skip\_commits\_older\_than (in days), should be used to not inform about
 old commits in processes of forking, branching etc.
+
+## Note on development
+
+It's easy to fork and clone our repository.
+
+Next step is installation of required dependencies:
+
+```bash
+cd $GCN_REPO
+bundle install
+rake # Run specs
+```
+
+Now you can create test configuration file (example provided in `config` directory) and test your code over any test repository in this manner:
+
+```bash
+cd $TEST_REPO
+echo "HEAD^1 HEAD refs/heads/master" | $GCN_REPO/local-run.rb $PATH_TO_YAML_CONFIG
+```
 
 ## Note on Patches/Pull Requests
 
