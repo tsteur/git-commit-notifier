@@ -1,6 +1,6 @@
 # Git Commit Notifier
 
-[![Build Status](//travis-ci.org/git-commit-notifier/git-commit-notifier.png)](//travis-ci.org/git-commit-notifier/git-commit-notifier)
+[![Build Status](https://travis-ci.org/git-commit-notifier/git-commit-notifier.png)](https://travis-ci.org/git-commit-notifier/git-commit-notifier)
 
 __by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)__
 
