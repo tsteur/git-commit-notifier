@@ -192,11 +192,9 @@ module GitCommitNotifier
 
       file_name = @current_file_name
 
-      text = "#{op} #{binary}file #{file_name}"
-
       # TODO: these filenames, etc, should likely be properly html escaped
       file_link = file_name
-      if config['link_files']
+      if config['link_files'] && !@file_removed
         file_link = if config["link_files"] == "gitweb" && config["gitweb"]
           "<a href='#{config['gitweb']['path']}?p=#{config['gitweb']['project'] || "#{Git.repo_name}.git"};f=#{file_name};h=#{@current_sha};hb=#{@current_commit}'>#{file_name}</a>"
         elsif config["link_files"] == "gitorious" && config["gitorious"]
@@ -223,7 +221,7 @@ module GitCommitNotifier
       if show_summary?
         @file_changes << {
           :file_name => file_name, 
-          :text => text,
+          :text => "#{op} #{binary}file #{file_name}",
         }
       end
 
