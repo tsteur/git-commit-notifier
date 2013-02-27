@@ -4,6 +4,11 @@ require 'diff/lcs'
 require 'digest/sha1'
 require 'time'
 
+unless String.method_defined?(:encode!)
+  require 'iconv'
+  ic = Iconv.new('UTF-8', 'UTF-8//IGNORE')
+end
+
 require 'git_commit_notifier/escape_helper'
 
 module GitCommitNotifier
@@ -523,6 +528,15 @@ module GitCommitNotifier
       @current_commit = commit
       raw_diff = truncate_long_lines(Git.show(commit, :ignore_whitespace => ignore_whitespace))
       raise "git show output is empty" if raw_diff.empty?
+
+      if raw_diff.respond_to?(:encode!)
+        unless raw_diff.valid_encoding?
+          raw_diff.encode!("UTF-16", "UTF-8", :invalid => :replace, :undef => :replace)
+          raw_diff.encode!("UTF-8", "UTF-16")
+        end
+      else
+        raw_diff = ic.iconv(raw_diff)
+      end
 
       commit_info = extract_commit_info_from_git_show_output(raw_diff)
       return nil  if old_commit?(commit_info)
