@@ -72,13 +72,14 @@ class GitCommitNotifier::Git
     # splits the output of changed_files
     # @return [Hash(Array)] file names sorted by status
     # @see changed_files
-    # @param [Array(String)] lines
+    # @param [String] rev1 First revision
+    # @param [String] rev2 Second revision
     def split_status(rev1, rev2)
       lines = changed_files(rev1, rev2)
       modified = lines.map { |l| l.gsub(/M\s/,'').strip if l[0,1] == 'M' }.select { |l| !l.nil? }
       added = lines.map { |l| l.gsub(/A\s/,'').strip if l[0,1] == 'A' }.select { |l| !l.nil? }
       deleted = lines.map { |l| l.gsub(/D\s/,'').strip if l[0,1] == 'D' }.select { |l| !l.nil? }
-      return { :m => modified, :a => added, :d => deleted }
+      { :m => modified, :a => added, :d => deleted }
     end
 
     def branch_commits(treeish)
@@ -138,7 +139,7 @@ class GitCommitNotifier::Git
 
       # Get all the commits that match that specification
       lines = lines_from_shell("git rev-list --reverse #{a.join(' ')}")
-      commits = lines.to_a.map { |l| l.chomp }
+      lines.to_a.map { |l| l.chomp }
     end
 
     def rev_type(rev)
