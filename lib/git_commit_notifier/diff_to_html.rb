@@ -4,17 +4,14 @@ require 'diff/lcs'
 require 'digest/sha1'
 require 'time'
 
-unless String.method_defined?(:encode!)
-  require 'iconv'
-  ic = Iconv.new('UTF-8', 'UTF-8//IGNORE')
-end
-
 require 'git_commit_notifier/escape_helper'
 
 module GitCommitNotifier
   # Translates Git diff to HTML format
   class DiffToHtml
     include EscapeHelper
+
+
 
     # Integration map for commit message keywords to third-party links.
     INTEGRATION_MAP = {
@@ -54,6 +51,10 @@ module GitCommitNotifier
       @file_removed = false
       @file_changes = []
       @binary = false
+      unless String.method_defined?(:encode!)
+        require 'iconv'
+        @ic = Iconv.new('UTF-8', 'UTF-8//IGNORE')
+      end
     end
 
     def range_info(range)
@@ -535,7 +536,7 @@ module GitCommitNotifier
           raw_diff.encode!("UTF-8", "UTF-16")
         end
       else
-        raw_diff = ic.iconv(raw_diff)
+        raw_diff = @ic.iconv(raw_diff)
       end
 
       commit_info = extract_commit_info_from_git_show_output(raw_diff)
