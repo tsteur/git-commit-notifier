@@ -2,11 +2,11 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>
   File: README
   
-    &mdash; 'git-commit-notifier 0.11.2
+    &mdash; 'git-commit-notifier 0.11.9
 '
   
 </title>
@@ -16,9 +16,11 @@
   <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
   relpath = '';
-  if (relpath != '') relpath += '/';
+  framesUrl = "frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
 
@@ -27,55 +29,59 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="_index.html" title="Index">Index</a> &raquo; 
+    <a href="_index.html">Index</a> &raquo; 
     <span class="title">File: README</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><div id='filecontents'><h1>Git Commit Notifier</h1>
 
-<p><a href="http://travis-ci.org/bitboxer/git-commit-notifier"><img src="http://travis-ci.org/bitboxer/git-commit-notifier.png" alt="Build Status">
-</a></p>
+<p><a href="https://travis-ci.org/git-commit-notifier/git-commit-notifier"><img src="https://travis-ci.org/git-commit-notifier/git-commit-notifier.png" alt="Build Status"></a></p>
 
-<p><strong>by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)</strong></p>
+<p><strong>by Bodo Tasche (bodo &#39;at&#39; wannawork &#39;dot&#39; de), Akzhan Abdulin (akzhan &#39;dot&#39; abdulin &#39;at&#39; gmail &#39;dot&#39; com), Csoma Zoltan  (info &#39;at&#39; railsprogrammer &#39;dot&#39; net)</strong></p>
 
-<p>Sends email commit messages splitting commits that were pushed in one step. 
-Email is delivered as text or HTML with changes refined per word. Emails 
-have a scannable subject containing the first sentence of the commit as well 
-as the author, project and branch name. </p>
+<p>This gem sends email commit messages splitting commits that were pushed in one step.
+The Email is delivered as text or HTML with changes refined per word. Emails
+have a scannable subject containing the first sentence of the commit as well
+as the author, project and branch name.</p>
 
-<p>It's also possible to send a mail to a newsgroup using NNTP.</p>
+<p>It&#39;s also possible to send a mail to a newsgroup using NNTP.</p>
 
 <p>For example:</p>
 
 <pre class="code ruby"><code>[rails][branch] Fix Brasilia timezone. [#1180 state:resolved]
 </code></pre>
 
-<p>A reply-to header is added containing the author of the commit. This makes 
-follow up really simple. If multiple commits are pushed at once, emails are 
+<p>A reply-to header is added containing the author of the commit. This makes
+follow up really simple. If multiple commits are pushed at once, emails are
 numbered in chronological order:</p>
 
 <pre class="code ruby"><code>[rails][branch][0] Added deprecated warning messages to Float#months and Float#years deprications.
@@ -84,8 +90,7 @@ numbered in chronological order:</p>
 
 <p>Example email:</p>
 
-<p><img src="http://img171.imageshack.us/img171/954/gitcommitnotifieremailpq3.png" alt="Example" title="Example">
-</p>
+<p><img src="http://img171.imageshack.us/img171/954/gitcommitnotifieremailpq3.png" alt="Example" title="Example"></p>
 
 <h2>Requirements</h2>
 
@@ -104,16 +109,16 @@ numbered in chronological order:</p>
 <pre class="code bash"><code>gem install git-commit-notifier
 </code></pre>
 
-<p>After you installed the gem, you need to configure your git repository. Add a file called 
+<p>After you installed the gem, you need to configure your git repository. Add a file called
 &quot;post-receive&quot; to the &quot;hooks&quot; directory of your git repository with this content:</p>
 
 <pre class="code bash"><code>#!/bin/sh
 git-commit-notifier path_to_config.yml
 </code></pre>
 
-<p>(Don't forget to make that file executable.)</p>
+<p>(Don&#39;t forget to make that file executable.)</p>
 
-<p>An example for the config file can be found in <a href="http://github.com/bitboxer/git-commit-notifier/blob/master/config/git-notifier-config.example.yml">config/git-notifier-config.example.yml</a>.</p>
+<p>An example for the config file can be found in <a href="http://github.com/git-commit-notifier/git-commit-notifier/blob/master/config/git-notifier-config.example.yml">config/git-notifier-config.example.yml</a>.</p>
 
 <p>If you want to send mails on each commit instead on each push, you should add a file called &quot;post-commit&quot; with this content:</p>
 
@@ -130,6 +135,60 @@ echo &quot;HEAD^1 HEAD refs/heads/master&quot; | git-commit-notifier path_to_con
 <li>&quot;refs #123&quot; and &quot;fixes #123&quot; sentences in commit message will be replaced with link to issue in Redmine.</li>
 <li>&quot;[[SomePage]]&quot; sentence in commit message will be replaced with link to page in MediaWiki.</li>
 </ul>
+
+<h2>Github-flavored Webhooks</h2>
+
+<p>Git-commit-notifier can send a webhook just after sending a mail, This webook will be sent in a POST request to a server specified in the configuration (webhook / url), under JSON format following the same syntax as Github webhooks.</p>
+
+<ul>
+<li><a href="https://github.com/mose/cogbot">Cogbot</a> is the irc bot for which that feature was originaly designed for. Only a subset of the Github json file was required for that one so maybe it won&#39;t work on all Github webhook recievers.</li>
+<li><a href="https://help.github.com/articles/post-receive-hooks">Github webhooks</a> describes the json format expected and some hints on how to design a webhook reciever.  Be sure to extract the &#39;ref&#39; from the json.  An example Sinatra server to use git-commit-notifier might look like:</li>
+</ul>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>rubygems</span><span class='tstring_end'>'</span></span>
+<span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>json</span><span class='tstring_end'>'</span></span>
+<span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>sinatra</span><span class='tstring_end'>'</span></span>
+
+<span class='id identifier rubyid_post'>post</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/</span><span class='tstring_end'>'</span></span> <span class='kw'>do</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:payload</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_push'>push</span> <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:payload</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+    <span class='id identifier rubyid_repo'>repo</span> <span class='op'>=</span> <span class='id identifier rubyid_push'>push</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>repository</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_before_id'>before_id</span> <span class='op'>=</span> <span class='id identifier rubyid_push'>push</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>before</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_after_id'>after_id</span> <span class='op'>=</span> <span class='id identifier rubyid_push'>push</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>after</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_ref'>ref</span> <span class='op'>=</span> <span class='id identifier rubyid_push'>push</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ref</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+
+    <span class='id identifier rubyid_system'>system</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/usr/local/bin/change-notify.sh </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_repo'>repo</span><span class='rbrace'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_before_id'>before_id</span><span class='rbrace'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_after_id'>after_id</span><span class='rbrace'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ref'>ref</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
+<p>change-notify.sh might look like:</p>
+
+<pre class="code sh"><code>#!/bin/sh
+
+set -e
+
+EXPECTED_ARGS=4
+E_BADARGS=65
+
+if [ $# -ne $EXPECTED_ARGS ]
+then
+    echo &quot;Usage: `basename $0` {repo} {before commit ID} {after commit ID} {ref}&quot;
+    exit $E_BADARGS
+fi
+
+REPO=$1
+BEFORE=$2
+AFTER=$3
+REF=$4
+CONFIG=myconfig.yml
+
+# Assume repository exists in directory and user has pull access
+cd /repository/$REPO
+git pull
+echo $BEFORE $AFTER $REF | /usr/local/bin/git-commit-notifier $CONFIG
+</code></pre>
 
 <h2>Integration of links to other websites</h2>
 
@@ -152,18 +211,35 @@ Every matched group (that defined by round brackets in regular expression) will 
 <p>By default all commits are tracked through the whole repository so after a merge
 you should not receive messages about those commits already posted in other branches.</p>
 
-<p>This behaviour can be changed using unique_commits_per_branch option. When it's true,
-you should receive new message about commit when it's merged in other branch.</p>
+<p>This behaviour can be changed using unique_commits_per_branch option. When it&#39;s true,
+you should receive new message about commit when it&#39;s merged in other branch.</p>
 
 <p>Yet another option, skip_commits_older_than (in days), should be used to not inform about
 old commits in processes of forking, branching etc.</p>
 
+<h2>Note on development</h2>
+
+<p>It&#39;s easy to fork and clone our repository.</p>
+
+<p>Next step is installation of required dependencies:</p>
+
+<pre class="code bash"><code>cd $GCN_REPO
+bundle install
+rake # Run specs
+</code></pre>
+
+<p>Now you can create test configuration file (example provided in <code>config</code> directory) and test your code over any test repository in this manner:</p>
+
+<pre class="code bash"><code>cd $TEST_REPO
+echo &quot;HEAD^1 HEAD refs/heads/master&quot; | $GCN_REPO/local-run.rb $PATH_TO_YAML_CONFIG
+</code></pre>
+
 <h2>Note on Patches/Pull Requests</h2>
 
 <ul>
-<li>Fork <a href="https://github.com/bitboxer/git-commit-notifier">the project</a>.</li>
+<li>Fork <a href="https://github.com/git-commit-notifier/git-commit-notifier">the project</a>.</li>
 <li>Make your feature addition or bug fix.</li>
-<li>Add tests for it. This is important so I don't break it in a
+<li>Add tests for it. This is important so I don&#39;t break it in a
 future version unintentionally.</li>
 <li>Commit, do not mess with rakefile, version, or history.
 (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)</li>
@@ -178,11 +254,11 @@ future version unintentionally.</li>
 
 <p>MIT License, see the <a href="file.LICENSE.html" title="LICENSE">LICENSE</a>.</p>
 </div></div>
-    
+
     <div id="footer">
-  Generated on Mon Apr 16 19:38:29 2012 by 
+  Generated on Wed Feb 27 14:41:25 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.5 (ruby-1.8.7).
+  0.8.2.1 (ruby-1.9.3).
 </div>
 
   </body>

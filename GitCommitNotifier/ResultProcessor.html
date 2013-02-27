@@ -6,7 +6,7 @@
 <title>
   Class: GitCommitNotifier::ResultProcessor
   
-    &mdash; 'git-commit-notifier 0.11.2
+    &mdash; 'git-commit-notifier 0.11.9
 '
   
 </title>
@@ -16,9 +16,11 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../';
+  framesUrl = "../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
 
@@ -27,36 +29,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../_index.html">Index (R)</a> &raquo; 
+    <a href="../_index.html">Index (R)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../GitCommitNotifier.html" title="GitCommitNotifier (module)">GitCommitNotifier</a></span></span>
      &raquo; 
     <span class="title">ResultProcessor</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: GitCommitNotifier::ResultProcessor
   
   
@@ -102,7 +109,7 @@
     <p>Processes diff result
 input (loaded in @diff) is an array having Hash elements:
 { :action =&gt; action, :token =&gt; string }
-action can be :discard_a, :discard_b or :match
+action can be :discard<em>a, :discard</em>b or :match
 output: two formatted html strings, one for the removals and one for the additions</p>
 
 
@@ -140,6 +147,7 @@ output: two formatted html strings, one for the removals and one for the additio
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>Gets length of tokenized diff in characters.</p>
@@ -156,6 +164,7 @@ output: two formatted html strings, one for the removals and one for the additio
 
     
   </span>
+  
   
   
   
@@ -180,22 +189,25 @@ output: two formatted html strings, one for the removals and one for the additio
   
   
   
+  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="EscapeHelper.html" title="GitCommitNotifier::EscapeHelper (module)">EscapeHelper</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="EscapeHelper.html#escape_content-instance_method" title="GitCommitNotifier::EscapeHelper#escape_content (method)">#escape_content</a></span>, <span class='object_link'><a href="EscapeHelper.html#expand_tabs-instance_method" title="GitCommitNotifier::EscapeHelper#expand_tabs (method)">#expand_tabs</a></span></p>
 
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="length_in_chars-instance_method">
+  <h3 class="signature first" id="length_in_chars-instance_method">
   
     - (<tt>FixNum</tt>) <strong>length_in_chars</strong>(diff) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p>Gets length of tokenized diff in characters.</p>
 
@@ -204,7 +216,7 @@ output: two formatted html strings, one for the removals and one for the additio
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -252,13 +264,15 @@ output: two formatted html strings, one for the removals and one for the additio
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="results-instance_method">
+  <h3 class="signature " id="results-instance_method">
   
     - (<tt>Object</tt>) <strong>results</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -284,11 +298,11 @@ output: two formatted html strings, one for the removals and one for the additio
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Mon Apr 16 19:38:31 2012 by 
+  Generated on Wed Feb 27 14:41:26 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.5 (ruby-1.8.7).
+  0.8.2.1 (ruby-1.9.3).
 </div>
 
   </body>

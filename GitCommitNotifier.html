@@ -6,7 +6,7 @@
 <title>
   Module: GitCommitNotifier
   
-    &mdash; 'git-commit-notifier 0.11.2
+    &mdash; 'git-commit-notifier 0.11.9
 '
   
 </title>
@@ -16,9 +16,11 @@
   <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
   relpath = '';
-  if (relpath != '') relpath += '/';
+  framesUrl = "frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
 
@@ -27,36 +29,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="_index.html">Index (G)</a> &raquo; 
+    <a href="_index.html">Index (G)</a> &raquo;
     
     
     <span class="title">GitCommitNotifier</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Module: GitCommitNotifier
   
   
@@ -92,13 +99,13 @@
 
 </div><h2>Defined Under Namespace</h2>
 <p class="children">
-   
+  
     
       <strong class="modules">Modules:</strong> <span class='object_link'><a href="GitCommitNotifier/EscapeHelper.html" title="GitCommitNotifier::EscapeHelper (module)">EscapeHelper</a></span>
     
-   
+  
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="GitCommitNotifier/CommitHook.html" title="GitCommitNotifier::CommitHook (class)">CommitHook</a></span>, <span class='object_link'><a href="GitCommitNotifier/DiffCallback.html" title="GitCommitNotifier::DiffCallback (class)">DiffCallback</a></span>, <span class='object_link'><a href="GitCommitNotifier/DiffToHtml.html" title="GitCommitNotifier::DiffToHtml (class)">DiffToHtml</a></span>, <span class='object_link'><a href="GitCommitNotifier/Emailer.html" title="GitCommitNotifier::Emailer (class)">Emailer</a></span>, <span class='object_link'><a href="GitCommitNotifier/Executor.html" title="GitCommitNotifier::Executor (class)">Executor</a></span>, <span class='object_link'><a href="GitCommitNotifier/Git.html" title="GitCommitNotifier::Git (class)">Git</a></span>, <span class='object_link'><a href="GitCommitNotifier/Logger.html" title="GitCommitNotifier::Logger (class)">Logger</a></span>, <span class='object_link'><a href="GitCommitNotifier/ResultProcessor.html" title="GitCommitNotifier::ResultProcessor (class)">ResultProcessor</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="GitCommitNotifier/CommitHook.html" title="GitCommitNotifier::CommitHook (class)">CommitHook</a></span>, <span class='object_link'><a href="GitCommitNotifier/DiffCallback.html" title="GitCommitNotifier::DiffCallback (class)">DiffCallback</a></span>, <span class='object_link'><a href="GitCommitNotifier/DiffToHtml.html" title="GitCommitNotifier::DiffToHtml (class)">DiffToHtml</a></span>, <span class='object_link'><a href="GitCommitNotifier/Emailer.html" title="GitCommitNotifier::Emailer (class)">Emailer</a></span>, <span class='object_link'><a href="GitCommitNotifier/Executor.html" title="GitCommitNotifier::Executor (class)">Executor</a></span>, <span class='object_link'><a href="GitCommitNotifier/Git.html" title="GitCommitNotifier::Git (class)">Git</a></span>, <span class='object_link'><a href="GitCommitNotifier/Logger.html" title="GitCommitNotifier::Logger (class)">Logger</a></span>, <span class='object_link'><a href="GitCommitNotifier/ResultProcessor.html" title="GitCommitNotifier::ResultProcessor (class)">ResultProcessor</a></span>, <span class='object_link'><a href="GitCommitNotifier/Webhook.html" title="GitCommitNotifier::Webhook (class)">Webhook</a></span>
     
   
 </p>
@@ -112,11 +119,11 @@
 
 
 </div>
-    
+
     <div id="footer">
-  Generated on Mon Apr 16 19:38:31 2012 by 
+  Generated on Wed Feb 27 14:41:25 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.5 (ruby-1.8.7).
+  0.8.2.1 (ruby-1.9.3).
 </div>
 
   </body>

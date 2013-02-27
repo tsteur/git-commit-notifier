@@ -6,7 +6,7 @@
 <title>
   Class: GitCommitNotifier::CommitHook
   
-    &mdash; 'git-commit-notifier 0.11.2
+    &mdash; 'git-commit-notifier 0.11.9
 '
   
 </title>
@@ -16,9 +16,11 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../';
+  framesUrl = "../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
 
@@ -27,36 +29,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../_index.html">Index (C)</a> &raquo; 
+    <a href="../_index.html">Index (C)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../GitCommitNotifier.html" title="GitCommitNotifier (module)">GitCommitNotifier</a></span></span>
      &raquo; 
     <span class="title">CommitHook</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: GitCommitNotifier::CommitHook
   
   
@@ -120,7 +127,10 @@
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -151,6 +161,29 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#get_subject-class_method" title="get_subject (class method)">+ (String) <strong>get_subject</strong>(commit_info, template, subject_map) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Gets message subject.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#include_branches-class_method" title="include_branches (class method)">+ (Array(String), NilClass) <strong>include_branches</strong> </a>
     
 
@@ -162,9 +195,10 @@
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>Gets list of branches from <span class='object_link'><a href="#config-class_method" title="GitCommitNotifier::CommitHook.config (method)">config</a></span> to include into notifications.</p>
+    <span class="summary_desc"><div class='inline'><p>Gets list of branches from <span class='object_link'><a href="#config-class_method" title="GitCommitNotifier::CommitHook.config (method)">CommitHook.config</a></span> to include into notifications.</p>
 </div></span>
   
 </li>
@@ -178,6 +212,7 @@
 
     
   </span>
+  
   
   
   
@@ -206,6 +241,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>Gets logger.</p>
@@ -228,31 +264,10 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>Is merge commit?.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#number-class_method" title="number (class method)">+ (String) <strong>number</strong>(i) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Gets human readable commit number.</p>
 </div></span>
   
 </li>
@@ -266,6 +281,7 @@
 
     
   </span>
+  
   
   
   
@@ -294,6 +310,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>Prints error message to $stderr.</p>
@@ -311,15 +328,16 @@
     
       
       <span id=""></span>
-      <span id="config-class_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="config-class_method">
+  <h3 class="signature first" id="config-class_method">
   
     + (<tt>Hash</tt>) <strong>config</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p>Configuration that read from YAML file.</p>
 
@@ -328,7 +346,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -372,20 +390,140 @@
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="include_branches-class_method">
+  <h3 class="signature first" id="get_subject-class_method">
+  
+    + (<tt>String</tt>) <strong>get_subject</strong>(commit_info, template, subject_map) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Gets message subject.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>commit_info</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Commit info.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>template</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Subject template.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>subject_map</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Map of subject substitutions.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Message subject.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+68
+69
+70
+71
+72
+73
+74
+75
+76</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/commit_hook.rb', line 68</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_subject'>get_subject</span><span class='lparen'>(</span><span class='id identifier rubyid_commit_info'>commit_info</span><span class='comma'>,</span> <span class='id identifier rubyid_template'>template</span><span class='comma'>,</span> <span class='id identifier rubyid_subject_map'>subject_map</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_template'>template</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\$\{(\w+)\}</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_m'>m</span><span class='op'>|</span>
+    <span class='id identifier rubyid_res'>res</span> <span class='op'>=</span> <span class='id identifier rubyid_subject_map'>subject_map</span><span class='lbracket'>[</span><span class='backref'>$1</span><span class='period'>.</span><span class='id identifier rubyid_intern'>intern</span><span class='rbracket'>]</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_res'>res</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Proc</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_res'>res</span> <span class='op'>=</span> <span class='id identifier rubyid_res'>res</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_commit_info'>commit_info</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_res'>res</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="include_branches-class_method">
   
     + (<tt>Array(String)</tt>, <tt>NilClass</tt>) <strong>include_branches</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
   <div class="note notetag">
-    <strong>Note:</strong> 
+    <strong>Note:</strong>
     <div class='inline'><p>All branches will be notified about if returned list is nil; otherwise only specified branches will be notifified about.</p>
 </div>
   </div>
@@ -397,7 +535,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -451,13 +589,15 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="info-class_method">
+  <h3 class="signature " id="info-class_method">
   
     + (<tt>NilClass</tt>) <strong>info</strong>(message) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p>Prints informational message to $stdout.</p>
 
@@ -465,7 +605,7 @@
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -485,7 +625,7 @@
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -529,13 +669,15 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="logger-class_method">
+  <h3 class="signature " id="logger-class_method">
   
     + (<tt>Object</tt>) <strong>logger</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p>Gets logger.</p>
 
@@ -567,13 +709,15 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="merge_commit?-class_method">
+  <h3 class="signature " id="merge_commit?-class_method">
   
     + (<tt>Boolean</tt>) <strong>merge_commit?</strong>(commit_info) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p>Is merge commit?</p>
 
@@ -581,7 +725,7 @@
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -601,7 +745,7 @@
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -637,87 +781,15 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="number-class_method">
-  
-    + (<tt>String</tt>) <strong>number</strong>(i) 
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p>Gets human readable commit number.</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  <h3>Parameters:</h3>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>i</span>
-      
-      
-        <span class='type'>(<tt>Fixnum</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'><p>Commit index.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-<h3>Returns:</h3>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'><p>Human readable commit number.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-229
-230
-231</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/commit_hook.rb', line 229</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_number'>number</span><span class='lparen'>(</span><span class='id identifier rubyid_i'>i</span><span class='rparen'>)</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>[</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_i'>i</span> <span class='op'>+</span> <span class='int'>1</span><span class='rbrace'>}</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="run-class_method">
+  <h3 class="signature " id="run-class_method">
   
     + (<tt>NilClass</tt>) <strong>run</strong>(config_name, rev1, rev2, ref_name) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p>Runs comit hook handler using specified arguments.</p>
 
@@ -725,7 +797,7 @@
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -790,7 +862,7 @@
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -808,7 +880,7 @@
   
 </ul>
 
-  <h3>See Also:</h3>
+  <p class="tag_title">See Also:</p>
   <ul class="see">
     
       <li><span class='object_link'><a href="#config-class_method" title="GitCommitNotifier::CommitHook.config (method)">config</a></span></li>
@@ -821,21 +893,6 @@
       <pre class="lines">
 
 
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
 85
 86
 87
@@ -975,10 +1032,54 @@
 221
 222
 223
-224</pre>
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/commit_hook.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'lib/git_commit_notifier/commit_hook.rb', line 85</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_run'>run</span><span class='lparen'>(</span><span class='id identifier rubyid_config_name'>config_name</span><span class='comma'>,</span> <span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='comma'>,</span> <span class='id identifier rubyid_ref_name'>ref_name</span><span class='rparen'>)</span>
 
@@ -1030,6 +1131,7 @@
 </span>  <span class='comment'>#     branch_name
 </span>  <span class='comment'>#     slash_branch_name
 </span>  <span class='comment'>#     commit_id (hash)
+</span>  <span class='comment'>#     description ('git describe' tag)
 </span>  <span class='comment'>#     short_message
 </span>  <span class='comment'>#     commit_number
 </span>  <span class='comment'>#     commit_count
@@ -1041,6 +1143,7 @@
     <span class='symbol'>:branch_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_branch_name'>branch_name</span><span class='comma'>,</span>
     <span class='symbol'>:slash_branch_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_slash_branch_name'>slash_branch_name</span><span class='comma'>,</span>
     <span class='symbol'>:commit_id</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span>
+    <span class='symbol'>:description</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lambda'>lambda</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_commit_info'>commit_info</span><span class='op'>|</span> <span class='const'>Git</span><span class='period'>.</span><span class='id identifier rubyid_describe'>describe</span><span class='lparen'>(</span><span class='id identifier rubyid_commit_info'>commit_info</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='comma'>,</span>
     <span class='symbol'>:message</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span>
     <span class='symbol'>:commit_number</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span>
     <span class='symbol'>:commit_count</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span>
@@ -1055,12 +1158,6 @@
     <span class='id identifier rubyid_diff2html'>diff2html</span><span class='period'>.</span><span class='id identifier rubyid_diff_between_revisions'>diff_between_revisions</span><span class='lparen'>(</span><span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='comma'>,</span> <span class='id identifier rubyid_prefix'>prefix</span><span class='comma'>,</span> <span class='id identifier rubyid_ref_name'>ref_name</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_diffresult'>diffresult</span> <span class='op'>=</span> <span class='id identifier rubyid_diff2html'>diff2html</span><span class='period'>.</span><span class='id identifier rubyid_result'>result</span>
     <span class='id identifier rubyid_diff2html'>diff2html</span><span class='period'>.</span><span class='id identifier rubyid_clear_result'>clear_result</span>
-
-    <span class='kw'>if</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ignore_merge</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
-      <span class='id identifier rubyid_diffresult'>diffresult</span><span class='period'>.</span><span class='id identifier rubyid_reject!'>reject!</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_result'>result</span><span class='op'>|</span>
-        <span class='id identifier rubyid_merge_commit?'>merge_commit?</span><span class='lparen'>(</span><span class='id identifier rubyid_result'>result</span><span class='rparen'>)</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
 
     <span class='id identifier rubyid_text'>text</span><span class='comma'>,</span> <span class='id identifier rubyid_html'>html</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
     <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_diffresult'>diffresult</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
@@ -1081,13 +1178,14 @@
       <span class='symbol'>:commit_count_phrase2</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_diffresult'>diffresult</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>==</span> <span class='int'>1</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_diffresult'>diffresult</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='rbrace'>}</span><span class='tstring_content'> commits: </span><span class='tstring_end'>&quot;</span></span>
     <span class='rbrace'>}</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_subject_template'>subject_template</span> <span class='op'>=</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>subject</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>[${prefix}${slash_branch_name}] ${commit_count_phrase2}${message}</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_subject'>subject</span> <span class='op'>=</span> <span class='id identifier rubyid_subject_template'>subject_template</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\$\{(\w+)\}</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_m'>m</span><span class='op'>|</span> <span class='id identifier rubyid_revised_subject_words'>revised_subject_words</span><span class='lbracket'>[</span><span class='backref'>$1</span><span class='period'>.</span><span class='id identifier rubyid_intern'>intern</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_subject'>subject</span> <span class='op'>=</span> <span class='id identifier rubyid_get_subject'>get_subject</span><span class='lparen'>(</span><span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_subject_template'>subject_template</span><span class='comma'>,</span> <span class='id identifier rubyid_revised_subject_words'>revised_subject_words</span><span class='rparen'>)</span>
 
     <span class='id identifier rubyid_emailer'>emailer</span> <span class='op'>=</span> <span class='const'>Emailer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='comma'>,</span>
       <span class='symbol'>:project_path</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_project_path'>project_path</span><span class='comma'>,</span>
       <span class='symbol'>:recipient</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_recipient'>recipient</span><span class='comma'>,</span>
       <span class='symbol'>:from_address</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>from</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span><span class='comma'>,</span>
       <span class='symbol'>:from_alias</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='comma'>,</span>
+      <span class='symbol'>:reply_to_address</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>reply_to_author</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>?</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>from</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span><span class='comma'>,</span>
       <span class='symbol'>:subject</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_subject'>subject</span><span class='comma'>,</span>
       <span class='symbol'>:date</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:date</span><span class='rbracket'>]</span><span class='comma'>,</span>
       <span class='symbol'>:text_message</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_text'>text</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>------------------------------------------\n\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
@@ -1098,28 +1196,43 @@
       <span class='symbol'>:repo_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_repo_name'>repo_name</span>
     <span class='rparen'>)</span>
     <span class='id identifier rubyid_emailer'>emailer</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span>
+
+    <span class='comment'># WEBHOOK patch
+</span>    <span class='kw'>unless</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webhook</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='id identifier rubyid_webhook'>webhook</span> <span class='op'>=</span> <span class='const'>Webhook</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='comma'>,</span>
+        <span class='symbol'>:committer</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='comma'>,</span>
+        <span class='symbol'>:email</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span><span class='comma'>,</span>
+        <span class='symbol'>:message</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span><span class='comma'>,</span>
+        <span class='symbol'>:subject</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_subject'>subject</span><span class='comma'>,</span>
+        <span class='symbol'>:changed</span> <span class='op'>=&gt;</span> <span class='const'>Git</span><span class='period'>.</span><span class='id identifier rubyid_split_status'>split_status</span><span class='lparen'>(</span><span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span><span class='id identifier rubyid_rev2'>rev2</span><span class='rparen'>)</span><span class='comma'>,</span>
+        <span class='symbol'>:old_rev</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span>
+        <span class='symbol'>:new_rev</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='comma'>,</span>
+        <span class='symbol'>:ref_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_ref_name'>ref_name</span><span class='comma'>,</span>
+        <span class='symbol'>:repo_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_repo_name'>repo_name</span>
+      <span class='rparen'>)</span>
+      <span class='id identifier rubyid_webhook'>webhook</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span>
+    <span class='kw'>end</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_commit_number'>commit_number</span> <span class='op'>=</span> <span class='int'>1</span>
-    <span class='id identifier rubyid_diff2html'>diff2html</span><span class='period'>.</span><span class='id identifier rubyid_diff_between_revisions'>diff_between_revisions</span><span class='lparen'>(</span><span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='comma'>,</span> <span class='id identifier rubyid_prefix'>prefix</span><span class='comma'>,</span> <span class='id identifier rubyid_ref_name'>ref_name</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_result'>result</span><span class='op'>|</span>
-      <span class='kw'>next</span>  <span class='kw'>if</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ignore_merge</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_merge_commit?'>merge_commit?</span><span class='lparen'>(</span><span class='id identifier rubyid_result'>result</span><span class='rparen'>)</span>
-
+    <span class='id identifier rubyid_diff2html'>diff2html</span><span class='period'>.</span><span class='id identifier rubyid_diff_between_revisions'>diff_between_revisions</span><span class='lparen'>(</span><span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='comma'>,</span> <span class='id identifier rubyid_prefix'>prefix</span><span class='comma'>,</span> <span class='id identifier rubyid_ref_name'>ref_name</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_count'>count</span><span class='comma'>,</span> <span class='id identifier rubyid_result'>result</span><span class='op'>|</span>
       <span class='comment'># Form the subject from template
 </span>      <span class='id identifier rubyid_revised_subject_words'>revised_subject_words</span> <span class='op'>=</span> <span class='id identifier rubyid_subject_words'>subject_words</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='lbrace'>{</span>
         <span class='symbol'>:commit_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:commit</span><span class='rbracket'>]</span><span class='comma'>,</span>
         <span class='symbol'>:message</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span><span class='comma'>,</span>
         <span class='symbol'>:commit_number</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_commit_number'>commit_number</span><span class='comma'>,</span>
-        <span class='symbol'>:commit_count</span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='comma'>,</span>
-        <span class='symbol'>:commit_count_phrase</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>1 commit</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-        <span class='symbol'>:commit_count_phrase2</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+        <span class='symbol'>:commit_count</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_count'>count</span><span class='comma'>,</span>
+        <span class='symbol'>:commit_count_phrase</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_count'>count</span> <span class='op'>==</span> <span class='int'>1</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>1 commit</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_count'>count</span><span class='rbrace'>}</span><span class='tstring_content'> commits</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+        <span class='symbol'>:commit_count_phrase2</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_count'>count</span> <span class='op'>==</span> <span class='int'>1</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_count'>count</span><span class='rbrace'>}</span><span class='tstring_content'> commits: </span><span class='tstring_end'>&quot;</span></span>
       <span class='rbrace'>}</span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_subject_template'>subject_template</span> <span class='op'>=</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>subject</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>[${prefix}${slash_branch_name}][${commit_number}] ${message}</span><span class='tstring_end'>&quot;</span></span>
-      <span class='id identifier rubyid_subject'>subject</span> <span class='op'>=</span> <span class='id identifier rubyid_subject_template'>subject_template</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\$\{(\w+)\}</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_m'>m</span><span class='op'>|</span> <span class='id identifier rubyid_revised_subject_words'>revised_subject_words</span><span class='lbracket'>[</span><span class='backref'>$1</span><span class='period'>.</span><span class='id identifier rubyid_intern'>intern</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+      <span class='id identifier rubyid_subject_template'>subject_template</span> <span class='op'>=</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>subject</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>[${prefix}${slash_branch_name}][${commit_number}/${commit_count}] ${message}</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id identifier rubyid_subject'>subject</span> <span class='op'>=</span> <span class='id identifier rubyid_get_subject'>get_subject</span><span class='lparen'>(</span><span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_subject_template'>subject_template</span><span class='comma'>,</span> <span class='id identifier rubyid_revised_subject_words'>revised_subject_words</span><span class='rparen'>)</span>
 
       <span class='id identifier rubyid_emailer'>emailer</span> <span class='op'>=</span> <span class='const'>Emailer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='comma'>,</span>
         <span class='symbol'>:project_path</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_project_path'>project_path</span><span class='comma'>,</span>
         <span class='symbol'>:recipient</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_recipient'>recipient</span><span class='comma'>,</span>
         <span class='symbol'>:from_address</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>from</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span><span class='comma'>,</span>
         <span class='symbol'>:from_alias</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='comma'>,</span>
+        <span class='symbol'>:reply_to_address</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>reply_to_author</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>?</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>from</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span><span class='comma'>,</span>
         <span class='symbol'>:subject</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_subject'>subject</span><span class='comma'>,</span>
         <span class='symbol'>:date</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:date</span><span class='rbracket'>]</span><span class='comma'>,</span>
         <span class='symbol'>:text_message</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:text_content</span><span class='rbracket'>]</span><span class='comma'>,</span>
@@ -1130,6 +1243,23 @@
         <span class='symbol'>:repo_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_repo_name'>repo_name</span>
       <span class='rparen'>)</span>
       <span class='id identifier rubyid_emailer'>emailer</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span>
+
+      <span class='comment'># WEBHOOK patch
+</span>      <span class='kw'>unless</span> <span class='id identifier rubyid_config'>config</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webhook</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+        <span class='id identifier rubyid_webhook'>webhook</span> <span class='op'>=</span> <span class='const'>Webhook</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='comma'>,</span>
+          <span class='symbol'>:committer</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:author</span><span class='rbracket'>]</span><span class='comma'>,</span>
+          <span class='symbol'>:email</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:email</span><span class='rbracket'>]</span><span class='comma'>,</span>
+          <span class='symbol'>:message</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:commit_info</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span><span class='comma'>,</span>
+          <span class='symbol'>:subject</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_subject'>subject</span><span class='comma'>,</span>
+          <span class='symbol'>:changed</span> <span class='op'>=&gt;</span> <span class='const'>Git</span><span class='period'>.</span><span class='id identifier rubyid_split_status'>split_status</span><span class='lparen'>(</span><span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span><span class='id identifier rubyid_rev2'>rev2</span><span class='rparen'>)</span><span class='comma'>,</span>
+          <span class='symbol'>:old_rev</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_rev1'>rev1</span><span class='comma'>,</span>
+          <span class='symbol'>:new_rev</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_rev2'>rev2</span><span class='comma'>,</span>
+          <span class='symbol'>:ref_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_ref_name'>ref_name</span><span class='comma'>,</span>
+          <span class='symbol'>:repo_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_repo_name'>repo_name</span>
+        <span class='rparen'>)</span>
+        <span class='id identifier rubyid_webhook'>webhook</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span>
+      <span class='kw'>end</span>
+
       <span class='id identifier rubyid_commit_number'>commit_number</span> <span class='op'>+=</span> <span class='int'>1</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
@@ -1141,13 +1271,15 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="show_error-class_method">
+  <h3 class="signature " id="show_error-class_method">
   
     + (<tt>NilClass</tt>) <strong>show_error</strong>(message) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p>Prints error message to $stderr.</p>
 
@@ -1155,7 +1287,7 @@
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -1175,7 +1307,7 @@
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1227,11 +1359,11 @@
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Mon Apr 16 19:38:29 2012 by 
+  Generated on Wed Feb 27 14:41:25 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.5 (ruby-1.8.7).
+  0.8.2.1 (ruby-1.9.3).
 </div>
 
   </body>
