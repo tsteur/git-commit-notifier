@@ -2,6 +2,8 @@
 
 ## Not yet released
 
+## Version 0.11.10
+
 * Display info message if the config.yml specified is not found.
 * Strip whitespace after splitting emails for SMTP.
 * Added prefer_git_config_mailinglist config variable.
