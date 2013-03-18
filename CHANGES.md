@@ -7,7 +7,7 @@
 * Display info message if the config.yml specified is not found.
 * Strip whitespace after splitting emails for SMTP.
 * Added prefer_git_config_mailinglist config variable.
-* Allow to use one configuarion per all cgit projects.
+* Allow to use one configuration file per all cgit projects.
 * Support for Gitalist.
 
 ## Version 0.11.9
