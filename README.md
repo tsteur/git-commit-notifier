@@ -62,8 +62,7 @@ echo "HEAD^1 HEAD refs/heads/master" | git-commit-notifier path_to_config.yml
 ```
 
 ## Decorate files and commit ids with link to a webview
-You need change next line in config file
-    link_files: none
+You need change next line in config file ```link_files: none```
 
 Possible values: none, gitweb, gitorious, cgit, trac, gitlabhq, or redmine
 
