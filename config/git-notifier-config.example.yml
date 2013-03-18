@@ -115,7 +115,7 @@ nntp_settings:
   port: 119
 
 # Decorate files and commit ids with link to a webview. Possible values: none, gitweb,
-# gitorious, cgit, trac, gitlabhq, or redmine
+# gitorious, cgit, trac, gitlabhq, gitalist or redmine
 link_files: none
 
 # If link_files is set to "gitweb", you need to configure the path to your gitweb
@@ -148,6 +148,12 @@ trac:
 gitlabhq:
   path: http://gitlabhq.example.com
   version: 1.2
+
+# If link_files is set to "gitalist", you need to configure the path to your gitalist
+# instance
+gitalist:
+  path: http://gitalist.example.com
+  project: test.git
 
 # If link_files is set to "redmine", you need to configure the path to your redmine
 # instance
