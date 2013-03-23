@@ -6,6 +6,8 @@
 
 * [![Code Climate](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier.png)](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier)
 
+* [![Coverage Status](https://coveralls.io/repos/git-commit-notifier/git-commit-notifier/badge.png?branch=master)](https://coveralls.io/r/git-commit-notifier/git-commit-notifier)
+
 ## Description
 
 This gem sends email commit messages splitting commits that were pushed in one step.
