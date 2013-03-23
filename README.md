@@ -1,8 +1,12 @@
 # Git Commit Notifier
 
-[![Build Status](https://travis-ci.org/git-commit-notifier/git-commit-notifier.png)](https://travis-ci.org/git-commit-notifier/git-commit-notifier)
+## Code Status
 
-__by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)__
+* [![build status](https://secure.travis-ci.org/git-commit-notifier/git-commit-notifier.png)](https://travis-ci.org/git-commit-notifier/git-commit-notifier) travis-ci.org (master branch)
+
+* [![Code Climate](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier.png)](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier)
+
+## Description
 
 This gem sends email commit messages splitting commits that were pushed in one step.
 The Email is delivered as text or HTML with changes refined per word. Emails
@@ -25,6 +29,8 @@ numbered in chronological order:
 Example email:
 
 ![Example](http://img171.imageshack.us/img171/954/gitcommitnotifieremailpq3.png "Example")
+
+__by Bodo Tasche (bodo 'at' wannawork 'dot' de), Akzhan Abdulin (akzhan 'dot' abdulin 'at' gmail 'dot' com), Csoma Zoltan  (info 'at' railsprogrammer 'dot' net)__
 
 ## Requirements
 
