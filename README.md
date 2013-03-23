@@ -1,12 +1,8 @@
 # Git Commit Notifier
 
-## Code Status
-
-* [![build status](https://secure.travis-ci.org/git-commit-notifier/git-commit-notifier.png)](https://travis-ci.org/git-commit-notifier/git-commit-notifier) travis-ci.org (master branch)
-
-* [![Code Climate](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier.png)](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier)
-
-* [![Coverage Status](https://coveralls.io/repos/git-commit-notifier/git-commit-notifier/badge.png?branch=master)](https://coveralls.io/r/git-commit-notifier/git-commit-notifier)
+[![build status](https://secure.travis-ci.org/git-commit-notifier/git-commit-notifier.png)](https://travis-ci.org/git-commit-notifier/git-commit-notifier)
+[![Code Climate](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier.png)](https://codeclimate.com/github/git-commit-notifier/git-commit-notifier)
+[![Coverage Status](https://coveralls.io/repos/git-commit-notifier/git-commit-notifier/badge.png?branch=master)](https://coveralls.io/r/git-commit-notifier/git-commit-notifier)
 
 ## Description
 
