@@ -192,7 +192,7 @@ module GitCommitNotifier
 
           emailer = Emailer.new(config,
             :project_path => project_path,
-            :recipient => recipient,
+            :recipient => config["send_mail_to_committer"] ? "#{recipient},#{result[:commit_info][:email]}" : recipient,
             :from_address => config["from"] || result[:commit_info][:email],
             :from_alias => result[:commit_info][:author],
             :reply_to_address => config["reply_to_author"] ? result[:commit_info][:email] : config["from"] || result[:commit_info][:email],
@@ -239,7 +239,7 @@ module GitCommitNotifier
 
             emailer = Emailer.new(config,
               :project_path => project_path,
-              :recipient => recipient,
+              :recipient => config["send_mail_to_committer"] ? "#{recipient},#{result[:commit_info][:email]}" : recipient,
               :from_address => config["from"] || result[:commit_info][:email],
               :from_alias => result[:commit_info][:author],
               :reply_to_address => config["reply_to_author"] ? result[:commit_info][:email] : config["from"] || result[:commit_info][:email],
