@@ -111,6 +111,11 @@ module GitCommitNotifier
           recipient = config["mailinglist"] || Git.mailing_list_address
         end
 
+        if config["ignore_commit_if_committer_email_is"] && config["ignore_commit_if_committer_email_is"] == result[:commit_info][:email]
+          info("bypassing commit notification; commit is done by an ignored committer.")
+          return
+        end
+
         # If no recipients specified, bail out gracefully. This is not an error, and might be intentional
         if recipient.nil? || recipient.length == 0
           info("bypassing commit notification; no recipients specified (consider setting git config hooks.mailinglist)")
