@@ -111,11 +111,6 @@ module GitCommitNotifier
           recipient = config["mailinglist"] || Git.mailing_list_address
         end
 
-        if config["ignore_commit_if_committer_email_is"] && config["ignore_commit_if_committer_email_is"] == result[:commit_info][:email]
-          info("bypassing commit notification; commit is done by an ignored committer.")
-          return
-        end
-
         # If no recipients specified, bail out gracefully. This is not an error, and might be intentional
         if recipient.nil? || recipient.length == 0
           info("bypassing commit notification; no recipients specified (consider setting git config hooks.mailinglist)")
@@ -177,6 +172,11 @@ module GitCommitNotifier
           text, html = [], []
           result = diffresult.first
           return if result.nil? || !result[:commit_info]
+          
+          if config["ignore_commit_if_committer_email_is"] && config["ignore_commit_if_committer_email_is"] == result[:commit_info][:email]
+            info("bypassing commit notification; commit is done by an ignored committer.")
+            return
+          end
 
           diffresult.each_with_index do |result, i|
             text << result[:text_content]
@@ -230,6 +230,12 @@ module GitCommitNotifier
         else
           commit_number = 1
           diff2html.diff_between_revisions(rev1, rev2, prefix, ref_name) do |count, result|
+            
+            if config["ignore_commit_if_committer_email_is"] && config["ignore_commit_if_committer_email_is"] == result[:commit_info][:email]
+              info("bypassing commit notification; commit is done by an ignored committer.")
+              return
+            end
+          
             # Form the subject from template
             revised_subject_words = subject_words.merge({
               :commit_id => result[:commit_info][:commit],
